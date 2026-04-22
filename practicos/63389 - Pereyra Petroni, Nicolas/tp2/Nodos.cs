@@ -19,5 +19,19 @@ class VariableNodo : Nodo
     {
         return x;
     }
-    
+
+}
+class SumaNodo : Nodo
+{
+    public Nodo Izquierdo;
+    public Nodo Derecho;
+    public  SumaNodo(Nodo izq,Nodo der)
+    {
+        Izquierdo=izq;
+        Derecho=der;
+    }
+    public override int Evaluar(int x = 0)
+    {
+        return Izquierdo.Evaluar(x) + Derecho.Evaluar(x);
+    }
 }

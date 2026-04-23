@@ -34,11 +34,31 @@ class Program {
         foreach (var numero in randomYield.Take(20)) {
             Console.WriteLine(numero);
         }
+
+        var randomNET = new RandomNETYield(1);
+        foreach (var numero in randomNET.Take(20)) {
+            Console.WriteLine(numero);
+        }
     }
 
     // Generador de números pseudoaleatorios
     // (Algoritmo de Park-Miller: https://en.wikipedia.org/wiki/Lehmer_random_number_generator)
     public static int CalcularSiguiente(int estado) => (int)(((long)estado * 1_103_515_245 + 12_345) & int.MaxValue);
+}
+
+class RandomNETYield : IEnumerable<int> {
+    readonly int semilla;
+
+    public RandomNETYield(int semilla = 1) {
+        this.semilla = semilla;
+    }
+
+    public IEnumerator<int> GetEnumerator() {
+        var random = new Random(this.semilla);
+        while (true) {
+            yield return random.Next(100);
+        }
+    }
 }
 
 class RandomLista {

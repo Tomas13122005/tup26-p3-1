@@ -63,7 +63,7 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 63717   González, Octavio               (381) 604-1868  Sí    owning01                   🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
 61161   González, Thomas Ezequiel       (381) 369-9891  Sí    kobinee                    🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
 62844   Guzmán, Luciano Leonel          (388) 665-1248  No    lucianoleonelguzman        🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
-63231   Herrera, Rocío Tatiana          (381) 208-9907  Sí    tatianaherrera-commits     🟢🔴⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
+63231   Herrera, Rocío Tatiana          (381) 208-9907  Sí    tatianaherrera-commits     🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
 63425   Holmquist, Jeremy               (381) 522-4955  Sí    jeremy-holmquist           🟢🔴⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
 61907   Kargachin, Guadalupe            (381) 457-6547  Sí    guadalupekargachin         🔴🔴⚪️⚪️⚪️            ⚪️⚪️  No    0   
 63219   Lazarte, Sergio Fabricio        (381) 589-1439  Sí    fabriciolazarte27          🟢🟢⚪️⚪️⚪️            ⚪️⚪️  No    5   

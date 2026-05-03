@@ -124,11 +124,11 @@ static class AlumnosCliApp {
         InteractiveChoice opcion = PedirOpcion(
             "[bold cyan]Principal / Auditoría[/] · Elegí una auditoría",
             [
-                new("sin-github", "Sin GitHub", "Filtrar alumnos sin usuario GitHub"),
-                new("sin-telefono", "Sin teléfono", "Filtrar alumnos sin teléfono"),
-                new("sin-foto", "Sin foto", "Filtrar alumnos sin foto"),
+                new("sin-github",                  "Sin GitHub",                   "Filtrar alumnos sin usuario GitHub"),
+                new("sin-telefono",                "Sin teléfono",                 "Filtrar alumnos sin teléfono"),
+                new("sin-foto",                    "Sin foto",                     "Filtrar alumnos sin foto"),
                 new("limpiar-proyectos-practicos", "Limpiar Proyectos Prácticos", "Eliminar carpetas bin y obj dentro de prácticos"),
-                new("volver", "Volver", "Regresar al menú principal")
+                new("volver",                      "Volver",                       "Regresar al menú principal")
             ]);
 
         return opcion.Command switch {
@@ -144,11 +144,11 @@ static class AlumnosCliApp {
         InteractiveChoice opcion = PedirOpcion(
             "[bold cyan]Principal / Exportar[/] · Elegí un formato",
             [
-                new("guardar", "Markdown", "Guardar el listado en formato Markdown"),
-                new("json",    "JSON",     "Exportar el listado en JSON"),
-                new("vcf",     "vCard",     "Exportar contactos en formato vCard"),
-                new("informer-estado", "Informer estado", "Publicar en README.md legajo, nombre y prácticos"),
-                new("volver",  "Volver",    "Regresar al menú principal")
+                new("guardar",         "Markdown",        "Guardar el listado en formato Markdown"),
+                new("json",            "JSON",            "Exportar el listado en JSON"),
+                new("vcf",             "vCard",           "Exportar contactos en formato vCard"),
+                new("informer-estado", "Informer estado", "Publicar en ESTADO.md el estado de los prácticos presentados"),
+                new("volver",          "Volver",          "Regresar al menú principal")
             ]);
 
         return opcion.Command switch {
@@ -164,12 +164,12 @@ static class AlumnosCliApp {
         InteractiveChoice opcion = PedirOpcion(
             "[bold cyan]Principal / PRs[/] · Elegí una acción",
             [
-                new("prs", "Revisar PRs", "Mostrar estado de pull requests"),
-                new("normalizar-prs", "Normalizar PRs", "Ajustar títulos de pull requests"),
-                new("bajar-prs", "Bajar PRs", "Descargar archivos de un trabajo práctico"),
-                new("cerrar-prs", "Cerrar PRs", "Cerrar pull requests abiertos"),
-                new("revisar-presentados", "Revisar presentados", "Marcar TPs presentados según líneas locales"),
-                new("volver", "Volver", "Regresar al menú principal")
+                new("prs",                 "Revisar PRs",          "Mostrar estado de pull requests"),
+                new("normalizar-prs",      "Normalizar PRs",       "Ajustar títulos de pull requests"),
+                new("bajar-prs",           "Bajar PRs",            "Descargar archivos de un trabajo práctico"),
+                new("cerrar-prs",          "Cerrar PRs",           "Cerrar pull requests abiertos"),
+                new("revisar-presentados", "Revisar presentados",  "Marcar TPs presentados según líneas locales"),
+                new("volver",              "Volver",               "Regresar al menú principal")
             ]);
 
         return opcion.Command switch {
@@ -187,9 +187,9 @@ static class AlumnosCliApp {
             "[bold cyan]Principal / Asistencias y WhatsApp[/] · Elegí una acción",
             [
                 new("registrar-asistencias", "Registrar asistencias", "Consolidar presentes del día"),
-                new("relevar-asistencias", "Relevar asistencias", "Detectar presentes desde WhatsApp"),
-                new("wapp-grupos", "WhatsApp grupos", "Listar grupos y participantes"),
-                new("volver", "Volver", "Regresar al menú principal")
+                new("relevar-asistencias",   "Relevar asistencias",   "Detectar presentes desde WhatsApp"),
+                new("wapp-grupos",           "WhatsApp grupos",       "Listar grupos y participantes"),
+                new("volver",                "Volver",                "Regresar al menú principal")
             ]);
 
         return opcion.Command switch {
@@ -205,18 +205,18 @@ static class AlumnosCliApp {
             new SelectionPrompt<InteractiveChoice>()
                 .Title(titulo)
                 .PageSize(12)
-                .UseConverter(choice => $"[green]{choice.Label}[/] [grey]- {choice.Description}[/]")
+                .UseConverter(choice => $"[green]{choice.Label, -22}[/] [grey] {choice.Description}[/]")
                 .AddChoices(opciones));
 
     static IReadOnlyList<InteractiveChoice> ObtenerOpcionesPrincipales() =>
         [
-            new("listar", "Listar", "Mostrar todos los alumnos"),
-            new("auditoria", "Auditoría", "Revisar datos faltantes o incompletos"),
-            new("exportar", "Exportar", "Guardar o exportar en distintos formatos"),
-            new("crear-carpetas", "Crear carpetas", "Crear o normalizar carpetas de alumnos"),
-            new("prs", "PRs", "Operaciones sobre pull requests y prácticos"),
-            new("asistencias", "Asistencias y WhatsApp", "Acciones vinculadas a presentes y grupos"),
-            new("salir", "Salir", "Cerrar la aplicación")
+            new("listar",         "Listar",                 "Mostrar todos los alumnos"),
+            new("auditoria",      "Auditoría",              "Revisar datos faltantes o incompletos"),
+            new("exportar",       "Exportar",               "Guardar o exportar en distintos formatos"),
+            new("crear-carpetas", "Crear carpetas",         "Crear o normalizar carpetas de alumnos"),
+            new("prs",            "PRs",                    "Operaciones sobre pull requests y prácticos"),
+            new("asistencias",    "Asistencias y WhatsApp", "Acciones vinculadas a presentes y grupos"),
+            new("salir",          "Salir",                  "Cerrar la aplicación")
         ];
 
     static string[] ConstruirArgumentosExportacion(string comando) {

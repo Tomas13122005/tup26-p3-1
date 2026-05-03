@@ -129,7 +129,7 @@ static class AlumnosManager {
     }
 
     public static void EscribirEstadoInformer(IEnumerable<Alumno> alumnos, string rutaArchivo) {
-        string[] etiquetas = ["Legajo", "Nombre y Apellido", "Practicos"];
+        string[] etiquetas = ["Legajo", "Nombre y Apellido", "Prácticos"];
         var guiones = etiquetas.Select(_ => new string('-', 40)).ToArray();
 
         try {
@@ -173,7 +173,7 @@ static class AlumnosManager {
     }
 
     public static void Listar(IEnumerable<Alumno> alumnos, string titulo = "Listado de Alumnos") {
-        string[] campos = ["Legajo", "Nombre y Apellido", "Telefono", "Foto", "GitHub", "Prácticos", "Ex", "Pr", "Nr"];
+        string[] campos = ["Legajo", "Nombre y Apellido", "Teléfono", "Foto", "GitHub", "Prácticos", "Ex", "Pr", "Nr"];
         string[] guiones = campos.Select(c => new string('-', 40)).ToArray();
 
         string comision = "";

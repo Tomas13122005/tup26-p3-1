@@ -78,8 +78,7 @@ static class AlumnosManager {
                     alumnos.Agregar(alumno);
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.Error($"Error al leer el archivo: {ex.Message}");
         }
 
@@ -87,7 +86,7 @@ static class AlumnosManager {
     }
 
     public static void Escribir(IEnumerable<Alumno> alumnos, string rutaArchivo) {
-        string[] etiquetas = ["Legajo", "Nombre y Apellido", "Teléfono", "Foto", "GitHub", "Practicos", "Ex", "Pr", "Nr"];
+        string[] etiquetas = ["Legajo", "Nombre y Apellido", "Teléfono", "Foto", "GitHub", "Prácticos", "Ex", "Pr", "Nr"];
         var guiones = etiquetas.Select(e => new string('-', 40)).ToArray();
         try {
             List<Alumno> alumnosOrdenados = new(alumnos);
@@ -111,8 +110,8 @@ static class AlumnosManager {
                     comisionActual = comisionAlumno;
                     sb.AppendLine($"## {comisionActual}");
                     sb.AppendLine("```text");
-                        sb.AppendLine(FormatearFilaTabla(etiquetas));
-                        sb.AppendLine(FormatearFilaTabla(guiones));
+                    sb.AppendLine(FormatearFilaTabla(etiquetas));
+                    sb.AppendLine(FormatearFilaTabla(guiones));
                 }
 
                 sb.AppendLine(FormatearFila(alumno));
@@ -124,8 +123,7 @@ static class AlumnosManager {
 
             AppPaths.EscribirAlumnosMarkdown(sb.ToString().TrimEnd() + Environment.NewLine, rutaArchivo);
             Log.Info($"Alumnos guardados en: {rutaArchivo}");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.Error($"Error al guardar el archivo: {ex.Message}");
         }
     }
@@ -169,16 +167,15 @@ static class AlumnosManager {
 
             AppPaths.EscribirTexto(rutaArchivo, sb.ToString().TrimEnd() + Environment.NewLine, Encoding.UTF8);
             Log.Info($"Estado Informer publicado en: {rutaArchivo}");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.Error($"Error al publicar el estado Informer: {ex.Message}");
         }
     }
 
     public static void Listar(IEnumerable<Alumno> alumnos, string titulo = "Listado de Alumnos") {
-        string[] campos = ["Legajo", "Nombre y Apellido", "Telefono", "Foto", "GitHub", "Practicos", "Ex", "Pr", "Nr"];
+        string[] campos = ["Legajo", "Nombre y Apellido", "Telefono", "Foto", "GitHub", "Prácticos", "Ex", "Pr", "Nr"];
         string[] guiones = campos.Select(c => new string('-', 40)).ToArray();
-        
+
         string comision = "";
         if (!alumnos.Any()) {
             Log.Warning("No hay alumnos para mostrar.");
@@ -186,7 +183,7 @@ static class AlumnosManager {
         }
 
         List<Alumno> alumnosOrdenados = alumnos.OrderBy(a => a.Comision).ThenBy(a => a.NombreCompleto).ThenBy(a => a.Legajo).ToList();
-        
+
         string encabezado = FormatearFilaTabla(campos);
 
         Log.WriteLine($"[blue]=== {titulo.ToUpper()} ===");
@@ -208,27 +205,26 @@ static class AlumnosManager {
 
         foreach (Alumno alumno in alumnos) {
             string nombreCarpeta = alumno.CarpetaNombre;
-            string rutaCarpeta   = AppPaths.RutaCarpetaAlumnoEsperada(alumno);
+            string rutaCarpeta = AppPaths.RutaCarpetaAlumnoEsperada(alumno);
             try {
                 List<string> carpetasConLegajo = AppPaths.BuscarCarpetasMismoLegajo(alumno.Legajo);
 
                 if (!carpetasConLegajo.Any()) {
                     AppPaths.AsegurarCarpetaAlumno(alumno);
-                    Log.Debug($" ➕ {rutaCarpeta, -40}");
-                } else if (carpetasConLegajo.Count == 1){
+                    Log.Debug($" ➕ {rutaCarpeta,-40}");
+                } else if (carpetasConLegajo.Count == 1) {
                     string rutaCarpetaExistente = carpetasConLegajo[0];
-                    string rutaRelativa = AppPaths.RutaRelativaDesdePracticos(rutaCarpetaExistente); 
+                    string rutaRelativa = AppPaths.RutaRelativaDesdePracticos(rutaCarpetaExistente);
                     if (string.Equals(rutaCarpetaExistente, rutaCarpeta, StringComparison.OrdinalIgnoreCase)) {
-                        Log.Info($" ✅ {rutaRelativa, -40}");
+                        Log.Info($" ✅ {rutaRelativa,-40}");
                     } else {
                         AppPaths.RenombrarCarpetaAlumno(rutaCarpetaExistente, alumno);
-                        Log.Warning($" 🔄 {rutaRelativa, -40} → {nombreCarpeta}");
+                        Log.Warning($" 🔄 {rutaRelativa,-40} → {nombreCarpeta}");
                     }
                 } else {
                     Log.Warning($" ⚠️  {alumno.Legajo}. Revisar manualmente las duplicadas.");
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.Error($"Error al crear la carpeta para {nombreCarpeta}: {ex.Message}");
             }
         }
@@ -261,15 +257,14 @@ static class AlumnosManager {
             try {
                 CopiaRuta copia = AppPaths.CopiarFotoPerfil(rutaFotos, alumno, rutaCarpetaAlumno!);
                 Log.Info($"Foto copiada: {copia.Origen} -> {copia.Destino}");
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.Error($"Error al copiar la foto para {alumno.CarpetaNombre}: {ex.Message}");
             }
         }
     }
 
     public static void CopiarEnunciadoPracticos(IEnumerable<Alumno> alumnos, string practico, bool forzar = false) {
-        string nombrePractico    = practico.Trim();
+        string nombrePractico = practico.Trim();
 
         if (string.IsNullOrWhiteSpace(nombrePractico)) {
             Log.Error("Debe indicar el nombre del práctico a copiar.");
@@ -292,9 +287,8 @@ static class AlumnosManager {
             if (!AppPaths.ExisteDirectorio(rutaAlumno)) {
                 try {
                     AppPaths.AsegurarCarpetaAlumno(alumno);
-                    Log.Debug($" ➕ {rutaAlumno, -40}");
-                }
-                catch (Exception ex) {
+                    Log.Debug($" ➕ {rutaAlumno,-40}");
+                } catch (Exception ex) {
                     Log.Error($"No se pudo crear la carpeta del alumno {rutaAlumno}: {ex.Message}");
                     continue;
                 }
@@ -303,8 +297,7 @@ static class AlumnosManager {
             try {
                 CopiaRuta copia = AppPaths.CopiarEnunciadoPractico(alumno, nombrePractico, forzar);
                 Log.Info($"Enunciado copiado: {copia.Origen} -> {copia.Destino}");
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.Error($"Error al copiar el enunciado para {alumno.CarpetaNombre}: {ex.Message}");
             }
         }
@@ -328,8 +321,7 @@ static class AlumnosManager {
                     if (l.StartsWith("- Legajo:")) {
                         string valor = l.Substring("- Legajo:".Length).Trim();
                         int.TryParse(valor, out legajo);
-                    }
-                    else if (l.StartsWith("- Github:")) {
+                    } else if (l.StartsWith("- Github:")) {
                         string valor = l.Substring("- Github:".Length).Trim();
 
                         if (!string.IsNullOrWhiteSpace(valor) &&
@@ -355,8 +347,7 @@ static class AlumnosManager {
                 if (!actualizado) {
                     Log.Warning($"  Sin cambios: {alumno.CarpetaNombre}");
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.Error($"Error al leer perfil {perfil.Ruta}: {ex.Message}");
             }
         }
@@ -382,10 +373,9 @@ static class AlumnosManager {
             };
 
             AppPaths.EscribirAlumnosJson(JsonSerializer.Serialize(datos, opciones) + Environment.NewLine, rutaArchivo);
-            
+
             Log.Info($"Alumnos guardados en JSON: {rutaArchivo}");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.Error($"Error al guardar el archivo JSON: {ex.Message}");
         }
     }
@@ -415,16 +405,13 @@ static class AlumnosManager {
         }
 
         var legajo = ExtraerInt(columnas[0]);
-
-        if (legajo == 0) {
-            return null;
-        }
+        if (legajo == 0) { return null; }
 
         (string apellido, string nombre) = ExtraerApellidoNombre(columnas[1]);
 
-    Alumno alumno = new(legajo, comisionActual, nombre, apellido, ExtraerTelefono(columnas[2]), ExtraerGitHub(columnas[4]), ExtraerBool(columnas[3]), ExtraerBool(columnas[7]), ExtraerInt(columnas[8]));
+        Alumno alumno = new(legajo, comisionActual, nombre, apellido, ExtraerTelefono(columnas[2]), ExtraerGitHub(columnas[4]), ExtraerBool(columnas[3]), ExtraerBool(columnas[7]), ExtraerInt(columnas[8]));
         CargarEstados(alumno.practicos, columnas[5]);
-        CargarEstados(alumno.examenes,  columnas[6]);
+        CargarEstados(alumno.examenes, columnas[6]);
 
         return alumno;
     }
@@ -443,23 +430,6 @@ static class AlumnosManager {
 
     static string FormatearFilaConAnchos(int[] anchos, params string?[] columnas) {
         return string.Join("  ", anchos.Zip(columnas, (ancho, valor) => AjustarColumna(valor ?? string.Empty, ancho)));
-        
-        //     if (valor.Length > ancho) {
-        //         Log.Warning($"Valor '{valor}' excede el ancho de columna ({ancho}). Se truncará en la visualización.");
-        //     }
-        // }
-        // string colLegajo         = AjustarColumna(legajo,          6);
-        // string colNombreApellido = AjustarColumna(nombreApellido, 26);
-        // string colTelefono       = AjustarColumna(telefono,       15);
-        // string colFoto           = AjustarColumna(foto,            4);
-        // string colGitHub         = AjustarColumna(gitHub,         25);
-        // string colComision       = AjustarColumna(comision,       10);
-        // string colPruebas        = AjustarColumna(pruebas,        20);
-        // string colExamenes       = AjustarColumna(examenes,        4);
-        // string colPresente       = AjustarColumna(presente,        4);
-        // string colAsistencias    = AjustarColumna(asistencias,     4);
-
-        // return $"{colLegajo}  {colNombreApellido}  {colTelefono}  {colFoto}  {colGitHub}  {colComision}  {colPruebas}  {colExamenes}  {colPresente}  {colAsistencias}";
     }
 
     static string ObtenerComision(Alumno alumno) {
@@ -469,7 +439,7 @@ static class AlumnosManager {
     static string ToSiNo(this bool valor) => valor ? "Sí" : "No";
 
     static string FormatearFila(Alumno a) {
-        return FormatearFilaTabla( a.Legajo.ToString(), a.NombreCompleto, a.Telefono, a.TieneFoto.ToSiNo(), a.GitHub, a.practicos.ToString(10), a.examenes.ToString(10), a.Presente.ToSiNo(), a.Asistencias.ToString() );
+        return FormatearFilaTabla(a.Legajo.ToString(), a.NombreCompleto, a.Telefono, a.TieneFoto.ToSiNo(), a.GitHub, a.practicos.ToString(10), a.examenes.ToString(10), a.Presente.ToSiNo(), a.Asistencias.ToString());
     }
 
     static string FormatearFilaEstadoInformer(Alumno alumno) {
@@ -512,10 +482,10 @@ static class AlumnosManager {
 
         if (partes.Length == 2) {
             apellido = LimpiarCampo(partes[0]);
-            nombre   = LimpiarCampo(partes[1]);
+            nombre = LimpiarCampo(partes[1]);
         } else {
             apellido = LimpiarCampo(nombreCompleto);
-            nombre   = string.Empty;
+            nombre = string.Empty;
         }
 
         return (apellido, nombre);
@@ -537,7 +507,7 @@ static class AlumnosManager {
         while (StringInfo.ParseCombiningCharacters(valor).Length < ancho) {
             valor += "⚪️";
         }
-        return valor[..ancho]; 
+        return valor[..ancho];
     }
 
     static string FormatearEstados(List<Estado> estados, int ancho = 20) {
@@ -582,13 +552,13 @@ static class AlumnosManager {
         texto is "⚪" or " ";
 
     static void AppendVCardContacto(StringBuilder sb, Alumno alumno) {
-        string apellido         = FormatearTextoVcard(alumno.Apellido);
-        string nombre           = FormatearTextoVcard(alumno.Nombre);
-        string nombreCompleto   = FormatearTextoVcard($"{nombre} {apellido}");
-        string comision         = FormatearTextoVcard(alumno.Comision);
+        string apellido = FormatearTextoVcard(alumno.Apellido);
+        string nombre = FormatearTextoVcard(alumno.Nombre);
+        string nombreCompleto = FormatearTextoVcard($"{nombre} {apellido}");
+        string comision = FormatearTextoVcard(alumno.Comision);
         string etiquetaBusqueda = FormatearTextoVcard(ObtenerEtiquetaBusqueda(alumno));
-        string etiquetaVisible  = FormatearTextoVcard($"{etiquetaBusqueda}-{alumno.Legajo}");
-        string telefonoE164     = $"+{alumno.TelefonoId}";
+        string etiquetaVisible = FormatearTextoVcard($"{etiquetaBusqueda}-{alumno.Legajo}");
+        string telefonoE164 = $"+{alumno.TelefonoId}";
 
         sb.AppendLine("BEGIN:VCARD");
         sb.AppendLine("VERSION:3.0");

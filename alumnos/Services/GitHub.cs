@@ -94,16 +94,16 @@ class GitHub {
 
 
     public bool AgregarColaborador(string usuario) {
-        string? salida = Ejecutar( $"Error al agregar colaborador '{usuario}'",
-            $"/collaborators/{usuario}", "--method", "PUT", "-f", "permission=push" );
+        string? salida = Ejecutar($"Error al agregar colaborador '{usuario}'",
+            $"/collaborators/{usuario}", "--method", "PUT", "-f", "permission=push");
 
         return salida is not null;
     }
 
 
     public List<string> Colaboradores() {
-        string? salida = Ejecutar( "Error al listar colaboradores",
-            "/collaborators", "--jq", ".[] | select(.permissions.push == true) | .login" );
+        string? salida = Ejecutar("Error al listar colaboradores",
+            "/collaborators", "--jq", ".[] | select(.permissions.push == true) | .login");
 
         if (salida is null) { return new(); }
 
@@ -112,8 +112,8 @@ class GitHub {
 
 
     public List<string> InvitacionesPendientes() {
-        string? salida = Ejecutar( "Error al listar invitaciones pendientes",
-            "/invitations", "--paginate", "--jq", ".[].invitee.login" );
+        string? salida = Ejecutar("Error al listar invitaciones pendientes",
+            "/invitations", "--paginate", "--jq", ".[].invitee.login");
 
         if (salida is null) { return new(); }
 
@@ -121,11 +121,11 @@ class GitHub {
     }
 
 
-    public List<(int Numero, string Titulo)> PullRequests(bool soloAbiertos = true, int tp=0) {
+    public List<(int Numero, string Titulo)> PullRequests(bool soloAbiertos = true, int tp = 0) {
         string estado = soloAbiertos ? "open" : "all";
 
-        string? salida = Ejecutar( "Error al listar PRs",
-            $"/pulls?state={estado}", "--paginate", "--jq", @".[] | ""\(.number)\t\(.title)""" );
+        string? salida = Ejecutar("Error al listar PRs",
+            $"/pulls?state={estado}", "--paginate", "--jq", @".[] | ""\(.number)\t\(.title)""");
 
         if (salida is null) { return new(); }
 
@@ -134,9 +134,9 @@ class GitHub {
             string[] partes = linea.Split('\t', 2);
             if (partes.Length != 2) { continue; }
             string practico = partes[0];
-            string titulo   = partes[1];
-            if(tp != 0 && GitHub.ExtraerTP(titulo) != tp) { continue; }
-            if (!int.TryParse(practico, out int numero))  { continue; }
+            string titulo = partes[1];
+            if (tp != 0 && GitHub.ExtraerTP(titulo) != tp) { continue; }
+            if (!int.TryParse(practico, out int numero)) { continue; }
 
             prs.Add((numero, titulo));
         }
@@ -231,8 +231,8 @@ class GitHub {
 
 
     public (string Estado, bool EsMergeable) ObtenerEstado(int numeroPR) {
-        string? salida = Ejecutar( $"Error al consultar el estado del PR #{numeroPR}",
-            $"/pulls/{numeroPR}", "--jq", @"""\(.state)\t\(.mergeable)""" );
+        string? salida = Ejecutar($"Error al consultar el estado del PR #{numeroPR}",
+            $"/pulls/{numeroPR}", "--jq", @"""\(.state)\t\(.mergeable)""");
 
         if (salida is null) { return (string.Empty, false); }
 
@@ -260,8 +260,8 @@ class GitHub {
     }
 
     public List<string> ListarArchivos(int numeroPR) {
-        string? salida = Ejecutar( $"Error al listar archivos del PR #{numeroPR}",
-            $"/pulls/{numeroPR}/files", "--paginate", "--jq", @".[] | .filename" );
+        string? salida = Ejecutar($"Error al listar archivos del PR #{numeroPR}",
+            $"/pulls/{numeroPR}/files", "--paginate", "--jq", @".[] | .filename");
 
         if (salida is null) { return new(); }
 
@@ -289,7 +289,7 @@ class GitHub {
         }
 
         string? salida = Ejecutar($"Error al contar líneas agregadas del PR #{numeroPR}",
-            $"/pulls/{numeroPR}/files", "--paginate", "--jq", ".[] | \"\\(.filename)\\t\\(.additions)\"" );
+            $"/pulls/{numeroPR}/files", "--paginate", "--jq", ".[] | \"\\(.filename)\\t\\(.additions)\"");
 
         if (salida is null) { return 0; }
 
@@ -312,7 +312,7 @@ class GitHub {
         return total;
     }
 
-    public void CerrarPRsAbiertos(){
+    public void CerrarPRsAbiertos() {
         List<(int Numero, string Titulo)> prsAbiertos = PullRequests(soloAbiertos: true);
 
         if (prsAbiertos.Count == 0) {
@@ -322,7 +322,7 @@ class GitHub {
 
         foreach ((int Numero, string Titulo) pr in prsAbiertos) {
             CerrarPR(pr.Numero);
-        }   
+        }
     }
 
     public void CerrarPRsAbiertos(int numeroTP) {
@@ -341,10 +341,10 @@ class GitHub {
             CerrarPR(pr.Numero);
         }
     }
-    
+
     public void CerrarPR(int numeroPR) {
-        string? salida = Ejecutar( $"Error al cerrar el PR #{numeroPR}",
-            $"/pulls/{numeroPR}", "--method", "PATCH", "-f", "state=closed" );
+        string? salida = Ejecutar($"Error al cerrar el PR #{numeroPR}",
+            $"/pulls/{numeroPR}", "--method", "PATCH", "-f", "state=closed");
 
         if (salida is not null) {
             Log.Info($"PR #{numeroPR} cerrado exitosamente.");
@@ -352,8 +352,8 @@ class GitHub {
     }
 
     public void BajarArchivo(int numeroPR, string patron, string rutaDestino, bool forzar = false) {
-        string? salida = Ejecutar( $"Error al bajar archivos del PR #{numeroPR}",
-            $"/pulls/{numeroPR}/files", "--paginate", "--jq", ".[] | \"\\(.filename)\\t\\(.raw_url)\"" );
+        string? salida = Ejecutar($"Error al bajar archivos del PR #{numeroPR}",
+            $"/pulls/{numeroPR}/files", "--paginate", "--jq", ".[] | \"\\(.filename)\\t\\(.raw_url)\"");
 
         if (salida is null) { return; }
 
@@ -401,7 +401,7 @@ class GitHub {
         }
 
         string? salida = Ejecutar($"Error al bajar archivos del PR #{numeroPR}",
-            $"/pulls/{numeroPR}/files", "--paginate", "--jq", ".[] | \"\\(.filename)\\t\\(.raw_url)\"" );
+            $"/pulls/{numeroPR}/files", "--paginate", "--jq", ".[] | \"\\(.filename)\\t\\(.raw_url)\"");
 
         if (salida is null) { return; }
 
@@ -423,7 +423,7 @@ class GitHub {
                 if (!TryObtenerRutaRelativaDirectorio(nombreRemoto, carpetaAlumno, carpetaRemota, out string rutaRelativa)) {
                     continue;
                 }
-                
+
                 using HttpClient client = new();
                 byte[] contenido = client.GetByteArrayAsync(url).Result;
                 int cantidadLineas = ContarLineas(contenido);
@@ -472,8 +472,8 @@ class GitHub {
             return false;
         }
 
-        string? salida = Ejecutar( $"Error al mergear el PR #{numeroPR}",
-            $"/pulls/{numeroPR}/merge", "--method", "PUT", "-f", "merge_method=merge" );
+        string? salida = Ejecutar($"Error al mergear el PR #{numeroPR}",
+            $"/pulls/{numeroPR}/merge", "--method", "PUT", "-f", "merge_method=merge");
 
         return salida is not null;
     }
@@ -513,16 +513,16 @@ class GitHub {
             return false;
         }
 
-        string? salida = Ejecutar( $"Error al cambiar el título del PR #{numeroPR}",
-            $"/pulls/{numeroPR}", "--method", "PATCH", "-f", $"title={titulo}" );
+        string? salida = Ejecutar($"Error al cambiar el título del PR #{numeroPR}",
+            $"/pulls/{numeroPR}", "--method", "PATCH", "-f", $"title={titulo}");
 
         return salida is not null;
     }
 
 
     public List<(string Titulo, DateTimeOffset FechaHora)> Commits(int numeroPR) {
-        string? salida = Ejecutar( $"Error al listar commits del PR #{numeroPR}",
-            $"/pulls/{numeroPR}/commits", "--paginate", "--jq", @".[] | ""\(.commit.message | split(""\n"")[0])\t\(.commit.author.date)""" );
+        string? salida = Ejecutar($"Error al listar commits del PR #{numeroPR}",
+            $"/pulls/{numeroPR}/commits", "--paginate", "--jq", @".[] | ""\(.commit.message | split(""\n"")[0])\t\(.commit.author.date)""");
 
         if (salida is null) { return new(); }
 
@@ -541,12 +541,12 @@ class GitHub {
         return commits;
     }
 
-    
+
     string? Ejecutar(string mensajeError, string endpoint, params string[] argumentos) {
         ProcessStartInfo startInfo = new ProcessStartInfo {
             FileName = "gh",
             RedirectStandardOutput = true,
-            RedirectStandardError  = true
+            RedirectStandardError = true
         };
 
         startInfo.ArgumentList.Add("api");
@@ -559,7 +559,7 @@ class GitHub {
         using Process proceso = Process.Start(startInfo) ?? throw new InvalidOperationException("No se pudo iniciar gh.");
 
         string salida = proceso.StandardOutput.ReadToEnd().Trim();
-        string error  = proceso.StandardError.ReadToEnd().Trim();
+        string error = proceso.StandardError.ReadToEnd().Trim();
 
         proceso.WaitForExit();
 
@@ -641,5 +641,5 @@ class GitHub {
         Match match = Regex.Match(titulo, @"\b\d{5}\b");
         return match.Success ? int.Parse(match.Value) : 0;
     }
-   
+
 }

@@ -7,13 +7,13 @@ static class AppPaths {
     static readonly string dataDirectory = ResolverDirectorioDatos();
 
     public static string DataDirectory => dataDirectory;
-    public static string RepoRoot            => Directory.GetParent(DataDirectory)?.FullName ?? DataDirectory;
-    public static string ArchivoAlumnos      => Path.Combine(DataDirectory, "alumnos.md");
-    public static string ArchivoVcf          => Path.Combine(DataDirectory, "alumnos.vcf");
-    public static string ArchivoReadmeRepo   => Path.Combine(RepoRoot, "README.md");
-    public static string PracticosDirectory  => Path.Combine(RepoRoot, "practicos");
+    public static string RepoRoot => Directory.GetParent(DataDirectory)?.FullName ?? DataDirectory;
+    public static string ArchivoAlumnos => Path.Combine(DataDirectory, "alumnos.md");
+    public static string ArchivoVcf => Path.Combine(DataDirectory, "alumnos.vcf");
+    public static string ArchivoReadmeRepo => Path.Combine(RepoRoot, "README.md");
+    public static string PracticosDirectory => Path.Combine(RepoRoot, "practicos");
     public static string EnunciadosDirectory => Path.Combine(RepoRoot, "enunciados");
-    public static string ArchivoJsonAlumnos  => Path.Combine(DataDirectory, "alumnos.json");
+    public static string ArchivoJsonAlumnos => Path.Combine(DataDirectory, "alumnos.json");
 
     public static string EnunciadoPracticoDirectory(string practico) =>
         Path.Combine(EnunciadosDirectory, practico);
@@ -332,7 +332,7 @@ static class AppPaths {
         }
 
         foreach (string subdirectorioOrigen in ListarDirectorios(origen)) {
-            string nombreSubdirectorio  = Path.GetFileName(subdirectorioOrigen);
+            string nombreSubdirectorio = Path.GetFileName(subdirectorioOrigen);
             string subdirectorioDestino = Path.Combine(destino, nombreSubdirectorio);
             CopiarCarpeta(subdirectorioOrigen, subdirectorioDestino, forzar);
         }

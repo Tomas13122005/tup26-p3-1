@@ -2,7 +2,7 @@
 
 ## C7
 ```text
-Legajo  Nombre y Apellido               Teléfono        Foto  GitHub                     Practicos             Ex    Pr    Nr  
+Legajo  Nombre y Apellido               Teléfono        Foto  GitHub                     Prácticos             Ex    Pr    Nr  
 ------  ------------------------------  --------------  ----  -------------------------  --------------------  ----  ----  ----
 63456   Ávila Lahr, Joaquín             (381) 527-6836  Sí    joacoavila9                🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    5   
 63415   Chávez, Lucas Francisco         (381) 301-3490  Sí    lucaschavez10lc-ai         🔴🔴⚪️⚪️⚪️            ⚪️⚪️  No    0   
@@ -38,7 +38,7 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 
 ## C9
 ```text
-Legajo  Nombre y Apellido               Teléfono        Foto  GitHub                     Practicos             Ex    Pr    Nr  
+Legajo  Nombre y Apellido               Teléfono        Foto  GitHub                     Prácticos             Ex    Pr    Nr  
 ------  ------------------------------  --------------  ----  -------------------------  --------------------  ----  ----  ----
 63385   Almaraz Sintora, Nahuel         (381) 502-5082  Sí    nahuelalmaraz957-ops       🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
 63217   Altamiranda Borquez, Bian       (381) 581-3104  Sí    sofiaaltamiranda22         🔴🔴⚪️⚪️⚪️            ⚪️⚪️  Sí    3   

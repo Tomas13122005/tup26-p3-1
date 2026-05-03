@@ -47,7 +47,7 @@ class WAppService {
     readonly Dictionary<string, ContactoWhatsApp?> contactosPorAutor = new(StringComparer.OrdinalIgnoreCase);
 
     public WAppService(string? store = null, TimeSpan? timeout = null) {
-        this.store   = store;
+        this.store = store;
         this.timeout = timeout ?? TimeSpan.FromMinutes(5);
 
         Sincronizar();
@@ -90,7 +90,7 @@ class WAppService {
         ValidarNoVacio(contactos, nameof(contactos));
 
         string grupoJid = ResolverJidGrupo(grupo);
-        List<string> argumentos = ["groups", "participants", "add", "--jid", grupoJid ];
+        List<string> argumentos = ["groups", "participants", "add", "--jid", grupoJid];
 
         foreach (string usuario in contactos) {
             if (string.IsNullOrWhiteSpace(usuario)) { continue; }
@@ -121,7 +121,7 @@ class WAppService {
             Log.Warning($"Aviso: no se pudo sincronizar mensajes con wacli; se intenta refrescar grupos/contactos. {ex.Message}");
 
             try {
-                Ejecutar(["groups", "refresh" ]);
+                Ejecutar(["groups", "refresh"]);
             } catch (InvalidOperationException ex2) when (EsErrorAutenticacionWacli(ex2)) {
                 Log.Warning("Aviso: wacli no está autenticado; se usa la base local para grupos y contactos.");
             } catch (InvalidOperationException ex2) {
@@ -202,7 +202,7 @@ class WAppService {
             EnviarTexto(destino, mensaje);
         }
 
-        List<string> argumentos = [ "send", "file", "--to", destino, "--file", archivo, "--filename", AppPaths.NombreArchivo(archivo) ];
+        List<string> argumentos = ["send", "file", "--to", destino, "--file", archivo, "--filename", AppPaths.NombreArchivo(archivo)];
 
         string? mime = DetectarMime(archivo);
         if (!string.IsNullOrWhiteSpace(mime)) {
@@ -656,31 +656,31 @@ class WAppService {
     static string? DetectarMime(string rutaArchivo) {
         return AppPaths.ExtensionArchivo(rutaArchivo) switch {
             ".jpg" or ".jpeg" => "image/jpeg",
-            ".png"            => "image/png",
-            ".gif"            => "image/gif",
-            ".webp"           => "image/webp",
-            ".heic"           => "image/heic",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".webp" => "image/webp",
+            ".heic" => "image/heic",
             ".ogg" or ".opus" => "audio/ogg",
-            ".mp3"            => "audio/mpeg",
-            ".m4a"            => "audio/mp4",
-            ".aac"            => "audio/aac",
-            ".wav"            => "audio/wav",
-            ".flac"           => "audio/flac",
-            ".pdf"            => "application/pdf",
-            ".txt"            => "text/plain",
-            ".csv"            => "text/csv",
-            ".json"           => "application/json",
+            ".mp3" => "audio/mpeg",
+            ".m4a" => "audio/mp4",
+            ".aac" => "audio/aac",
+            ".wav" => "audio/wav",
+            ".flac" => "audio/flac",
+            ".pdf" => "application/pdf",
+            ".txt" => "text/plain",
+            ".csv" => "text/csv",
+            ".json" => "application/json",
             ".html" or ".htm" => "text/html",
-            ".doc"            => "application/msword",
-            ".docx"           => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            ".xls"            => "application/vnd.ms-excel",
-            ".xlsx"           => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            ".ppt"            => "application/vnd.ms-powerpoint",
-            ".pptx"           => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            ".zip"            => "application/zip",
-            ".rar"            => "application/vnd.rar",
-            ".7z"             => "application/x-7z-compressed",
-            _                 => null
+            ".doc" => "application/msword",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".ppt" => "application/vnd.ms-powerpoint",
+            ".pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".zip" => "application/zip",
+            ".rar" => "application/vnd.rar",
+            ".7z" => "application/x-7z-compressed",
+            _ => null
         };
     }
 
@@ -915,8 +915,7 @@ class WAppService {
         if (!proceso.WaitForExit((int)timeout.TotalMilliseconds)) {
             try {
                 proceso.Kill(entireProcessTree: true);
-            }
-            catch {
+            } catch {
                 // Ignoramos errores al intentar detener el proceso.
             }
 
@@ -924,7 +923,7 @@ class WAppService {
         }
 
         string salida = proceso.StandardOutput.ReadToEnd().Trim();
-        string error  = proceso.StandardError.ReadToEnd().Trim();
+        string error = proceso.StandardError.ReadToEnd().Trim();
 
         if (proceso.ExitCode != 0) {
             string detalle = string.IsNullOrWhiteSpace(error) ? salida : error;
@@ -964,8 +963,8 @@ class WAppService {
             return $"{(int)duracion.TotalMinutes}m";
         }
 
-        int horas    = (int)duracion.TotalHours;
-        int minutos  = duracion.Minutes;
+        int horas = (int)duracion.TotalHours;
+        int minutos = duracion.Minutes;
         int segundos = duracion.Seconds;
 
         StringBuilder sb = new();

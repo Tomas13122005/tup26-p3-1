@@ -11,7 +11,7 @@ class Alumnos : IEnumerable<Alumno> {
 
     public Alumno? BuscarPorLegajo(int legajo) =>
         Lista.FirstOrDefault(a => a.Legajo == legajo);
-        
+
     public Alumno? BuscarPorTelefono(string telefono) =>
         Lista.FirstOrDefault(a => a.TelefonoId == telefono);
 
@@ -33,6 +33,6 @@ class Alumnos : IEnumerable<Alumno> {
     public Alumnos ParaAgregar() =>
         new(Lista.Where(a => a.GitHub == "(agregar)"));
 
-    public IEnumerator<Alumno> GetEnumerator() => Lista.GetEnumerator(); 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator(); 
+    public IEnumerator<Alumno> GetEnumerator() => Lista.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

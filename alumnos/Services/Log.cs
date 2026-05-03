@@ -16,15 +16,15 @@ static class Log {
 
         ConsoleColor calcular(string color) {
             return color.Trim().ToLowerInvariant() switch {
-                "error"   or "red"    => ConsoleColor.Red,
+                "error" or "red" => ConsoleColor.Red,
                 "warning" or "yellow" => ConsoleColor.Yellow,
-                "debug"   or "gray"   => ConsoleColor.Gray,
-                "info"    or "cyan"   => ConsoleColor.Cyan,
-                "blue"                => ConsoleColor.Blue,
-                "green"               => ConsoleColor.Green,
-                "darkred"             => ConsoleColor.DarkRed,
-                "darkblue"            => ConsoleColor.DarkBlue,
-                "darkgreen"           => ConsoleColor.DarkGreen,
+                "debug" or "gray" => ConsoleColor.Gray,
+                "info" or "cyan" => ConsoleColor.Cyan,
+                "blue" => ConsoleColor.Blue,
+                "green" => ConsoleColor.Green,
+                "darkred" => ConsoleColor.DarkRed,
+                "darkblue" => ConsoleColor.DarkBlue,
+                "darkgreen" => ConsoleColor.DarkGreen,
                 _ => ConsoleColor.White
             };
         }
@@ -46,12 +46,12 @@ static class Log {
             }
 
             string? frente = coincidencia.Groups?["frente"].Value;
-            string? fondo  = coincidencia.Groups?["fondo"].Value;
+            string? fondo = coincidencia.Groups?["fondo"].Value;
 
-            if(!string.IsNullOrWhiteSpace(frente)) {
+            if (!string.IsNullOrWhiteSpace(frente)) {
                 Console.ForegroundColor = calcular(frente);
             }
-            if(!string.IsNullOrWhiteSpace(fondo)) {
+            if (!string.IsNullOrWhiteSpace(fondo)) {
                 Console.BackgroundColor = calcular(fondo);
             }
 
@@ -67,8 +67,8 @@ static class Log {
         Console.ResetColor();
     }
 
-    public static void Debug(string mensaje)   => WriteLine($"[debug]{mensaje}");
-    public static void Error(string mensaje)   => WriteLine($"[error]{mensaje}");
-    public static void Info(string mensaje)    => WriteLine($"[info]{mensaje}");
+    public static void Debug(string mensaje) => WriteLine($"[debug]{mensaje}");
+    public static void Error(string mensaje) => WriteLine($"[error]{mensaje}");
+    public static void Info(string mensaje) => WriteLine($"[info]{mensaje}");
     public static void Warning(string mensaje) => WriteLine($"[warning]{mensaje}");
 }

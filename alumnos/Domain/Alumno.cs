@@ -6,60 +6,60 @@ namespace Tup26.AlumnosApp;
 public class Alumno {
     public int Legajo;
     public string Comision = "";
-    public string Nombre   = "";
+    public string Nombre = "";
     public string Apellido = "";
     public string Telefono = "";
-    public string GitHub   = "";
-    public bool   TieneFoto= false;
-    public bool   Presente = false;
-    public int    Asistencias = 0;
-    
+    public string GitHub = "";
+    public bool TieneFoto = false;
+    public bool Presente = false;
+    public int Asistencias = 0;
+
     public List<Estado> practicos = new();
-    public List<Estado> examenes  = new();
+    public List<Estado> examenes = new();
 
     public string NombreCompleto => $"{Apellido}, {Nombre}";
-    public string CarpetaNombre  => $"{Legajo} - {NombreCompleto}";
-    public bool   ConTelefono    => !string.IsNullOrWhiteSpace(Telefono);
-    public string TelefonoId     => TelefonoID(Telefono);
-    public bool   ConGithub      => EsGitHubValido(GitHub);
-    public bool   ConFoto        => TieneFoto;
+    public string CarpetaNombre => $"{Legajo} - {NombreCompleto}";
+    public bool ConTelefono => !string.IsNullOrWhiteSpace(Telefono);
+    public string TelefonoId => TelefonoID(Telefono);
+    public bool ConGithub => EsGitHubValido(GitHub);
+    public bool ConFoto => TieneFoto;
 
     public Alumno(int legajo, string comision, string nombre, string apellido, string telefono, string github, bool tieneFoto, bool presente = false, int asistencias = 0) {
-        Legajo    = legajo;
-        Comision  = NormalizarComision(comision);
-        Nombre    = NormalizarNombre(nombre);
-        Apellido  = NormalizarNombre(apellido);
-        Telefono  = NormalizarTelefono(telefono);
-        GitHub    = NormalizarGitHub(github);
+        Legajo = legajo;
+        Comision = NormalizarComision(comision);
+        Nombre = NormalizarNombre(nombre);
+        Apellido = NormalizarNombre(apellido);
+        Telefono = NormalizarTelefono(telefono);
+        GitHub = NormalizarGitHub(github);
         TieneFoto = tieneFoto;
-        Presente  = presente;
+        Presente = presente;
         Asistencias = asistencias;
     }
 
     public static int Comparar(Alumno a, Alumno b) {
         int comparacion = string.Compare(a.Comision, b.Comision);
-        
-        if (comparacion == 0) { 
+
+        if (comparacion == 0) {
             comparacion = string.Compare(a.NombreCompleto, b.NombreCompleto);
         }
 
-        if (comparacion == 0) { 
+        if (comparacion == 0) {
             comparacion = a.Legajo.CompareTo(b.Legajo);
         }
 
         return comparacion;
     }
 
-    public void Practico(int numero, Estado estado) 
+    public void Practico(int numero, Estado estado)
         => AsignarEstado(practicos, numero, estado);
 
-    public void Examen(int numero, Estado estado) 
+    public void Examen(int numero, Estado estado)
         => AsignarEstado(examenes, numero, estado);
 
     public Estado EstadoPractico(int numero) => ObtenerEstado(practicos, numero);
 
     public Estado EstadoExamen(int numero) => ObtenerEstado(examenes, numero);
-    
+
     static void AsignarEstado(List<Estado> estados, int numero, Estado estado) {
         if (numero <= 0) {
             return;
@@ -84,7 +84,7 @@ public class Alumno {
         return comision.Length > 0 ? $"C{comision}" : "(-)";
     }
 
-    static string NormalizarNombre(string nombre){
+    static string NormalizarNombre(string nombre) {
         nombre = Regex.Replace(nombre, @"^\s+|\s+$|\s+(?=\s)", "");
         nombre = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nombre);
         return nombre;

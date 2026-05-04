@@ -45,7 +45,7 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 63300   Álvarez, Hernán Fabricio        (381) 581-4086  Sí    hernancarpalvarez28        🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    4   
 63313   Ávila Puntano, Benjamín         (381) 329-6643  Sí    santiagobnj-avila-pun      🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
 63222   Bajre Martínez, Julián          (381) 351-9652  Sí    julianbajre-png            🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    5   
-61801   Benega, Maximiliano Abraham     (381) 505-9048  Sí    abrahambenega              🔴🔴⚪️⚪️⚪️            ⚪️⚪️  No    2   
+61801   Benega, Maximiliano Abraham     (381) 505-9048  Sí    abrahambenega              🔴🟢⚪️⚪️⚪️            ⚪️⚪️  No    2   
 63493   Busnelli, Bruno                 (381) 366-0607  No    brunobusnelli              🟢🔴⚪️⚪️⚪️            ⚪️⚪️  Sí    3   
 63150   Carlino, Joaquín                (381) 605-7383  Sí    vincent-coffe              🟢🟢⚪️⚪️⚪️            ⚪️⚪️  No    0   
 63341   Carrer, Juan Cruz               (381) 632-5727  Sí    juancarrer11               🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    2   
@@ -69,7 +69,7 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 63219   Lazarte, Sergio Fabricio        (381) 589-1439  Sí    fabriciolazarte27          🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    3   
 63297   Lezana, Juan Ignacio            (381) 555-5202  Sí    ignaciolezana25            🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    4   
 63388   López, Leandro Joel             (381) 360-4566  Sí    leandro-progam             🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    6   
-63213   Marina Noguera, Morena Giovann  (381) 354-0133  Sí    mmore-cloud                🟢🔴⚪️⚪️⚪️            ⚪️⚪️  Sí    4   
+63213   Marina Noguera, Morena Giovann  (381) 354-0133  Sí    mmore-cloud                🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    4   
 63494   Medina, Lourdes Natalia         (381) 201-7153  Sí    lumedina23                 🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    3   
 63418   Miranda, Gonzalo Emanuel        (381) 208-1031  No    gonzalomiranda456          🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    4   
 63234   Molina, Lázaro Exequiel         (381) 416-0720  Sí    lazaro2005-ml              🟢🟢⚪️⚪️⚪️            ⚪️⚪️  Sí    5   

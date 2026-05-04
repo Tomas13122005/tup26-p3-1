@@ -9,5 +9,5 @@ El parcial se realizará con esta base de preguntas.
 
 También pueden encontrar las mismas en https://tup26-p3.netlify.app/, donde se pueden visualizar y registrar cuáles son las respuestas correctas para prepararse para el parcial.
 
-En [estado.md](estado.md) está el estado de cada alumno con respecto a los prácticos realizados; esto no es un requisito para rendir el parcial, pero sí es importante para el desarrollo del curso.
+En [ESTADO.md](ESTADO.md) está el estado de cada alumno con respecto a los prácticos realizados; esto no es un requisito para rendir el parcial, pero sí es importante para el desarrollo del curso.
 

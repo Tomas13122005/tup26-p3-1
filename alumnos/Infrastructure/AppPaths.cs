@@ -5,6 +5,7 @@ readonly record struct PerfilMarkdown(string Ruta, string[] Lineas);
 
 static class AppPaths {
     static readonly string dataDirectory = ResolverDirectorioDatos();
+    static readonly string[] extensionesFotoAlumno = [".png", ".jpg", ".jpeg"];
 
     public static string DataDirectory => dataDirectory;
     public static string RepoRoot => Directory.GetParent(DataDirectory)?.FullName ?? DataDirectory;
@@ -35,6 +36,9 @@ static class AppPaths {
 
     public static string FotoAlumnoDestino(string rutaCarpetaAlumno) =>
         Path.Combine(rutaCarpetaAlumno, "foto.png");
+
+    public static IEnumerable<string> FotosAlumno(string rutaCarpetaAlumno) =>
+        extensionesFotoAlumno.Select(extension => Path.Combine(rutaCarpetaAlumno, $"foto{extension}"));
 
     public static string WacliStoreDirectory(string? store) {
         string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -198,7 +202,7 @@ static class AppPaths {
         ExisteArchivo(FotoPerfilOrigen(rutaFotos, alumno));
 
     public static bool ExisteFotoAlumno(string rutaCarpetaAlumno) =>
-        ExisteArchivo(FotoAlumnoDestino(rutaCarpetaAlumno));
+        FotosAlumno(rutaCarpetaAlumno).Any(ExisteArchivo);
 
     public static CopiaRuta CopiarFotoPerfil(string rutaFotos, Alumno alumno, string rutaCarpetaAlumno) {
         string origen = FotoPerfilOrigen(rutaFotos, alumno);

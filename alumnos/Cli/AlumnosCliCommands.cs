@@ -64,6 +64,16 @@ sealed class Tp2NoPresentadoCommand : Command<VacioSettings> {
         AlumnosCliActions.ListarTp2NoPresentado();
 }
 
+sealed class TpNoPresentadoCommand : Command<TrabajoPracticoSettings> {
+    protected override int Execute(CommandContext context, TrabajoPracticoSettings settings, CancellationToken cancellationToken) =>
+        AlumnosCliActions.ListarTpNoPresentado(settings.TrabajoPractico);
+}
+
+sealed class SinPracticosCommand : Command<VacioSettings> {
+    protected override int Execute(CommandContext context, VacioSettings settings, CancellationToken cancellationToken) =>
+        AlumnosCliActions.ListarSinPracticosPresentados();
+}
+
 sealed class LimpiarProyectosPracticosCommand : Command<VacioSettings> {
     protected override int Execute(CommandContext context, VacioSettings settings, CancellationToken cancellationToken) =>
         AlumnosCliActions.LimpiarProyectosPracticos();

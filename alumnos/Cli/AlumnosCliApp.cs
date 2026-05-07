@@ -21,6 +21,10 @@ static class AlumnosCliApp {
                 .WithDescription("Lista alumnos que no presentaron el trabajo práctico 1.");
             config.AddCommand<Tp2NoPresentadoCommand>("tp2-no-presentado")
                 .WithDescription("Lista alumnos que no presentaron el trabajo práctico 2.");
+            config.AddCommand<TpNoPresentadoCommand>("tp-no-presentado")
+                .WithDescription("Lista alumnos que no presentaron un trabajo práctico, ignorando quienes no presentaron ninguno.");
+            config.AddCommand<SinPracticosCommand>("sin-practicos")
+                .WithDescription("Lista alumnos que no presentaron ningún trabajo práctico.");
             config.AddCommand<LimpiarProyectosPracticosCommand>("limpiar-proyectos-practicos")
                 .WithDescription("Elimina carpetas bin y obj dentro de prácticos.");
             config.AddCommand<GuardarCommand>("guardar")
@@ -133,8 +137,8 @@ static class AlumnosCliApp {
                 new("sin-github",                  "Sin GitHub",                   "Filtrar alumnos sin usuario GitHub"),
                 new("sin-telefono",                "Sin teléfono",                 "Filtrar alumnos sin teléfono"),
                 new("sin-foto",                    "Sin foto",                     "Filtrar alumnos sin foto"),
-                new("tp1-no-presentado",           "TP1 no presentado",            "Listar alumnos que no presentaron el trabajo práctico 1"),
-                new("tp2-no-presentado",           "TP2 no presentado",            "Listar alumnos que no presentaron el trabajo práctico 2"),
+                new("tp-no-presentado",            "TP no presentado",             "Elegir un TP y listar alumnos que adeudan ese práctico"),
+                new("sin-practicos",               "Sin prácticos",                "Listar alumnos que no presentaron ningún práctico"),
                 new("limpiar-proyectos-practicos", "Limpiar Proyectos Prácticos", "Eliminar carpetas bin y obj dentro de prácticos"),
                 new("volver",                      "Volver",                       "Regresar al menú principal")
             ]);
@@ -143,8 +147,8 @@ static class AlumnosCliApp {
             "sin-github" => ["sin-github"],
             "sin-telefono" => ["sin-telefono"],
             "sin-foto" => ["sin-foto"],
-            "tp1-no-presentado" => ["tp1-no-presentado"],
-            "tp2-no-presentado" => ["tp2-no-presentado"],
+            "tp-no-presentado" => ["tp-no-presentado", PedirTrabajoPractico()],
+            "sin-practicos" => ["sin-practicos"],
             "limpiar-proyectos-practicos" => ["limpiar-proyectos-practicos"],
             _ => Array.Empty<string>()
         };

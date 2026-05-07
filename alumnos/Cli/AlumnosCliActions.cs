@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 namespace Tup26.AlumnosApp;
 
 static class AlumnosCliActions {
@@ -35,18 +37,34 @@ static class AlumnosCliActions {
     }
 
     public static int ListarTp1NoPresentado() {
-        Alumnos alumnos = CargarAlumnos();
-        IEnumerable<Alumno> noPresentaron = alumnos.Where(alumno => alumno.EstadoPractico(1) != Estado.Aprobado);
-
-        AlumnosManager.Listar(noPresentaron, "Alumnos que no presentaron TP1");
-        return 0;
+        return ListarTpNoPresentado("1");
     }
 
     public static int ListarTp2NoPresentado() {
-        Alumnos alumnos = CargarAlumnos();
-        IEnumerable<Alumno> noPresentaron = alumnos.Where(alumno => alumno.EstadoPractico(2) != Estado.Aprobado);
+        return ListarTpNoPresentado("2");
+    }
 
-        AlumnosManager.Listar(noPresentaron, "Alumnos que no presentaron TP2");
+    public static int ListarTpNoPresentado(string trabajoPractico) {
+        int numeroTp = ObtenerNumeroTP(trabajoPractico);
+        if (numeroTp <= 0) {
+            Log.Error(MensajeTrabajoPracticoInvalido(trabajoPractico));
+            return 1;
+        }
+
+        Alumnos alumnos = CargarAlumnos();
+        IEnumerable<Alumno> noPresentaron = alumnos
+            .Where(TieneAlgunPracticoPresentado)
+            .Where(alumno => alumno.EstadoPractico(numeroTp) != Estado.Aprobado);
+
+        AlumnosManager.Listar(noPresentaron, $"Alumnos que no presentaron TP{numeroTp}");
+        return 0;
+    }
+
+    public static int ListarSinPracticosPresentados() {
+        Alumnos alumnos = CargarAlumnos();
+        IEnumerable<Alumno> sinPracticos = alumnos.Where(alumno => !TieneAlgunPracticoPresentado(alumno));
+
+        AlumnosManager.Listar(sinPracticos, "Alumnos sin prácticos presentados");
         return 0;
     }
 
@@ -235,7 +253,15 @@ static class AlumnosCliActions {
 
     public static int RelevarAsistencias() {
         Alumnos alumnos = CargarAlumnos();
-        CargarAsistenciasHoy(alumnos);
+
+        AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots)
+            .SpinnerStyle(Style.Parse("cyan"))
+            .Start("Preparando relevamiento de asistencias...", contexto =>
+                CargarAsistenciasHoy(alumnos, estado => contexto.Status(estado)));
+
+        AlumnosManager.Listar(alumnos.Where(alumno => alumno.Asistencias > 0), "Alumnos con asistencias desde el 01/04");
+        Log.WriteLine($"Asistencias detectadas: {alumnos.Sum(alumno => alumno.Asistencias)}");
         AlumnosManager.Escribir(alumnos, AppPaths.ArchivoAlumnos);
         return 0;
     }
@@ -329,7 +355,8 @@ static class AlumnosCliActions {
     static string ResolverRuta(string? ruta, string rutaPorDefecto) =>
         string.IsNullOrWhiteSpace(ruta) ? rutaPorDefecto : ruta;
 
-    static void CargarAsistenciasHoy(Alumnos alumnos) {
+    static void CargarAsistenciasHoy(Alumnos alumnos, Action<string>? actualizarEstado = null) {
+        actualizarEstado?.Invoke("Sincronizando WhatsApp...");
         WAppService wapp = new();
         DateTime hoy = DateTime.Today;
 
@@ -339,6 +366,7 @@ static class AlumnosCliActions {
             .ToDictionary(alumno => alumno.Legajo, _ => new HashSet<DateTime>());
 
         foreach (var grupo in new[] { "C7", "C9" }) {
+            actualizarEstado?.Invoke($"Leyendo mensajes de {grupo}...");
             foreach (var mensaje in wapp.Mensajes(grupo, desde, hasta)) {
                 if (!EsMensajeDeAsistencia(mensaje, desde, hasta)) {
                     continue;
@@ -355,12 +383,10 @@ static class AlumnosCliActions {
             }
         }
 
+        actualizarEstado?.Invoke("Consolidando asistencias...");
         foreach (Alumno alumno in alumnos) {
             alumno.Asistencias = asistenciasPorAlumno[alumno.Legajo].Count;
         }
-
-        AlumnosManager.Listar(alumnos.Where(alumno => alumno.Asistencias > 0), "Alumnos con asistencias desde el 01/04");
-        Log.WriteLine($"Asistencias detectadas: {alumnos.Sum(alumno => alumno.Asistencias)}");
     }
 
     static bool EsMensajeDeAsistencia(MensajeWhatsApp mensaje, DateTime desde, DateTime hasta) {
@@ -378,6 +404,9 @@ static class AlumnosCliActions {
 
     static int ContarLineasPracticoLocal(string rutaPractico) =>
         AppPaths.ContarLineasArchivos(rutaPractico, "*.cs", SearchOption.TopDirectoryOnly);
+
+    static bool TieneAlgunPracticoPresentado(Alumno alumno) =>
+        alumno.practicos.Any(estado => estado == Estado.Aprobado);
 
     static string MensajeRecuperacionTp1Tp2(Alumno alumno) =>
         $"""

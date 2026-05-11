@@ -703,16 +703,22 @@
 
     .result-code {
       width: 100%;
-      min-height: 58px;
+      height: 58px;
       margin-top: 10px;
       border: 2px solid var(--accent);
       border-radius: 8px;
-      padding: 12px;
-      text-align: center;
+      padding: 0 14px;
       background: var(--paper-strong);
       color: var(--ink);
-      font: 700 1.15rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      resize: vertical;
+      font: 700 1.15rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      overflow: hidden;
+      -webkit-user-select: all;
+      user-select: all;
+      cursor: text;
     }
 
     .empty-state {
@@ -1845,7 +1851,7 @@
     const preferredDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
     const THEME_COLORS = {
       light: "#efe3d3",
-      dark: "#131110",
+      dark:  "#131110",
     };
     let integrityMessageTimer = 0;
 
@@ -2291,9 +2297,11 @@
         messageNode.textContent = "";
         welcomeBox.innerHTML = `
           <div class="welcome-message">
-            Hola <strong>${escapeHtml(student.nombreSaludo)}</strong>. <br><br>Tenés 1 hora para realizar el examen.<br><br>
-            Al finalizar, vas a ver un código. <br><br>Copialo y compartilo por WhatsApp en el grupo de la comisión.<br><br>
-            <small>Se puede repetir el examen para mejorar la nota dentro del tiempo disponible.<br><br>Podrás elegir el mejor resultado conseguido</small>
+            Hola <strong>${escapeHtml(student.nombreSaludo)}</strong>.<br><br>
+            Tenés 1 hora para hacer el examen.<br><br>
+            Al terminar, vas a recibir un código.<br><br>
+            Copialo y envialo por WhatsApp al grupo de la comisión.<br><br>
+            <small>Podés repetir el examen dentro del tiempo disponible. Se tomará tu mejor resultado.</small>
           </div>
         `;
         startButton.disabled = false;
@@ -2680,7 +2688,7 @@
             <div class="metric"><strong>${formatGrade(result.grade)}</strong><span>Nota</span></div>
           </div>
           <p class="paper-subtitle">Código para compartir por WhatsApp</p>
-          <textarea id="resultCode" class="result-code" readonly>${escapeHtml(result.code)}</textarea>
+          <div id="resultCode" class="result-code">${escapeHtml(result.code)}</div>
           <div class="actions">
             <button id="copyCodeButton" class="primary-button" type="button">Copiar código</button>
             <button id="newExamButton" class="secondary-button" type="button" ${state.attempt >= MAX_ATTEMPTS || isTimeExpired() ? "disabled" : ""}>Nuevo intento</button>
@@ -2689,7 +2697,7 @@
         </section>
       `;
 
-      document.getElementById("resultCode").select();
+      ajustarFuenteCodigo();
       document.getElementById("previousResultButton").addEventListener("click", () => showResultByOffset(-1));
       document.getElementById("nextResultButton").addEventListener("click", () => showResultByOffset(1));
       document.getElementById("copyCodeButton").addEventListener("click", copyResultCode);
@@ -2723,11 +2731,15 @@
         message.style.color = "var(--ok)";
         message.textContent = "Código copiado.";
       } catch {
-        codeField.focus();
-        codeField.select();
+        const temp = document.createElement("textarea");
+        temp.value = code;
+        temp.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+        document.body.appendChild(temp);
+        temp.select();
 
         try {
           const copied = document.execCommand("copy");
+          document.body.removeChild(temp);
           if (!copied) {
             throw new Error("execCommand no copió");
           }
@@ -2760,6 +2772,19 @@
       return Number.isFinite(state.deadlineAt) && Date.now() > state.deadlineAt;
     }
 
+    function ajustarFuenteCodigo() {
+      const el = document.getElementById("resultCode");
+      if (!el) return;
+      el.style.fontSize = "";
+      const max = parseFloat(getComputedStyle(el).fontSize);
+      const min = 9;
+      let size = max;
+      while (el.scrollWidth > el.clientWidth && size > min) {
+        size -= 0.5;
+        el.style.fontSize = size + "px";
+      }
+    }
+
     function clampNumber(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -2770,14 +2795,6 @@
 
     function getCodeGrade(value) {
       return clampNumber(Math.round(value), 1, 10);
-    }
-
-    function calcularSumaDeControl(codigo) {
-      let suma = 0;
-      for (let i = 0; i < codigo.length; i++) {
-        suma += codigo.charCodeAt(i) * (i + 1);
-      }
-      return String(suma % 97).padStart(2, "0");
     }
 
     function updateMeta() {

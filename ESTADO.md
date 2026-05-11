@@ -10,7 +10,6 @@ Legajo  Nombre y Apellido               Prácticos     Asi
 63402   Condori, Nahuel Ariel           🟢🟢⚪️⚪️⚪️    7  
 63419   Coronel, Tomás                  🟢🟢⚪️⚪️⚪️    9  
 63241   Cortez, Josías                  🟢🟢⚪️⚪️⚪️    8  
-63330   Cuevas, Joel Alejandro          🔴🔴⚪️⚪️⚪️    0  
 66666   Di Battista, Alejandro          🟢🟢⚪️⚪️⚪️    2  
 63776   Fuensalida, Ulises Nahuel       🟢🟢⚪️⚪️⚪️    5  
 63396   Gil Garau, Atalía Trinidad      🟢🟢⚪️⚪️⚪️    7  

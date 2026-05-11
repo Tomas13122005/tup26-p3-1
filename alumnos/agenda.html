@@ -202,8 +202,8 @@
     /* ── Grade badge ─────────────────────────────────── */
     .grade-badge {
       position: absolute;
-      top: 0px;
-      right: 10px;
+      top: 4px;
+      right: 12px;
       font-size: 2.0rem;
       font-weight: 800;
       line-height: 1;
@@ -697,6 +697,7 @@
         const carpetaNombre = `${legajo} - ${apellido}, ${nombre}`;
         const fotoPaths     = tieneFoto ? fotoCandidates(carpetaNombre) : [];
         const notaParts = codigoRaw.split('.');
+        const codigoLegajo = notaParts.length >= 1 ? Number.parseInt(notaParts[0], 10) : null;
         const nota = notaParts.length >= 2 ? parseInt(notaParts[1].slice(-1), 10) + 1 : null;
         alumnos.push({
           legajo,
@@ -710,6 +711,7 @@
           practicosRaw,
           presente,
           asistencias: Number.isNaN(asistencias) ? 0 : asistencias,
+          codigoLegajo: Number.isNaN(codigoLegajo) ? null : codigoLegajo,
           carpetaNombre,
           fotoPath: '',
           fotoPaths,
@@ -801,7 +803,7 @@
     }
 
     function renderAttendance(alumno) {
-      const presente = alumno.presente ? 'Sí' : 'No';
+      const presente      = alumno.presente ? 'Sí' : 'No';
       const presenteClass = alumno.presente ? 'is-present' : 'is-absent';
       const asistencias = Number.isFinite(alumno.asistencias) ? alumno.asistencias : 0;
 
@@ -822,8 +824,10 @@
       const accent  = accentFor(alumno.legajo);
       const inits   = initials(alumno.apellido, alumno.nombre);
       const comBadge = `badge-comision-${alumno.comision.toLowerCase()}`;
+      const codigoLegajoNoCoincide = alumno.codigoLegajo != null && alumno.codigoLegajo !== alumno.legajo;
+      const codigoBadge = `${codigoLegajoNoCoincide ? "‼️" : alumno.nota > 8 ? "🎖️" : ""}`;
       const notaHtml = alumno.nota != null
-        ? `<span class="grade-badge ${notaClass(alumno.nota)}">${alumno.nota}</span>`
+        ? `<span class="grade-badge ${notaClass(alumno.nota)}">${alumno.nota}${codigoBadge}</span>`
         : '';
 
       const phoneHtml = alumno.telefono

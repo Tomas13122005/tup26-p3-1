@@ -9,9 +9,8 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 63268   Condori, Karina Edith           (381) 412-4723  Sí    kariiedith9315             🟢🟢⚪️⚪️⚪️            🔴⚪️  No    0     —                   
 63402   Condori, Nahuel Ariel           (381) 341-9689  Sí    nahuelc19                  🟢🟢⚪️⚪️⚪️            🟡⚪️  No    7     —                   
 63419   Coronel, Tomás                  (381) 678-0335  Sí    tomicor979-lgtm            🟢🟢⚪️⚪️⚪️            🟢⚪️  No    9     —                   
-63241   Cortez, Josías                  (381) 665-0808  No    josias57455                🟢🟢⚪️⚪️⚪️            🟢⚪️  No    8     —                   
-63330   Cuevas, Joel Alejandro          —               No    —                          🔴🔴⚪️⚪️⚪️            🔴⚪️  No    0     —                   
-66666   Di Battista, Alejandro          (381) 534-3458  No    alejandrodibattista        🟢🟢⚪️⚪️⚪️            🟡⚪️  Sí    7     66666.29.4d9eh278dmv
+63241   Cortez, Josías                  (381) 665-0808  Sí    josias57455                🟢🟢⚪️⚪️⚪️            🟢⚪️  No    8     —                   
+66666   Di Battista, Alejandro          (381) 534-3458  No    alejandrodibattista        🟢🟢⚪️⚪️⚪️            🟡⚪️  Sí    2     66666.26.4d9eh278dmv
 63776   Fuensalida, Ulises Nahuel       (381) 334-9851  Sí    ulisesfuensalida-ui        🟢🟢⚪️⚪️⚪️            🟡⚪️  No    5     —                   
 63396   Gil Garau, Atalía Trinidad      (381) 456-4405  Sí    ataliagg                   🟢🟢⚪️⚪️⚪️            🟡⚪️  No    7     —                   
 63457   González Dupuy, Ignacio         (381) 683-1233  Sí    ignas11                    🟢🟢⚪️⚪️⚪️            🟢⚪️  No    10    —                   
@@ -42,7 +41,7 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 ------  ------------------------------  --------------  ----  -------------------------  --------------------  ----  ----  ----  --------------------
 63385   Almaraz Sintora, Nahuel         (381) 502-5082  Sí    nahuelalmaraz957-ops       🟢🟢⚪️⚪️⚪️            🟢⚪️  No    10    —                   
 63217   Altamiranda Borquez, Bian       (381) 581-3104  Sí    sofiaaltamiranda22         🔴🔴⚪️⚪️⚪️            🟡⚪️  No    7     —                   
-63300   Álvarez, Hernán Fabricio        (381) 581-4086  No    hernancarpalvarez28        🟢🟢⚪️⚪️⚪️            🟡⚪️  No    7     —                   
+63300   Álvarez, Hernán Fabricio        (381) 581-4086  Sí    hernancarpalvarez28        🟢🟢⚪️⚪️⚪️            🟡⚪️  No    7     —                   
 63313   Ávila Puntano, Benjamín         (381) 329-6643  Sí    santiagobnj-avila-pun      🟢🟢⚪️⚪️⚪️            🟢⚪️  No    10    —                   
 63222   Bajre Martínez, Julián          (381) 351-9652  Sí    julianbajre-png            🟢🟢⚪️⚪️⚪️            🟢⚪️  No    9     —                   
 61801   Benega, Maximiliano Abraham     (381) 505-9048  Sí    abrahambenega              🟢🟢⚪️⚪️⚪️            🟡⚪️  No    4     —                   
@@ -55,7 +54,7 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 63266   Decima, Juan Cruz               (381) 558-9063  Sí    devjuancruz003-com         🟢🟢⚪️⚪️⚪️            🟢⚪️  No    9     —                   
 63137   Díaz, José Simón                (381) 617-9958  Sí    josesimondiaz              🟢🟢⚪️⚪️⚪️            🟡⚪️  No    7     —                   
 61641   Figueroa, Nahuel Ramón          (381) 353-2589  Sí    figueroanahuel16           🔴🔴⚪️⚪️⚪️            🟢⚪️  No    8     —                   
-63737   Galván, Rocío Julieta           (381) 647-5597  No    rociogalvani               🟢🟢⚪️⚪️⚪️            🟢⚪️  No    8     —                   
+63737   Galván, Rocío Julieta           (381) 647-5597  Sí    rociogalvani               🟢🟢⚪️⚪️⚪️            🟢⚪️  No    8     —                   
 63345   García, Franco Tomás            (381) 207-5701  Sí    francotms                  🟢🟢⚪️⚪️⚪️            🟡⚪️  No    5     —                   
 61057   Getar, Thomas                   (381) 336-2147  Sí    thomasgetar                🔴🟢⚪️⚪️⚪️            🟢⚪️  No    10    —                   
 61489   Gómez, Tomás                    (381) 390-5024  Sí    tomasgomez18               🟢🟢⚪️⚪️⚪️            🟢⚪️  No    9     —                   
@@ -67,7 +66,7 @@ Legajo  Nombre y Apellido               Teléfono        Foto  GitHub           
 63425   Holmquist, Jeremy               (381) 522-4955  Sí    jeremy-holmquist           🟢🔴⚪️⚪️⚪️            🟡⚪️  No    7     —                   
 61907   Kargachin, Guadalupe            (381) 457-6547  Sí    guadalupekargachin         🔴🔴⚪️⚪️⚪️            🔴⚪️  No    0     —                   
 63219   Lazarte, Sergio Fabricio        (381) 589-1439  Sí    fabriciolazarte27          🟢🟢⚪️⚪️⚪️            🟡⚪️  No    6     —                   
-63297   Lezana, Juan Ignacio            (381) 555-5202  No    ignaciolezana25            🟢🟢⚪️⚪️⚪️            🟢⚪️  No    8     —                   
+63297   Lezana, Juan Ignacio            (381) 555-5202  Sí    ignaciolezana25            🟢🟢⚪️⚪️⚪️            🟢⚪️  No    8     —                   
 63388   López, Leandro Joel             (381) 360-4566  Sí    leandro-progam             🟢🟢⚪️⚪️⚪️            🟢⚪️  No    10    —                   
 63213   Marina Noguera, Morena Giovann  (381) 354-0133  Sí    mmore-cloud                🟢🟢⚪️⚪️⚪️            🟢⚪️  No    8     —                   
 63494   Medina, Lourdes Natalia         (381) 201-7153  Sí    lumedina23                 🟢🟢⚪️⚪️⚪️            🟡⚪️  No    6     —                   

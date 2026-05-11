@@ -144,9 +144,17 @@ sealed class WappGruposCommand : Command<VacioSettings> {
         AlumnosCliActions.WappGrupos();
 }
 
-sealed class WappRecuperarTp1Tp2Command : Command<SimularSettings> {
-    protected override int Execute(CommandContext context, SimularSettings settings, CancellationToken cancellationToken) =>
-        AlumnosCliActions.WappRecuperarTp1Tp2(settings.Simular);
+sealed class RecuperarTpSettings : CommandSettings {
+    [CommandArgument(0, "[tp]")]
+    public string? TrabajoPractico { get; init; }
+
+    [CommandOption("--simular")]
+    public bool Simular { get; init; }
+}
+
+sealed class WappRecuperarTp1Tp2Command : Command<RecuperarTpSettings> {
+    protected override int Execute(CommandContext context, RecuperarTpSettings settings, CancellationToken cancellationToken) =>
+        AlumnosCliActions.WappRecuperarPracticos(settings.TrabajoPractico, settings.Simular);
 }
 
 sealed class WappFotoParcialCommand : Command<SimularSettings> {

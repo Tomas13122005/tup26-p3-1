@@ -44,7 +44,7 @@ dotnet run -- revisar-presentados TP1
 - `cerrar-prs [TP1]`: cierra todos los PRs abiertos, o solo los del práctico indicado
 - `revisar-presentados TP1`: marca como presentado un TP si supera 200 líneas en los archivos locales de la carpeta del trabajo
 - `registrar-asistencias`: consolida los presentes cargados como asistencias
-- `relevar-asistencias`: releva presentes del día desde WhatsApp
+- `contar-asistencias`: releva presentes del día desde WhatsApp
 - `wapp-grupos`: muestra grupos y participantes de WhatsApp
 - `wapp-recuperar-tp1-tp2 [--simular]`: envía un aviso de recuperación por WhatsApp a alumnos que no presentaron TP1 ni TP2
 

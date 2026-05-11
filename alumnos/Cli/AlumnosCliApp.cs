@@ -49,7 +49,7 @@ static class AlumnosCliApp {
                 .WithDescription("Marca TPs presentados a partir del código local.");
             config.AddCommand<RegistrarAsistenciasCommand>("registrar-asistencias")
                 .WithDescription("Convierte presentes del día en asistencias acumuladas.");
-            config.AddCommand<RelevarAsistenciasCommand>("relevar-asistencias")
+            config.AddCommand<RelevarAsistenciasCommand>("contar-asistencias")
                 .WithDescription("Busca asistencias de hoy a partir de WhatsApp.");
             config.AddCommand<WappGruposCommand>("wapp-grupos")
                 .WithDescription("Lista grupos y participantes de WhatsApp.");
@@ -192,10 +192,10 @@ static class AlumnosCliApp {
 
         return opcion.Command switch {
             "prs" => ["prs"],
-            "normalizar-prs" => ConstruirArgumentosNormalizarPrs(),
-            "bajar-prs" => ConstruirArgumentosBajarPrs(),
-            "cerrar-prs" => ConstruirArgumentosCerrarPrs(),
-            "revisar-presentados" => ["revisar-presentados", PedirTrabajoPractico()],
+            "normalizar-prs"        => ConstruirArgumentosNormalizarPrs(),
+            "bajar-prs"             => ConstruirArgumentosBajarPrs(),
+            "cerrar-prs"            => ConstruirArgumentosCerrarPrs(),
+            "revisar-presentados"   => ["revisar-presentados", PedirTrabajoPractico()],
             _ => Array.Empty<string>()
         };
     }
@@ -204,22 +204,22 @@ static class AlumnosCliApp {
         InteractiveChoice opcion = PedirOpcion(
             "[bold cyan]Principal / Asistencias y WhatsApp[/] · Elegí una acción",
             [
-                new("registrar-asistencias", "Registrar asistencias", "Consolidar presentes del día"),
-                new("relevar-asistencias",   "Relevar asistencias",   "Detectar presentes desde WhatsApp"),
-                new("wapp-grupos",           "WhatsApp grupos",       "Listar grupos y participantes"),
+                new("registrar-asistencias",  "Registrar asistencias", "Consolidar presentes del día"),
+                new("contar-asistencias",     "Contar asistencias",    "Detectar presentes desde WhatsApp"),
+                new("wapp-grupos",            "WhatsApp grupos",       "Listar grupos y participantes"),
                 new("wapp-recuperar-tp1-tp2", "Recuperar TP1/TP2",     "Enviar aviso a alumnos que no presentaron TP1 ni TP2"),
-                new("wapp-foto-parcial",       "Foto para el parcial",    "Pedir selfie a alumnos sin foto de perfil"),
-                new("registrar-respuestas",   "Registrar respuestas",    "Leer respuestas de WhatsApp y registrar códigos"),
-                new("volver",                 "Volver",                  "Regresar al menú principal")
+                new("wapp-foto-parcial",      "Foto para el parcial",  "Pedir selfie a alumnos sin foto de perfil"),
+                new("registrar-respuestas",   "Registrar respuestas",  "Leer respuestas de WhatsApp y registrar códigos"),
+                new("volver",                 "Volver",                "Regresar al menú principal")
             ]);
 
         return opcion.Command switch {
-            "registrar-asistencias" => ["registrar-asistencias"],
-            "relevar-asistencias" => ["relevar-asistencias"],
-            "wapp-grupos" => ["wapp-grupos"],
-            "wapp-recuperar-tp1-tp2" => ConstruirArgumentosWappRecuperarTp1Tp2(),
-            "wapp-foto-parcial" => ConstruirArgumentosWappFotoParcial(),
-            "registrar-respuestas" => ["registrar-respuestas"],
+            "registrar-asistencias"     => ["registrar-asistencias"],
+            "contar-asistencias"        => ["contar-asistencias"],
+            "wapp-grupos"               => ["wapp-grupos"],
+            "wapp-recuperar-tp1-tp2"    => ConstruirArgumentosWappRecuperarTp1Tp2(),
+            "wapp-foto-parcial"         => ConstruirArgumentosWappFotoParcial(),
+            "registrar-respuestas"      => ["registrar-respuestas"],
             _ => Array.Empty<string>()
         };
     }
@@ -238,7 +238,7 @@ static class AlumnosCliApp {
             new("auditoria",      "Auditoría",              "Revisar datos faltantes o incompletos"),
             new("exportar",       "Exportar",               "Guardar o exportar en distintos formatos"),
             new("crear-carpetas", "Crear carpetas",         "Crear o normalizar carpetas de alumnos"),
-            new("prs",            "PRs",                    "Operaciones sobre pull requests y prácticos"),
+            new("prs",            "Presentaciones",         "Operaciones sobre pull requests y prácticos"),
             new("asistencias",    "Asistencias y WhatsApp", "Acciones vinculadas a presentes y grupos"),
             new("salir",          "Salir",                  "Cerrar la aplicación")
         ];
@@ -275,11 +275,23 @@ static class AlumnosCliApp {
     }
 
     static string[] ConstruirArgumentosWappRecuperarTp1Tp2() {
+        string seleccion = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("¿Qué TP querés recuperar?")
+                .AddChoices("TP1", "TP2", "Ambos (TP1 y TP2)"));
+
+        string? tpArg = seleccion switch {
+            "TP1" => "1",
+            "TP2" => "2",
+            _     => null
+        };
+
         bool enviar = AnsiConsole.Confirm("¿Enviar WhatsApp reales ahora?", false);
 
-        return enviar
-            ? ["wapp-recuperar-tp1-tp2"]
-            : ["wapp-recuperar-tp1-tp2", "--simular"];
+        List<string> args = ["wapp-recuperar-tp1-tp2"];
+        if (tpArg is not null) args.Add(tpArg);
+        if (!enviar) args.Add("--simular");
+        return [.. args];
     }
 
     static string[] ConstruirArgumentosWappFotoParcial() {

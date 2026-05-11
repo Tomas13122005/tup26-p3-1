@@ -11,15 +11,20 @@ public static class Aleatorio {
         Console.WriteLine($"¿Válido? {EsCodigoValido(codigoCompleto)}");
     }
 
-    public static List<int> GenerarExamen(long semilla, int maximo, int cantidad) {
+    public static List<int> GenerarExamen(long semilla, int maximo = 424, int cantidad = 10) {
         const long modulo = 2147483647;
         const long multiplicador = 48271;
+        const int saltar = 22;
 
         var estado = semilla % modulo;
 
         var numeros = new List<int>();
         for (var numero = 1; numero <= maximo; numero++) {
             numeros.Add(numero);
+        }
+
+        for (var i = 0; i < saltar; i++) {
+            estado = (estado * multiplicador) % modulo;
         }
 
         for (var i = numeros.Count - 1; i > 0; i--) {

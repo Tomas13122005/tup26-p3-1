@@ -5,16 +5,19 @@ function GenerarExamen(semilla, cantidad, maximo = 424) {
     const numeros = Array.from({ length: maximo }, (_, index) => index + 1);
     
     let estado = semilla % MODULO;
-    let saltar = 10; // Se salta un número inicial de elementos para evitar patrones predecibles
+    let saltar = 22; // Se salta un número inicial de elementos para evitar patrones predecibles
     
     // Algoritmo de Fisher-Yates para mezclar el array
-    for (let i = numeros.length + saltar - 1; i > 0; i -= 1) {
+    for(let i = 0; i < saltar; i += 1) {
         estado = (estado * MULTIPLICADOR) % MODULO;  
+    }
 
+    for (let i = numeros.length - 1; i > 0; i -= 1) {
+        estado = (estado * MULTIPLICADOR) % MODULO;  
         const j = estado % (i + 1);
         [numeros[i], numeros[j]] = [numeros[j], numeros[i]];
     }
-    return numeros.slice(saltar, saltar + cantidad);
+    return numeros.slice(0, cantidad);
 }
 
 
@@ -40,6 +43,7 @@ function ConvertirBase(numero, origen = 10, destino = 32) {
 
     return salida || "0";
 }
+
 
 function probarConversion(origen="1234443123134234123130012301234") {
     let convertido = "";

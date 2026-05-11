@@ -6,11 +6,12 @@ Legajo  Nombre y Apellido               Prácticos     Asi
 ------  ------------------------------  ------------  ---
 63456   Ávila Lahr, Joaquín             🟢🟢⚪️⚪️⚪️    9  
 63415   Chávez, Lucas Francisco         🔴🔴⚪️⚪️⚪️    1  
-63268   Condori, Karina Edith           🟢🔴⚪️⚪️⚪️    0  
+63268   Condori, Karina Edith           🟢🟢⚪️⚪️⚪️    0  
 63402   Condori, Nahuel Ariel           🟢🟢⚪️⚪️⚪️    7  
 63419   Coronel, Tomás                  🟢🟢⚪️⚪️⚪️    9  
 63241   Cortez, Josías                  🟢🟢⚪️⚪️⚪️    8  
 63330   Cuevas, Joel Alejandro          🔴🔴⚪️⚪️⚪️    0  
+66666   Di Battista, Alejandro          🟢🟢⚪️⚪️⚪️    2  
 63776   Fuensalida, Ulises Nahuel       🟢🟢⚪️⚪️⚪️    5  
 63396   Gil Garau, Atalía Trinidad      🟢🟢⚪️⚪️⚪️    7  
 63457   González Dupuy, Ignacio         🟢🟢⚪️⚪️⚪️    10 
@@ -33,7 +34,6 @@ Legajo  Nombre y Apellido               Prácticos     Asi
 63447   Suárez, Sofía Celeste           🟢🟢⚪️⚪️⚪️    8  
 61490   Valdez Bustamante, Tomás        🟢🟢⚪️⚪️⚪️    10 
 63397   Vercellone, Tomás               🟢🟢⚪️⚪️⚪️    7  
-63696   Yael, Ramón Ezequiel            🔴🔴⚪️⚪️⚪️    1  
 ```
 
 ## C9
@@ -45,7 +45,7 @@ Legajo  Nombre y Apellido               Prácticos     Asi
 63300   Álvarez, Hernán Fabricio        🟢🟢⚪️⚪️⚪️    7  
 63313   Ávila Puntano, Benjamín         🟢🟢⚪️⚪️⚪️    10 
 63222   Bajre Martínez, Julián          🟢🟢⚪️⚪️⚪️    9  
-61801   Benega, Maximiliano Abraham     🔴🟢⚪️⚪️⚪️    4  
+61801   Benega, Maximiliano Abraham     🟢🟢⚪️⚪️⚪️    4  
 63493   Busnelli, Bruno                 🟢🔴⚪️⚪️⚪️    5  
 63150   Carlino, Joaquín                🟢🟢⚪️⚪️⚪️    0  
 63341   Carrer, Juan Cruz               🟢🟢⚪️⚪️⚪️    5  
@@ -79,5 +79,5 @@ Legajo  Nombre y Apellido               Prácticos     Asi
 63232   Roldan, Enzo Joaquín            🔴🔴⚪️⚪️⚪️    8  
 63216   Sánchez, Sofía Micaela          🟢🟢⚪️⚪️⚪️    8  
 63207   Saravia, César Nahum            🟢🟢⚪️⚪️⚪️    7  
-61026   Thompson, María José            🟢🔴⚪️⚪️⚪️    9  
+61026   Thompson, María José            🟢🟢⚪️⚪️⚪️    9  
 ```

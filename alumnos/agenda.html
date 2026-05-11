@@ -199,6 +199,23 @@
       pointer-events: none;
     }
 
+    /* ── Grade badge ─────────────────────────────────── */
+    .grade-badge {
+      position: absolute;
+      top: 0px;
+      right: 10px;
+      font-size: 2.0rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -.05em;
+      z-index: 2;
+      pointer-events: none;
+      opacity: .88;
+    }
+    .grade-green  { color: #1f7a49; }
+    .grade-yellow { color: #a07b10; }
+    .grade-red    { color: #9f2d2d; }
+
     /* ── Card top ─────────────────────────────────────── */
     .card-top {
       display: grid;
@@ -664,21 +681,23 @@
         const practicosRaw   = cols[5].trim();
         const presenteRaw    = cols[7].trim();
         const asistenciasRaw = cols[8].trim();
+        const codigoRaw      = cols[9]?.trim() ?? '';
 
-        const comma    = apellidoNombre.indexOf(',');
-        const apellido = comma >= 0 ? apellidoNombre.slice(0, comma).trim() : apellidoNombre;
-        const nombre   = comma >= 0 ? apellidoNombre.slice(comma + 1).trim() : '';
+        const comma     = apellidoNombre.indexOf(',');
+        const apellido  = comma >= 0 ? apellidoNombre.slice(0, comma).trim() : apellidoNombre;
+        const nombre    = comma >= 0 ? apellidoNombre.slice(comma + 1).trim() : '';
 
-        const telefono = (telefonoRaw === '—' || telefonoRaw === '-') ? '' : telefonoRaw;
-        const gitHub   = (gitHubRaw   === '—' || gitHubRaw   === '-') ? '' : gitHubRaw;
+        const telefono  = (telefonoRaw === '—' || telefonoRaw === '-') ? '' : telefonoRaw;
+        const gitHub    = (gitHubRaw   === '—' || gitHubRaw   === '-') ? '' : gitHubRaw;
         const tieneFoto = /^(si|sí|true|yes)$/i.test(fotoRaw);
-        const presente = /^(si|sí|true|yes)$/i.test(presenteRaw);
+        const presente  = /^(si|sí|true|yes)$/i.test(presenteRaw);
         const asistencias = Number.parseInt(asistenciasRaw, 10);
 
         // CarpetaNombre exactly mirrors C# CarpetaNombre property
         const carpetaNombre = `${legajo} - ${apellido}, ${nombre}`;
         const fotoPaths     = tieneFoto ? fotoCandidates(carpetaNombre) : [];
-
+        const notaParts = codigoRaw.split('.');
+        const nota = notaParts.length >= 2 ? parseInt(notaParts[1].slice(-1), 10) + 1 : null;
         alumnos.push({
           legajo,
           apellido,
@@ -693,7 +712,8 @@
           asistencias: Number.isNaN(asistencias) ? 0 : asistencias,
           carpetaNombre,
           fotoPath: '',
-          fotoPaths
+          fotoPaths,
+          nota
         });
       }
 
@@ -792,10 +812,19 @@
         </div>`;
     }
 
+    function notaClass(nota) {
+      if (nota >= 9) return 'grade-green';
+      if (nota >= 5) return 'grade-yellow';
+      return 'grade-red';
+    }
+
     function renderCard(alumno, idx, totalPracticos) {
       const accent  = accentFor(alumno.legajo);
       const inits   = initials(alumno.apellido, alumno.nombre);
       const comBadge = `badge-comision-${alumno.comision.toLowerCase()}`;
+      const notaHtml = alumno.nota != null
+        ? `<span class="grade-badge ${notaClass(alumno.nota)}">${alumno.nota}</span>`
+        : '';
 
       const phoneHtml = alumno.telefono
         ? `<span class="detail-value">${escHtml(alumno.telefono)}</span>`
@@ -816,6 +845,7 @@
 
       return `
         <article class="card" style="--accent:${accent};--i:${idx}" role="listitem">
+          ${notaHtml}
           <div class="card-top">
             <div class="avatar-wrap">
               ${avatarHtml}
@@ -877,7 +907,7 @@
       for (const candidate of alumno.fotoPaths) {
         const found = await imageExists(candidate);
         if (found) {
-          alumno.fotoPath = found;
+          alumno.fotoPath  = found;
           alumno.tieneFoto = true;
           return alumno;
         }

@@ -707,7 +707,8 @@
       margin-top: 10px;
       border: 2px solid var(--accent);
       border-radius: 8px;
-      padding: 14px;
+      padding: 12px;
+      text-align: center;
       background: var(--paper-strong);
       color: var(--ink);
       font: 700 1.15rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -765,7 +766,7 @@
       background: transparent;
       color: var(--ink);
       font-size: clamp(1.45rem, 3vw, 2.1rem);
-      font-weight: 800;
+      font-weight: 700;
       line-height: 1;
       cursor: pointer;
     }
@@ -1209,7 +1210,7 @@
     .secondary-button {
       border-radius: 6px;
       min-height: 48px;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: 0.01em;
     }
 
@@ -1761,7 +1762,7 @@
   <div class="shell">
     <section id="hero" class="hero">
       <button id="themeToggleButton" class="theme-toggle" type="button" aria-label="Cambiar tema" aria-pressed="false">🌙</button>
-      <p class="eyebrow">1er Parcial</p>
+      <p class="eyebrow">1<sup>er</sup> Parcial</p>
       <h1 id="heroTitle">TUP26 - P3 : 1<sup>er</sup> Parcial</h1>
       <div id="heroTimer" class="hero-timer" aria-live="polite">60:00</div>
       <p class="lead">
@@ -1770,7 +1771,7 @@
 
     <main class="exam-paper">
       <header class="paper-header">
-        <h2 class="paper-title">1er Parcial de Programación III</h2>
+        <h2 class="paper-title">1<sup>er</sup> Parcial de Programación III</h2>
       </header>
 
       <div id="examContainer" class="empty-state">
@@ -1793,7 +1794,7 @@
     const STUDENTS_FILE = "alumnos.md";
     const THEME_STORAGE_KEY = "examinador-theme";
     const SESSION_STORAGE_KEY = "primer-parcial-sesion";
-    const PRACTICE_QUESTION_COUNT = 10;
+    const PRACTICE_QUESTION_COUNT = 60;
     const FULL_EXAM_QUESTION_COUNT = 60;
     const FULL_EXAM_START_DATE = new Date(2026, 4, 12);
     const MAX_ATTEMPTS = 5;
@@ -2290,9 +2291,9 @@
         messageNode.textContent = "";
         welcomeBox.innerHTML = `
           <div class="welcome-message">
-            Hola <strong>${escapeHtml(student.nombreSaludo)}</strong>. Tenés 1 hora para realizar el examen.<br><br>
-            Al finalizar, vas a ver un código. Copialo y compartilo por WhatsApp en el grupo de la comisión.<br><br>
-            Podés repetir el examen para mejorar la nota, hasta 5 intentos dentro del tiempo disponible.
+            Hola <strong>${escapeHtml(student.nombreSaludo)}</strong>. <br><br>Tenés 1 hora para realizar el examen.<br><br>
+            Al finalizar, vas a ver un código. <br><br>Copialo y compartilo por WhatsApp en el grupo de la comisión.<br><br>
+            <small>Se puede repetir el examen para mejorar la nota dentro del tiempo disponible.<br><br>Podrás elegir el mejor resultado conseguido</small>
           </div>
         `;
         startButton.disabled = false;

@@ -107,6 +107,7 @@ El campo de búsqueda debe filtrar la lista **en tiempo real** mientras el usuar
 - Si se ingresa `Email`, debe contener `@`.
 - Antes de **eliminar** un contacto, pedir confirmación.
 - Antes de **importar**, mostrar la cantidad de contactos a agregar y pedir confirmación.
+- Los telefonos pueden tener hasta 5 numeros separados por comas, pero deben ser ingresados en campos individuales en el diálogo de edición.
 
 ### Persistencia
 
@@ -221,19 +222,19 @@ El orden sugerido dentro del archivo `agenda.cs` es:
 
 ## Casos de prueba mínimos
 
-| Caso                                                                     | Resultado esperado                                                          |
-| ------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| `dotnet run agenda.cs`                                                   | Crea `agenda.db` si no existe y abre la TUI.                                |
-| `dotnet run agenda.cs -- otra.db`                                        | Usa `otra.db` como archivo de base.                                         |
-| Crear un contacto con nombre `"Ana"`                                     | Aparece en la lista y persiste tras reiniciar la app.                       |
-| Crear un contacto con nombre vacío                                       | Error de validación, el diálogo no se cierra.                               |
-| Crear un contacto con email `"ana"`                                      | Error de validación: el email debe contener `@`.                            |
-| Eliminar un contacto                                                     | Pide confirmación; al aceptar, desaparece.                                  |
-| Buscar `"ana"` en una agenda con `"Ana"`, `"Juan"` y `"Susana"`          | La lista muestra `"Ana"` y `"Susana"`.                                      |
-| Marcar `"Solo favoritos"` con dos favoritos en una lista de cinco        | La lista muestra solo los dos favoritos.                                    |
-| Exportar a `salida.json` y luego importar el mismo archivo               | Los contactos se duplican (ids nuevos), no chocan con los existentes.       |
-| Importar un archivo JSON inexistente                                     | Mensaje de error claro, la app sigue funcionando.                           |
-| Cerrar con `Ctrl+Q`                                                      | La aplicación finaliza limpiamente y restaura la terminal.                  |
+| Caso                                                               | Resultado esperado                                                          |
+| -------------------------------------------------------------------| ----------------------------------------------------------------------|
+| `dotnet run agenda.cs`                                             | Crea `agenda.db` si no existe y abre la TUI.                          |
+| `dotnet run agenda.cs -- otra.db`                                  | Usa `otra.db` como archivo de base.                                   |
+| Crear un contacto con nombre `"Ana"`                               | Aparece en la lista y persiste tras reiniciar la app.                 |
+| Crear un contacto con nombre vacío                                 | Error de validación, el diálogo no se cierra.                         |
+| Crear un contacto con email `"ana"`                                | Error de validación: el email debe contener `@`.                      |
+| Eliminar un contacto                                               | Pide confirmación; al aceptar, desaparece.                            |
+| Buscar `"ana"` en una agenda con `"Ana"`, `"Juan"` y `"Susana"`    | La lista muestra `"Ana"` y `"Susana"`.                                |
+| Marcar `"Solo favoritos"` con dos favoritos en una lista de cinco  | La lista muestra solo los dos favoritos.                              |
+| Exportar a `salida.json` y luego importar el mismo archivo         | Los contactos se duplican (ids nuevos), no chocan con los existentes. |
+| Importar un archivo JSON inexistente                               | Mensaje de error claro, la app sigue funcionando.                     |
+| Cerrar con `Ctrl+Q`                                                | La aplicación finaliza limpiamente y restaura la terminal.            |
 
 ---
 

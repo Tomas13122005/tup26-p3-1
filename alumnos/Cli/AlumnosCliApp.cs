@@ -317,14 +317,27 @@ static class AlumnosCliApp {
             : ["wapp-foto-parcial", "--simular"];
     }
 
-    static string PedirTrabajoPractico() =>
-        AnsiConsole.Prompt(
-            new TextPrompt<string>("Trabajo práctico ([green]TP1[/] o [green]1[/]):")
-                .PromptStyle("cyan")
-                .Validate(valor =>
-                    AlumnosCliActions.EsTrabajoPracticoValido(valor)
-                        ? ValidationResult.Success()
-                        : ValidationResult.Error(AlumnosCliActions.MensajeTrabajoPracticoInvalido(valor))));
+    static string PedirTrabajoPractico() {
+        IReadOnlyList<EnunciadoPracticoDisponible> practicos = AppPaths.ListarEnunciadosPracticos();
+        if (practicos.Count == 0) {
+            return AnsiConsole.Prompt(
+                new TextPrompt<string>("Trabajo práctico ([green]TP1[/] o [green]1[/]):")
+                    .PromptStyle("cyan")
+                    .Validate(valor =>
+                        AlumnosCliActions.EsTrabajoPracticoValido(valor)
+                            ? ValidationResult.Success()
+                            : ValidationResult.Error(AlumnosCliActions.MensajeTrabajoPracticoInvalido(valor))));
+        }
+
+        EnunciadoPracticoDisponible seleccionado = AnsiConsole.Prompt(
+            new SelectionPrompt<EnunciadoPracticoDisponible>()
+                .Title($"Trabajo práctico · se encontraron [green]{practicos.Count}[/] en [grey]{AppPaths.EnunciadosDirectory}[/]")
+                .PageSize(12)
+                .UseConverter(practico => $"[green]TP{practico.Numero}[/] [grey]{practico.Carpeta}[/]")
+                .AddChoices(practicos));
+
+        return seleccionado.Carpeta;
+    }
 
     static bool EsAliasAyuda(string valor) =>
         string.Equals(valor, "ayuda", StringComparison.OrdinalIgnoreCase) ||

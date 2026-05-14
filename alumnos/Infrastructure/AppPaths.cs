@@ -2,6 +2,7 @@ namespace Tup26.AlumnosApp;
 
 readonly record struct CopiaRuta(string Origen, string Destino);
 readonly record struct PerfilMarkdown(string Ruta, string[] Lineas);
+readonly record struct EnunciadoPracticoDisponible(int Numero, string Carpeta, string Ruta);
 
 static class AppPaths {
     static readonly string dataDirectory = ResolverDirectorioDatos();
@@ -18,6 +19,28 @@ static class AppPaths {
 
     public static string EnunciadoPracticoDirectory(string practico) =>
         Path.Combine(EnunciadosDirectory, practico);
+
+    public static IReadOnlyList<EnunciadoPracticoDisponible> ListarEnunciadosPracticos() {
+        if (!ExisteDirectorio(EnunciadosDirectory)) {
+            return [];
+        }
+
+        List<EnunciadoPracticoDisponible> practicos = new();
+        foreach (string rutaDirectorio in Directory.EnumerateDirectories(EnunciadosDirectory)) {
+            string carpeta = Path.GetFileName(rutaDirectorio);
+            Match match = Regex.Match(carpeta, @"^tp(\d+)$", RegexOptions.IgnoreCase);
+            if (!match.Success || !int.TryParse(match.Groups[1].Value, out int numero)) {
+                continue;
+            }
+
+            practicos.Add(new(numero, carpeta, rutaDirectorio));
+        }
+
+        return practicos
+            .OrderBy(practico => practico.Numero)
+            .ThenBy(practico => practico.Carpeta, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
 
     public static string PracticoAlumnoDirectory(Alumno alumno) =>
         Path.Combine(PracticosDirectory, alumno.CarpetaNombre);

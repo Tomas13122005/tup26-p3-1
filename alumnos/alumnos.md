@@ -17,7 +17,7 @@ Legajo  Nombre y Apellido               Teléfono       Fot  GitHub             
 63174   Jerez, Luciano Germán           (381)550-7143  Sí   luchex1525                 🟢🟢⚪️⚪️⚪️            🟢⚪️  No      12     9  63174.48.oj2uv4h88eeobdihocs.18 
 63700   Jiménez, Nelson Maximiliano     (381)639-2861  Sí   maximilianojimnez          🟢🟢⚪️⚪️⚪️            🟡⚪️  No       7     0  0                               
 63399   Lazarte, Gonzalo Romeo          (381)576-0069  Sí   tutu-04                    🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       8    10  63399.19.l71557nmihoiu958bo7.85 
-63211   Montero, Luca                   (381)528-7848  Sí   monteroluca007             🔴🟢⚪️⚪️⚪️            🟢⚪️  Sí      10    10  63211.19.tud613mphphpsca9iq5.51 
+63211   Montero, Luca                   (381)528-7848  Sí   monteroluca007             🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí      10    10  63211.19.tud613mphphpsca9iq5.51 
 63350   Páez Carabajal, Santiago        (381)572-4096  Sí   santiagopaez-2             🟢🟢⚪️⚪️⚪️            🟡⚪️  Sí       4     9  63350.18.m2d6tr9fqgkmrgoiqr8.07 
 61581   Paz, Naim Federico              (381)353-0060  Sí   naimp074                   🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       9    10  61581.19.119lk64ead2q7rmmdbep.24
 63647   Paz, Valentina                  (381)599-6422  Sí   valepaz11                  🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       7    10  63647.19.mkdbqeivlhh1obqq2ec.45 
@@ -44,7 +44,7 @@ Legajo  Nombre y Apellido               Teléfono       Fot  GitHub             
 63313   Ávila Puntano, Benjamín         (381)329-6643  Sí   santiagobnj-avila-pun      🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí      11    10  63313.19.q2097b7bfkvi9js5heu.30 
 63222   Bajre Martínez, Julián          (381)351-9652  Sí   julianbajre-png            🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí      10     7  63222.16.70e849i2ra5gbeb7l2m.70 
 61801   Benega, Maximiliano Abraham     (381)505-9048  Sí   abrahambenega              🟢🟢⚪️⚪️⚪️            🟡⚪️  Sí       5     6  61801.15.gl01c68vedl8912211g.76 
-63493   Busnelli, Bruno                 (381)366-0607  Sí   brunobusnelli              🟢🔴⚪️⚪️⚪️            🟡⚪️  No       6    10  63493.19.aa4opdbv4cc8rd4qkma.47 
+63493   Busnelli, Bruno                 (381)366-0607  Sí   brunobusnelli              🟢🟢⚪️⚪️⚪️            🟡⚪️  No       6    10  63493.19.aa4opdbv4cc8rd4qkma.47 
 63150   Carlino, Joaquín                (381)605-7383  Sí   vincent-coffe              🟢🟢⚪️⚪️⚪️            🔴⚪️  No       1    10  63150.19.bgmmvp6lg6q9ta78kb.81  
 63341   Carrer, Juan Cruz               (381)632-5727  Sí   juancarrer11               🟢🟢⚪️⚪️⚪️            🟡⚪️  Sí       6    10  63341.19.10abnf6kliol70nfbtpf.74
 63461   Cativa, Facundo Simón           (381)391-4222  Sí   cativafacundo9-gif         🟢🟢⚪️⚪️⚪️            🟡⚪️  Sí       8     8  63461.17.kpqnqbrj57r2m1069bd.92 
@@ -62,7 +62,7 @@ Legajo  Nombre y Apellido               Teléfono       Fot  GitHub             
 61161   González, Thomas Ezequiel       (381)369-9891  Sí   kobinee                    🟢🟢⚪️⚪️⚪️            🟡⚪️  Sí       8     5  61161.34.fhq3vgdohimnqgs6hvc.80 
 62844   Guzmán, Luciano Leonel          (388)665-1248  Sí   lucianoleonelguzman        🟢🟢⚪️⚪️⚪️            🟢⚪️  No      10    10  62844.19.s9vr3sn274jho7e3p51.75 
 63231   Herrera, Rocío Tatiana          (381)208-9907  Sí   tatianaherrera-commits     🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       9    10  63231.39.71259ph7kt8gmrh26dm.68 
-63425   Holmquist, Jeremy               (381)522-4955  Sí   jeremy-holmquist           🟢🔴⚪️⚪️⚪️            🟡⚪️  No       8     6  63425.55.8k6n6bpp2vr6s6thequ.95 
+63425   Holmquist, Jeremy               (381)522-4955  Sí   jeremy-holmquist           🟢🟢⚪️⚪️⚪️            🟡⚪️  No       8     6  63425.55.8k6n6bpp2vr6s6thequ.95 
 61907   Kargachin, Guadalupe            (381)457-6547  Sí   guadalupekargachin         🔴🔴⚪️⚪️⚪️            🔴⚪️  No       0     0  0                               
 63219   Lazarte, Sergio Fabricio        (381)589-1439  Sí   fabriciolazarte27          🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       7    10  63219.19.attktanghn91ss9saed.51 
 63297   Lezana, Juan Ignacio            (381)555-5202  Sí   ignaciolezana25            🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       9    10  63297.19.efbs3sb1ohv04vqroak.53 
@@ -74,7 +74,7 @@ Legajo  Nombre y Apellido               Teléfono       Fot  GitHub             
 63412   Morán, Facundo Martín           (381)301-0206  Sí   facumoran                  🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí      11    10  63412.19.s4velv3o6meo6qt5r6d.81 
 63205   Navarro Aragón, Facundo         (381)466-6665  Sí   facundonavarroaragon       🔴🔴⚪️⚪️⚪️            🟡⚪️  Sí       7    10  63205.49.vqa60sqrujc6eq5jbjh.47 
 63220   Pérez Del Rien, Valentina       (381)360-2873  Sí   vall19-git                 🟢🟢⚪️⚪️⚪️            🟢⚪️  No      11    10  63220.19.10tgspvbtdaptovi90d8.72
-63232   Roldan, Enzo Joaquín            (381)565-4292  Sí   roldanebzo                 🔴🔴⚪️⚪️⚪️            🟢⚪️  Sí       9     5  63232.34.eq6h2h09pi0h1rn1783.75 
+63232   Roldan, Enzo Joaquín            (381)565-4292  Sí   roldanebzo                 🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       9     5  63232.34.eq6h2h09pi0h1rn1783.75 
 63216   Sánchez, Sofía Micaela          (381)342-9672  Sí   sofisanchez126             🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       9    10  63216.19.la9m5mdko85cr0t8qhb.66 
 63207   Saravia, César Nahum            (381)612-1173  Sí   nahum-saravia              🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí       8    10  63207.19.6rhed78i9ft7v1tb8a1.65 
 61026   Thompson, María José            (381)448-3445  Sí   mariajosethompson0-eng     🟢🟢⚪️⚪️⚪️            🟢⚪️  Sí      10     9  61026.18.ssgsvmom27j9an7dmuh.03 

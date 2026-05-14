@@ -1,4 +1,0 @@
-Ingrese su nombre: Hola ANA
-Hola BEN
-Hola CAR
-Hola DAR

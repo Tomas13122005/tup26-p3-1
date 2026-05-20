@@ -7,14 +7,16 @@ app.get("/contador", (req, res) => {
   res.json({ contador });
 });
 
-app.put("/contador", (req, res) => {
+app.post("/contador", (req, res) => {
   contador++;
-  res.json({ contador });
+  res.sendStatus(200);
 });
 
 app.delete("/contador", (req, res) => {
   contador = 0;
-  res.json({ contador });
+  res.sendStatus(200);
 });
 
+console.clear();
+console.log("=== Servidor contador (JavaScript) ===\n");
 app.listen(5001);

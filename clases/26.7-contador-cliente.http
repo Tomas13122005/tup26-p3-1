@@ -4,10 +4,10 @@
 GET {{baseUrl}}/contador
 
 ### Incrementar 1
-PUT {{baseUrl}}/contador
+POST {{baseUrl}}/contador
 
 ### Incrementar 2
-PUT {{baseUrl}}/contador
+POST {{baseUrl}}/contador
 
 ### Leer después de incrementar
 GET {{baseUrl}}/contador

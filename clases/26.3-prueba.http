@@ -1,0 +1,7 @@
+### Probamos el servidor desde HTTP
+
+GET http://localhost:5001/saludo
+
+###
+
+GET http://localhost:5001/despedida

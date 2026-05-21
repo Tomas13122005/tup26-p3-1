@@ -662,18 +662,6 @@ static class AlumnosManager {
         return valor[..ancho];
     }
 
-    static string FormatearEstados(List<Estado> estados, int ancho = 20) {
-        string valor = string.Empty;
-        if (estados?.Count > 0) {
-            valor = string.Join(string.Empty, estados.Select(e => e.ToEmoji()));
-        }
-        valor = valor.Replace(" ", "⚪️");
-        while (StringInfo.ParseCombiningCharacters(valor).Length < ancho) {
-            valor += "⚪️";
-        }
-        return valor;
-    }
-
     static bool ExtraerBool(string texto) {
         texto = texto.Trim().ToLower();
         return texto is "si" or "sí" or "true" or "yes";

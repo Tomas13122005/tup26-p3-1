@@ -22,7 +22,7 @@ static class AlumnosCliActions {
     }
 
     public static int ListarSinFoto() {
-        Alumnos alumnos = CargarAlumnos();
+        Alumnos alumnos  = CargarAlumnos();
         int actualizados = AlumnosManager.SincronizarEstadoFotosDesdeCarpetas(alumnos);
 
         if (actualizados > 0) {
@@ -164,10 +164,10 @@ static class AlumnosCliActions {
 
             var detallePr = gh.ObtenerEstado(pr.Numero);
             int cantidadArchivos = gh.ListarArchivos(pr.Numero).Count;
-            int cantidadLineas = gh.CantidadLineas(pr.Numero);
-            int cantidadCommits = gh.Commits(pr.Numero).Count;
-            string estado = detallePr.Estado == "open" ? "abierto" : detallePr.Estado == "closed" ? "cerrado" : "sin dato";
-            string mergeable = detallePr.EsMergeable ? "mergeable" : "con conflictos";
+            int cantidadLineas   = gh.CantidadLineas(pr.Numero);
+            int cantidadCommits  = gh.Commits(pr.Numero).Count;
+            string estado        = detallePr.Estado == "open" ? "abierto" : detallePr.Estado == "closed" ? "cerrado" : "sin dato";
+            string mergeable     = detallePr.EsMergeable ? "mergeable" : "con conflictos";
             int tp = GitHub.ExtraerTP(pr.Titulo);
             string carpetaTp = tp > 0 ? $"tp{tp}" : string.Empty;
             List<string> archivosTp = string.IsNullOrWhiteSpace(carpetaTp)
@@ -230,21 +230,22 @@ static class AlumnosCliActions {
     public static int RevisarPresentados(string trabajoPractico) {
         Alumnos alumnos = CargarAlumnos();
         int numeroTp = ObtenerNumeroTP(trabajoPractico);
+
         if (numeroTp <= 0) {
             Log.Error(MensajeTrabajoPracticoInvalido(trabajoPractico));
             return 1;
         }
 
-        string carpetaTp = CarpetaTrabajoPractico(numeroTp);
+        string carpetaTp     = CarpetaTrabajoPractico(numeroTp);
         string rutaEnunciado = AppPaths.EnunciadoPracticoDirectory(carpetaTp);
-        int lineasEnunciado = AppPaths.ContarLineasArchivos(rutaEnunciado, "*.cs");
+        int lineasEnunciado  = AppPaths.ContarLineasArchivos(rutaEnunciado, "*.cs");
 
         Log.Info($"{carpetaTp.ToUpperInvariant()} | líneas base del enunciado: {lineasEnunciado}");
         int marcados = 0;
 
         foreach (Alumno alumno in alumnos.OrderBy(alumno => alumno.Legajo)) {
             string rutaPractico = AppPaths.PracticoAlumnoSubdirectory(alumno, carpetaTp);
-            int lineasTotales = ContarLineasPracticoLocal(rutaPractico);
+            int lineasTotales   = ContarLineasPracticoLocal(rutaPractico);
             int lineasAgregadas = Math.Max(0, lineasTotales - lineasEnunciado);
 
             Estado estado = Estado.Desaprobado;
@@ -357,8 +358,8 @@ static class AlumnosCliActions {
                 _ => alumno.EstadoPractico(1) != Estado.Aprobado && alumno.EstadoPractico(2) != Estado.Aprobado
             })
             .OrderBy(alumno => alumno.Comision)
-            .ThenBy(alumno => alumno.NombreCompleto)
-            .ThenBy(alumno => alumno.Legajo)
+            .ThenBy(alumno  => alumno.NombreCompleto)
+            .ThenBy(alumno  => alumno.Legajo)
             .ToList();
 
         string etiqueta = numeroTp is int tp ? $"TP{tp}" : "TP1 y TP2";
@@ -419,8 +420,8 @@ static class AlumnosCliActions {
         List<Alumno> destinatarios = alumnos
             .Where(alumno => !alumno.ConFoto)
             .OrderBy(alumno => alumno.Comision)
-            .ThenBy(alumno => alumno.NombreCompleto)
-            .ThenBy(alumno => alumno.Legajo)
+            .ThenBy(alumno  => alumno.NombreCompleto)
+            .ThenBy(alumno  => alumno.Legajo)
             .ToList();
 
         if (destinatarios.Count == 0) {
@@ -517,16 +518,12 @@ static class AlumnosCliActions {
         foreach (var grupo in new[] { "C7", "C9" }) {
             actualizarEstado?.Invoke($"Leyendo mensajes de {grupo}...");
             foreach (var mensaje in wapp.Mensajes(grupo, desde, hasta)) {
-                if (!EsMensajeDeAsistencia(mensaje, desde, hasta)) {
-                    continue;
-                }
+                if (!EsMensajeDeAsistencia(mensaje, desde, hasta)) { continue; }
 
                 string telefono = wapp.ObtenerTelefonoAutorMensaje(mensaje);
                 Alumno? alumno = alumnos.BuscarPorTelefono(telefono);
 
-                if (alumno is null) {
-                    continue;
-                }
+                if (alumno is null) { continue; }
 
                 asistenciasPorAlumno[alumno.Legajo].Add(mensaje.Fecha.Date);
             }
@@ -551,14 +548,10 @@ static class AlumnosCliActions {
             actualizarEstado?.Invoke($"Leyendo mensajes del grupo {grupo}...");
             try {
                 foreach (MensajeWhatsApp mensaje in wapp.Mensajes(grupo, desde, hasta)) {
-                    if (mensaje.FromMe) {
-                        continue;
-                    }
+                    if (mensaje.FromMe) { continue; }
 
                     string? codigo = ExtraerCodigoDesdeTexto(mensaje.Content);
-                    if (codigo is null) {
-                        continue;
-                    }
+                    if (codigo is null) { continue; }
 
                     Alumno? alumno = ExtraerLegajoDesdeCodigo(codigo) is int legajo
                         ? alumnos.BuscarPorLegajo(legajo)
@@ -569,9 +562,7 @@ static class AlumnosCliActions {
                         alumno = alumnos.BuscarPorTelefono(telefono);
                     }
 
-                    if (alumno is null) {
-                        continue;
-                    }
+                    if (alumno is null) { continue; }
 
                     RegistrarCodigoDetectado(alumno, mensaje, codigo, grupo);
                 }
@@ -581,16 +572,12 @@ static class AlumnosCliActions {
         }
 
         foreach (Alumno alumno in alumnos) {
-            if (string.IsNullOrWhiteSpace(alumno.TelefonoId)) {
-                continue;
-            }
+            if (string.IsNullOrWhiteSpace(alumno.TelefonoId)) { continue; }
 
             actualizarEstado?.Invoke($"Leyendo chat privado de {alumno.NombreCompleto}...");
             try {
                 foreach (MensajeWhatsApp mensaje in wapp.Mensajes(alumno.TelefonoId, desde, hasta)) {
-                    if (mensaje.FromMe) {
-                        continue;
-                    }
+                    if (mensaje.FromMe) { continue; }
 
                     string? codigo = ExtraerCodigoDesdeTexto(mensaje.Content);
                     if (codigo is not null) {
@@ -605,9 +592,7 @@ static class AlumnosCliActions {
         actualizarEstado?.Invoke("Consolidando códigos...");
 
         foreach (Alumno alumno in alumnos) {
-            if (!codigosDetectados.TryGetValue(alumno.Legajo, out var detectado)) {
-                continue;
-            }
+            if (!codigosDetectados.TryGetValue(alumno.Legajo, out var detectado)) { continue; }
 
             alumno.Codigo = detectado.Codigo;
             alumno.Presente = true;
@@ -634,9 +619,7 @@ static class AlumnosCliActions {
     }
 
     static bool EsMensajeDeAsistencia(MensajeWhatsApp mensaje, DateTime desde, DateTime hasta) {
-        if (mensaje.FromMe || mensaje.Fecha < desde || mensaje.Fecha > hasta) {
-            return false;
-        }
+        if (mensaje.FromMe || mensaje.Fecha < desde || mensaje.Fecha > hasta) { return false; }
 
         DayOfWeek dia = mensaje.Fecha.DayOfWeek;
         TimeSpan hora = mensaje.Fecha.TimeOfDay;
@@ -651,7 +634,7 @@ static class AlumnosCliActions {
     static bool PracticoParecePresentado(int numeroTp, int lineasTotales, int lineasAgregadas) =>
         numeroTp switch {
             1 => lineasTotales   >= 100,
-            2 => lineasAgregadas >= 20,
+            2 => lineasAgregadas >=  20,
             _ => lineasTotales   >= 100
         };
 
@@ -676,7 +659,6 @@ static class AlumnosCliActions {
             5 => "el trabajo práctico 5",
             _ => "el trabajo práctico 1 ni el trabajo práctico 2"
         };
-        string presentalo = numeroTp.HasValue ? "presentalo ahora" : "presentalos ahora";
 
         return $"""
             Hola *{alumno.Nombre}*.

@@ -67,13 +67,9 @@ static class AlumnosCliApp {
     }
 
     public static string[] NormalizarArgumentosAyuda(string[] args) {
-        if (args.Length == 0 || !EsAliasAyuda(args[0])) {
-            return args;
-        }
+        if (args.Length == 0 || !EsAliasAyuda(args[0])) { return args; }
 
-        if (args.Length == 1) {
-            return ["--help"];
-        }
+        if (args.Length == 1) { return ["--help"]; }
 
         return [.. args[1..], "--help"];
     }
@@ -92,17 +88,13 @@ static class AlumnosCliApp {
             }
 
             string[] args = NormalizarArgumentosAyuda(argumentosInteractivos);
-            if (args.Length == 0) {
-                continue;
-            }
+            if (args.Length == 0) { continue; }
 
             AnsiConsole.WriteLine();
             int codigo = app.Run(args);
             AnsiConsole.WriteLine();
 
-            if (codigo != 0) {
-                AnsiConsole.MarkupLine($"[red]El comando terminó con código {codigo}.[/]");
-            }
+            if (codigo != 0) { AnsiConsole.MarkupLine($"[red]El comando terminó con código {codigo}.[/]"); }
 
             AnsiConsole.MarkupLine("[grey]Presioná una tecla para volver al menú...[/]");
             Console.ReadKey(intercept: true);
@@ -139,8 +131,7 @@ static class AlumnosCliApp {
 
     static string[] SolicitarMenuAuditoria() {
         InteractiveChoice opcion = PedirOpcion(
-            "[bold cyan]Principal / Auditoría[/] · Elegí una auditoría",
-            [
+            "[bold cyan]Principal / Auditoría[/] · Elegí una auditoría", [
                 new("sin-github",                  "Sin GitHub",                   "Filtrar alumnos sin usuario GitHub"),
                 new("sin-telefono",                "Sin teléfono",                 "Filtrar alumnos sin teléfono"),
                 new("sin-foto",                    "Sin foto",                     "Filtrar alumnos sin foto"),
@@ -163,8 +154,7 @@ static class AlumnosCliApp {
 
     static string[] SolicitarMenuExportar() {
         InteractiveChoice opcion = PedirOpcion(
-            "[bold cyan]Principal / Exportar[/] · Elegí un formato",
-            [
+            "[bold cyan]Principal / Exportar[/] · Elegí un formato", [
                 new("guardar",         "Markdown",        "Guardar el listado en formato Markdown"),
                 new("json",            "JSON",            "Exportar el listado en JSON"),
                 new("vcf",             "vCard",           "Exportar contactos en formato vCard"),
@@ -183,8 +173,7 @@ static class AlumnosCliApp {
 
     static string[] SolicitarMenuPrs() {
         InteractiveChoice opcion = PedirOpcion(
-            "[bold cyan]Principal / PRs[/] · Elegí una acción",
-            [
+            "[bold cyan]Principal / PRs[/] · Elegí una acción", [
                 new("prs",                 "Revisar PRs",          "Mostrar estado de pull requests"),
                 new("normalizar-prs",      "Normalizar PRs",       "Ajustar títulos de pull requests"),
                 new("bajar-prs",           "Bajar PRs",            "Descargar archivos de un trabajo práctico"),
@@ -207,8 +196,7 @@ static class AlumnosCliApp {
 
     static string[] SolicitarMenuAsistencias() {
         InteractiveChoice opcion = PedirOpcion(
-            "[bold cyan]Principal / Asistencias y WhatsApp[/] · Elegí una acción",
-            [
+            "[bold cyan]Principal / Asistencias y WhatsApp[/] · Elegí una acción", [
                 new("registrar-respuestas",   "Registrar respuestas",  "Leer respuestas de WhatsApp y registrar códigos"),
                 new("contar-asistencias",     "Contar asistencias",    "Detectar presentes desde WhatsApp"),
                 new("registrar-asistencias",  "Registrar asistencias", "Consolidar presentes del día"),
@@ -237,8 +225,7 @@ static class AlumnosCliApp {
                 .UseConverter(choice => $"[green]{choice.Label, -22}[/] [grey] {choice.Description}[/]")
                 .AddChoices(opciones));
 
-    static IReadOnlyList<InteractiveChoice> ObtenerOpcionesPrincipales() =>
-        [
+    static IReadOnlyList<InteractiveChoice> ObtenerOpcionesPrincipales() => [
             new("asistencias",    "Asistencias y WhatsApp", "Acciones vinculadas a presentes y grupos"),
             new("listar",         "Listar",                 "Mostrar todos los alumnos"),
             new("auditoria",      "Auditoría",              "Revisar datos faltantes o incompletos"),

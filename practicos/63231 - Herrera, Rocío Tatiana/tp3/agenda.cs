@@ -234,3 +234,36 @@ public sealed class PathDialog : Dialog {
         AddButton(cancelar); AddButton(ok);
     }
 }
+void Importar() {
+    string? ruta = PedirRuta("Importar JSON", "Archivo:", "Importar"); if (ruta is null) return;
+    Intentar("importar", () => {
+        var nuevos = JsonAgendaIO.Leer(ruta).ToList();
+        if (MessageBox.Query(App!, "Importar", $"Se agregarán {nuevos.Count} contacto(s).", "Aceptar", "Cancelar") != 0) return;
+        foreach (Contacto c in nuevos) contactos.Add(store.Agregar(c));
+        ActualizarVista(); Avisar("Importación terminada.");
+    });
+}
+
+void Exportar() {
+    string? ruta = PedirRuta("Exportar JSON", "Destino:", "Exportar"); if (ruta is null) return;
+    Intentar("exportar", () => { JsonAgendaIO.Escribir(ruta, contactos); Avisar("Exportación terminada."); });
+}
+
+string? PedirRuta(string titulo, string etiqueta, string boton) {
+    PathDialog dlg = new(titulo, etiqueta, boton);
+    App!.Run(dlg);
+    return string.IsNullOrWhiteSpace(dlg.Ruta) ? null : dlg.Ruta;
+}
+
+public static class JsonAgendaIO {
+    static readonly System.Text.Json.JsonSerializerOptions Opt = new() { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+    public static IEnumerable<Contacto> Leer(string ruta) {
+        if (!File.Exists(ruta)) throw new FileNotFoundException("El archivo JSON no existe.", ruta);
+        var datos = System.Text.Json.JsonSerializer.Deserialize<List<Contacto>>(File.ReadAllText(ruta, System.Text.Encoding.UTF8), Opt) ?? throw new InvalidDataException("JSON inválido.");
+        foreach (Contacto c in datos) { c.Id = 0; c.Nombre ??= ""; c.Telefonos ??= ""; c.Email ??= ""; c.Notas ??= ""; }
+        return datos;
+    }
+    public static void Escribir(string ruta, IEnumerable<Contacto> contactos) =>
+        File.WriteAllText(ruta, System.Text.Json.JsonSerializer.Serialize(contactos, Opt), new System.Text.UTF8Encoding(false));
+}
+

@@ -439,8 +439,106 @@ public sealed class ContactoDialog : Dialog {
         private readonly TextField email = new();
         private readonly CheckBox notas = new() { Height = 4, Width = Dim.Fill(1) };
         private readonly CheckBox favorito = new() { Text = "Favorito  " };
+        
         public Contacto Contacto { get; }
         public bool Guardado { get; private set; }
+
+        public ContactoDialog(string title, Contacto contacto): base() {
+        
+        Title = title;
+        Width = 64;
+        Height = 20;
+        Contacto = contacto;
+
+        int row = 1;
+        AddRow("Nombre:", nombre, row++);
+        for (int index = 0; index < telefonos.Length; index++) {
+
+            telefonos[index] = new TextField();
+            AddRow($"Telefono {index + 1}:", telefonos[index], row++);
+        }
+
+        AddRow("Email:", email, row++);
+
+        var notasLabel = new Label() { Text = "Notas:", X = 1, Y = row };
+        notas.X = 13;
+        notas.Y = row;
+        notas.Width = Dim.Fill(2);
+        notas.Height = 4;
+
+        favorito.X = 13;
+        favorito.Y = row + 5;
+
+        Button guardar = new Button() {
+
+            Text = "_Guardar",
+            X = 13,
+            Y = row + 7,
+            IsDefault = true  
+        };
+        guardar.Accepted += (_, _) => Guardar();
+
+        Button cancelar = new Button() {
+
+            Text = "_Cancelar",
+            X = 25,
+            Y = row + 7
+        };
+        cancelar.Accepted += (_, _) => App!.RequestStop();
+
+        Add(notasLabel, notas, favorito, guardar, cancelar);
+
+        InicializarCampos();
+    }
+
+    private void AddRow(string label, TextField field, int y) {
+        
+        var viewLabel = new Label() { Text = label, X = 1, Y = y };
+        field.X = 13;
+        field.Y = y;
+        field.Width = Dim.Fill(2);
+        Add(viewLabel, field);
+    }
+
+    private void InicializarCampos() {
+
+        nombre.Text = Contacto.Nombre;
+        email.Text = Contacto.Email;
+        notas.Text = Contacto.Notas;
+        favorito.Value = Contacto.Favorito ? CheckState.Checked : CheckState.Unchecked;
+
+        string[] partes = Contacto.Telefonos.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        for (int i = 0; i < telefonos.Length; i++) {
+
+            telefonos[i].Text = i < partes.Length ? partes[i] : string.Empty;
+        }
+    }
+
+    private void Guardar() {
+        
+        string nombreTexto = nombre.Text?.ToString().Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(nombreTexto)) {
+
+            MessageBox.ErrorQuery(App!, "Validacion", "El nombre es obligatorio.", "OK");
+            return;
+        }
+
+        string emailTexto = email.Text?.ToString().Trim() ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(emailTexto) && !emailTexto.Contains('@')) {
+
+            MessageBox.ErrorQuery(App!, "Validacion", "El email debe contener un @.", "OK");
+            return;
+        }
+
+        Contacto.Nombre = nombreTexto;
+        Contacto.Email = emailTexto;
+        Contacto.Notas = notas.Text?.ToString().Trim() ?? string.Empty;
+        Contacto.Favorito = favorito.Value == CheckState.Checked;
+        Contacto.Telefonos = string.Join(", ", telefonos.Select(t => t.Text?.ToString().Trim()).Where(t => !string.IsNullOrWhiteSpace(t)));
+
+        Guardado = true;
+        App!.RequestStop();
+    }
 }
 
 

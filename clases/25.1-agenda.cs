@@ -104,8 +104,8 @@ class AgendaApp : Runnable {
         lista.Height = Dim.Fill();
         lista.CanFocus = true;
         lista.ValueChanged += (_, _) => Seleccionar(lista.SelectedItem ?? -1);
-        lista.Accepted += (_, _) => EditarSeleccionado();
-        lista.Activated += (_, _) => EditarSeleccionado();
+        lista.Accepted     += (_, _) => EditarSeleccionado();
+        lista.Activated    += (_, _) => EditarSeleccionado();
         lista.KeyDown += (_, key) => {
             if (key == Key.Enter) {
                 key.Handled = true;

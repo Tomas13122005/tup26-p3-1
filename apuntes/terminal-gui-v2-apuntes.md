@@ -962,13 +962,13 @@ public sealed class SqliteAgendaStore {
 
 ### Cómo se traduce cada operación
 
-| Método del store        | Lo que hace Dapper.Contrib                              |
-|-------------------------|---------------------------------------------------------|
-| `db.GetAll<Contacto>()` | `SELECT * FROM Contactos`                               |
-| `db.Get<Contacto>(id)`  | `SELECT * FROM Contactos WHERE Id = @Id`                |
+| Método del store        | Lo que hace Dapper.Contrib                                  |
+| ----------------------- | ----------------------------------------------------------- |
+| `db.GetAll<Contacto>()` | `SELECT * FROM Contactos`                                   |
+| `db.Get<Contacto>(id)`  | `SELECT * FROM Contactos WHERE Id = @Id`                    |
 | `db.Insert(c)`          | `INSERT INTO Contactos (...) VALUES (...)` y devuelve el id |
-| `db.Update(c)`          | `UPDATE Contactos SET ... WHERE Id = @Id`               |
-| `db.Delete(c)`          | `DELETE FROM Contactos WHERE Id = @Id`                  |
+| `db.Update(c)`          | `UPDATE Contactos SET ... WHERE Id = @Id`                   |
+| `db.Delete(c)`          | `DELETE FROM Contactos WHERE Id = @Id`                      |
 
 El detalle a recordar es que `Delete` recibe **el objeto**, no el id. Cuando solo tenemos el id (como en una eliminación desde la lista), construimos un contacto vacío con ese id:
 
@@ -980,13 +980,13 @@ db.Delete(new Contacto { Id = id });
 
 SQLite no tiene tipos estrictos, pero Dapper resuelve el mapeo común:
 
-| Tipo C#     | Tipo SQLite | Comentario                       |
-|-------------|-------------|----------------------------------|
-| `int`       | `INTEGER`   | Directo                          |
-| `string`    | `TEXT`      | Directo                          |
-| `bool`      | `INTEGER`   | `1` para `true`, `0` para `false`|
-| `DateTime`  | `TEXT`      | Formato ISO 8601                 |
-| `decimal`   | `TEXT`      | Para evitar pérdida de precisión |
+| Tipo C#    | Tipo SQLite | Comentario                        |
+| ---------- | ----------- | --------------------------------- |
+| `int`      | `INTEGER`   | Directo                           |
+| `string`   | `TEXT`      | Directo                           |
+| `bool`     | `INTEGER`   | `1` para `true`, `0` para `false` |
+| `DateTime` | `TEXT`      | Formato ISO 8601                  |
+| `decimal`  | `TEXT`      | Para evitar pérdida de precisión  |
 
 ### Por qué abrir y cerrar la conexión cada vez
 

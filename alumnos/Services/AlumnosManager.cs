@@ -178,7 +178,7 @@ static class AlumnosManager {
     }
 
     public static void Listar(IEnumerable<Alumno> alumnos, string titulo = "Listado de Alumnos") {
-        string[] campos = ["Legajo", "Nombre y Apellido", "Teléfono", "Foto", "GitHub", "Prácticos", "Ex", "Pr", "Nr", "Nota", "Codigo"];
+        string[] campos = ["Legajo", "Nombre y Apellido", "Teléfono", "Foto", "GitHub", "Prácticos", "Ex", "Pr", "Nr", "Nota"];
         string[] guiones = campos.Select(c => new string('-', 40)).ToArray();
 
         string comision = "";
@@ -199,7 +199,7 @@ static class AlumnosManager {
                 Log.WriteLine($"\n[yellow]== {comision} ({alumnosOrdenados.Count(x => x.Comision == comision)}) ==");
                 Log.WriteLine($"{FormatearFilaTabla(campos)}\n[blue]{FormatearFilaTabla(guiones)}");
             }
-            Log.WriteLine(FormatearFila(a));
+            Log.WriteLine(FormatearFilaListado(a));
         }
 
         Log.WriteLine($"\n[green]Total de alumnos: {alumnos.Count()}\n");
@@ -590,6 +590,10 @@ static class AlumnosManager {
 
     static string FormatearFila(Alumno a) {
         return FormatearFilaTabla(a.Legajo.ToString(), a.NombreCompleto, a.Telefono, a.TieneFoto.ToSiNo(), a.GitHub, a.practicos.ToString(10), a.examenes.ToString(10), a.Presente.ToSiNo(), a.Asistencias.ToString(), a.Nota.ToString(), a.Codigo);
+    }
+
+    static string FormatearFilaListado(Alumno a) {
+        return FormatearFilaTabla(a.Legajo.ToString(), a.NombreCompleto, a.Telefono, a.TieneFoto.ToSiNo(), a.GitHub, a.practicos.ToString(10), a.examenes.ToString(10), a.Presente.ToSiNo(), a.Asistencias.ToString(), a.Nota.ToString());
     }
 
     static string FormatearFilaEstadoInformer(Alumno alumno) {

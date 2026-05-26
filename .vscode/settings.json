@@ -1,6 +1,4 @@
-
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "workbench.preferredDarkColorTheme": "Dark 2026",
+{
     "dotnet.projects.enableFileBasedPrograms": true,
     "dotnet.defaultSolution": "alumnos/alumnos.sln",
     "dotnet.projectsystem.enableLanguageServiceCache": false,
@@ -21,7 +19,6 @@
     "notebook.lineNumbers": "on",
     "[markdown]": { "editor.wordWrap": "off" },
     "markdown.preview.lineHeight": 1.6,
-    "markdown.preview.fontSize": 14,
     "markdown.preview.typographer": true,
     "files.exclude": {
         "practicos/**/bin": true,

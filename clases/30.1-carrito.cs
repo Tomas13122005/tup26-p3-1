@@ -4,11 +4,10 @@
 #:property PublishAot=false
 
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using static System.Console;
 
-var dbPath = ResolverRutaDb();
+var dbPath = "30.1-carrito.sqlite";
 
 Clear();
 WriteLine("=== Carrito de compras con EF Core + SQLite ===");
@@ -25,65 +24,82 @@ var tienda = new TiendaService(context);
 CargarCatalogo(tienda);
 MostrarCatalogo(tienda.ListarCatalogo());
 
-var carrito = tienda.CrearCarrito("Ada Lovelace");
+var carrito = tienda.CrearCarrito("Juan Pérez");
 WriteLine($"Carrito creado: #{carrito.Id} para {carrito.Cliente}");
 WriteLine();
 
-tienda.AgregarItem(carrito.Id,  "NOTE-15",  1);
-tienda.AgregarItem(carrito.Id,  "MOUSE-WL", 2);
-tienda.AgregarItem(carrito.Id,  "USB-C",    3);
-tienda.EliminarItem(carrito.Id, "USB-C",    1);
+tienda.AgregarProducto(carrito.Id,  "NOTE-15",  1);
+tienda.AgregarProducto(carrito.Id,  "MOUSE-WL", 2);
+tienda.AgregarProducto(carrito.Id,  "USB-C",    3);
+tienda.QuitarProducto(carrito.Id,   "USB-C",    1);
+
+WriteLine("Catálogo luego de reservar stock:");
+MostrarCatalogo(tienda.ListarCatalogo());
 
 var carritoActual = tienda.ObtenerCarrito(carrito.Id);
 MostrarCarrito(carritoActual);
 
-var carritoConfirmado = tienda.ConfirmarCompra(carrito.Id);
+var carritoConfirmado = tienda.ConfirmarCarrito(carrito.Id);
 MostrarConfirmacion(carritoConfirmado);
+
+var carritoCancelado = tienda.CrearCarrito("Analía Gómez");
+tienda.AgregarProducto(carritoCancelado.Id, "WEBCAM", 1);
+tienda.AgregarProducto(carritoCancelado.Id, "TECL-WL", 1);
+
+WriteLine();
+WriteLine($"Carrito a cancelar: #{carritoCancelado.Id} para {carritoCancelado.Cliente}");
+MostrarCarrito(tienda.ObtenerCarrito(carritoCancelado.Id));
+
+var carritoCanceladoFinal = tienda.CancelarCarrito(carritoCancelado.Id);
+WriteLine($"Carrito cancelado: #{carritoCanceladoFinal.Id} [{carritoCanceladoFinal.Estado}]");
+WriteLine();
+
+WriteLine("Catálogo final:");
+MostrarCatalogo(tienda.ListarCatalogo());
 
 return;
 
-static string ResolverRutaDb([CallerFilePath] string sourceFile = "") {
-	var directory = Path.GetDirectoryName(sourceFile) ?? Environment.CurrentDirectory;
-	return Path.Combine(directory, "30.1-carrito.sqlite");
-}
 
 static void CargarCatalogo(TiendaService tienda) {
-	tienda.CrearProducto("NOTE-15",  "Notebook 15 pulgadas",  1_250_000m);
-	tienda.CrearProducto("MOUSE-WL", "Mouse inalámbrico",        28_500m);
-	tienda.CrearProducto("USB-C",    "Hub USB-C",                41_990m);
-	tienda.CrearProducto("MON-27",   "Monitor 27 pulgadas",     310_000m);
-    tienda.CrearProducto("TECL-WL", "Teclado inalámbrico",       45_000m);
-    tienda.CrearProducto("WEBCAM",   "Webcam Full HD",           85_000m);
-    tienda.CrearProducto("AUR-WL",   "Auriculares inalámbricos", 60_000m);
+	tienda.CrearProducto("NOTE-15",  "Notebook 15 pulgadas",  1_250_000m, 5);
+	tienda.CrearProducto("MOUSE-WL", "Mouse inalámbrico",        28_500m, 12);
+	tienda.CrearProducto("USB-C",    "Hub USB-C",                41_990m, 8);
+	tienda.CrearProducto("MON-27",   "Monitor 27 pulgadas",     310_000m, 4);
+	tienda.CrearProducto("TECL-WL",  "Teclado inalámbrico",      45_000m, 6);
+	tienda.CrearProducto("WEBCAM",   "Webcam Full HD",           85_000m, 3);
+	tienda.CrearProducto("AUR-WL",   "Auriculares inalámbricos", 60_000m, 7);
 }
 
 static void MostrarCatalogo(IReadOnlyList<Producto> productos) {
-	WriteLine("Catalogo disponible:");
+	WriteLine("\n= Catálogo de productos ======================================");
 	foreach (var producto in productos) {
-		WriteLine($"- {producto.Codigo,-8} | {producto.Nombre,-24} | ${producto.Precio,10:0.00}");
+		WriteLine($"◉ {producto.Codigo,-8} ⏐ {producto.Nombre,-24} ⏐ stock {producto.StockDisponible,2} ⏐ ${producto.Precio,10:0.00}");
 	}
 	WriteLine();
 }
 
 static void MostrarCarrito(Carrito carrito) {
+	WriteLine("\n= Detalle del carrito ========================================");
 	WriteLine($"Carrito #{carrito.Id} [{carrito.Estado}] - Cliente: {carrito.Cliente}");
 	foreach (var item in carrito.Items.OrderBy(item => item.Producto.Nombre)) {
-		WriteLine($"- {item.Producto.Nombre,-24} x {item.Cantidad,2} = ${item.Subtotal,10:0.00}");
+		WriteLine($"◉ {item.Producto.Nombre,-24} x {item.Cantidad,2} = ${item.Subtotal,10:0.00}");
 	}
-	WriteLine($"Total del carrito: ${carrito.Total:0.00}");
+	WriteLine($" Total del carrito: ${carrito.Total:0.00}");
 	WriteLine();
 }
 
 static void MostrarConfirmacion(Carrito carrito) {
+	WriteLine("\n= Confirmación de compra =====================================");
 	WriteLine($"Compra confirmada para el carrito #{carrito.Id}");
-	WriteLine($"Cliente: {carrito.Cliente}");
-	WriteLine($"Fecha UTC: {carrito.ConfirmadoUtc:yyyy-MM-dd HH:mm:ss}");
+	WriteLine($"◉ Cliente: {carrito.Cliente}");
+	WriteLine($"◉ Fecha: {carrito.ConfirmadoUtc:yyyy-MM-dd HH:mm:ss}");
 	WriteLine($"Total confirmado: ${carrito.Total:0.00}");
 }
 
 enum EstadoCarrito {
 	Abierto    = 1,
-	Confirmado = 2
+	Confirmado = 2,
+	Cancelado  = 3
 }
 
 class Producto {
@@ -91,6 +107,7 @@ class Producto {
 	public string Codigo { get; set; } = string.Empty;
 	public string Nombre { get; set; } = string.Empty;
 	public decimal Precio { get; set; }
+	public int StockDisponible { get; set; }
 	public bool Activo { get; set; } = true;
 
 	public ICollection<CarritoItem> ItemsCarrito { get; set; } = [];
@@ -124,15 +141,17 @@ class CarritoItem {
 }
 
 class TiendaService(TiendaContext context) {
-	public Producto CrearProducto(string codigo, string nombre, decimal precio) {
-		if (precio <= 0) {
-			throw new ArgumentOutOfRangeException(nameof(precio), "El precio debe ser mayor a cero.");
-		}
+	public Producto CrearProducto(string codigo, string nombre, decimal precio, int stockDisponible) {
+		Verificar.NoVacio(codigo, "El código del producto es obligatorio.");
+		Verificar.NoVacio(nombre, "El nombre del producto es obligatorio.");
+		Verificar.Positivo(precio, "El precio debe ser mayor a cero.");
+		Verificar.Positivo(stockDisponible, "El stock disponible debe ser mayor o igual a cero.");
 
 		var codigoNormalizado = NormalizarCodigo(codigo);
-		var nombreNormalizado = Requerido(nombre, nameof(nombre), "El nombre del producto es obligatorio.");
+		var nombreNormalizado = nombre.Trim();
 
 		var existente = context.Productos.SingleOrDefault(producto => producto.Codigo == codigoNormalizado);
+
 		if (existente is not null) {
 			return existente;
 		}
@@ -140,7 +159,8 @@ class TiendaService(TiendaContext context) {
 		var producto = new Producto {
 			Codigo = codigoNormalizado,
 			Nombre = nombreNormalizado,
-			Precio = precio
+			Precio = precio,
+			StockDisponible = stockDisponible
 		};
 
 		context.Productos.Add(producto);
@@ -157,10 +177,9 @@ class TiendaService(TiendaContext context) {
 	}
 
 	public Carrito CrearCarrito(string cliente) {
-		var carrito = new Carrito {
-			Cliente = Requerido(cliente, nameof(cliente), "El cliente es obligatorio.")
-		};
+		Verificar.NoVacio(cliente, "El cliente es obligatorio.");
 
+		var carrito = new Carrito { Cliente = cliente.Trim() };
 		context.Carritos.Add(carrito);
 		context.SaveChanges();
 
@@ -173,93 +192,134 @@ class TiendaService(TiendaContext context) {
 			.ThenInclude(item => item.Producto)
 			.SingleOrDefault(carrito => carrito.Id == carritoId);
 
-		return carrito ?? throw new InvalidOperationException($"No existe el carrito #{carritoId}.");
+		Verificar.NoNulo(carrito, $"No existe el carrito #{carritoId}.");
+		return carrito!;
 	}
 
-	public void AgregarItem(int carritoId, string codigoProducto, int cantidad) {
-		if (cantidad <= 0) {
-			throw new ArgumentOutOfRangeException(nameof(cantidad), "La cantidad debe ser mayor a cero.");
-		}
-
+	public void AgregarProducto(int carritoId, string codigoProducto, int cantidad) {
 		var carrito = ObtenerCarrito(carritoId);
-		ValidarCarritoAbierto(carrito);
+		Verificar.NoNulo(carrito, $"No existe el carrito #{carritoId}.");
+		Verificar.Verdadero(carrito.Estado == EstadoCarrito.Abierto, "Solo se pueden agregar ítems a carritos abiertos.");
 
 		var producto = ObtenerProductoPorCodigo(codigoProducto);
+		Verificar.NoNulo(producto, $"No existe el producto {codigoProducto}.");
 
-		var existente = carrito.Items.SingleOrDefault(item => item.ProductoId == producto.Id);
-		if (existente is null) {
-			carrito.Items.Add(new CarritoItem {
-				ProductoId = producto.Id,
-				Cantidad = cantidad,
-				PrecioUnitario = producto.Precio
-			});
-		} else {
-			existente.Cantidad += cantidad;
-		}
+		Verificar.Positivo(cantidad, "La cantidad debe ser mayor a cero.");
+		Verificar.Verdadero(producto.StockDisponible >= cantidad,  $"El producto {producto.Codigo} no tiene stock disponible.");
 
-		context.SaveChanges();
+
+		EjecutarEnTransaccion(() => {
+			var existente = carrito.Items.SingleOrDefault(item => item.ProductoId == producto.Id);
+			if (existente is null) {
+				carrito.Items.Add(new CarritoItem {
+					ProductoId     = producto.Id,
+					Cantidad       = cantidad,
+					PrecioUnitario = producto.Precio
+				});
+			} else {
+				existente.Cantidad += cantidad;
+			}
+
+			producto.StockDisponible -= cantidad;
+		});
 	}
 
-	public void EliminarItem(int carritoId, string codigoProducto, int cantidad) {
-		if (cantidad <= 0) {
-			throw new ArgumentOutOfRangeException(nameof(cantidad), "La cantidad debe ser mayor a cero.");
-		}
-
+	public void QuitarProducto(int carritoId, string codigoProducto, int cantidad) {
 		var carrito = ObtenerCarrito(carritoId);
-		ValidarCarritoAbierto(carrito);
-
+		Verificar.NoNulo(carrito, $"No existe el carrito #{carritoId}.");
+		Verificar.Verdadero(carrito.Estado == EstadoCarrito.Abierto, "Solo se pueden eliminar ítems de carritos abiertos.");
+		
 		var producto = ObtenerProductoPorCodigo(codigoProducto);
+		Verificar.NoNulo(producto, $"No existe el producto {codigoProducto}.");
+
 		var item = carrito.Items.SingleOrDefault(item => item.ProductoId == producto.Id);
-		if (item is null) {
-			throw new InvalidOperationException($"El carrito #{carritoId} no contiene el producto {producto.Codigo}.");
-		}
+		Verificar.NoNulo(item, $"El carrito #{carritoId} no contiene el producto {producto.Codigo}.");
 
-		if (item.Cantidad <= cantidad) {
-			context.CarritoItems.Remove(item);
-		} else {
-			item.Cantidad -= cantidad;
-		}
+		Verificar.Positivo(cantidad, "La cantidad debe ser mayor a cero.");
+		var cantidadARestituir = Math.Min(cantidad, item!.Cantidad);
+		Verificar.Verdadero(cantidadARestituir > 0, "La cantidad a restituir debe ser mayor a cero.");
 
-		context.SaveChanges();
+		EjecutarEnTransaccion(() => {
+			if (item.Cantidad <= cantidad) {
+				context.CarritoItems.Remove(item);
+			} else {
+				item.Cantidad -= cantidad;
+			}
+			producto.StockDisponible += cantidadARestituir;
+		});
 	}
 
-	public Carrito ConfirmarCompra(int carritoId) {
+	public Carrito ConfirmarCarrito(int carritoId) {
+		return EjecutarEnTransaccion(() => {
+			var carrito = ObtenerCarrito(carritoId);
+			Verificar.NoNulo(carrito, $"No existe el carrito #{carritoId}.");
+			Verificar.Verdadero(carrito.Estado == EstadoCarrito.Abierto, "Solo se pueden confirmar compras de carritos abiertos.");
+			Verificar.NoVacio(carrito.Items, "No se puede confirmar una compra con el carrito vacío.");
+
+			carrito.Estado = EstadoCarrito.Confirmado;
+			carrito.ConfirmadoUtc = DateTime.UtcNow;
+
+			return carrito;
+		});
+	}
+
+	public Carrito CancelarCarrito(int carritoId) {
 		var carrito = ObtenerCarrito(carritoId);
-		ValidarCarritoAbierto(carrito);
+		Verificar.NoNulo(carrito, $"No existe el carrito #{carritoId}.");
+		Verificar.Verdadero(carrito.Estado == EstadoCarrito.Abierto, "Solo se pueden cancelar carritos abiertos.");
 
-		if (!carrito.Items.Any()) {
-			throw new InvalidOperationException("No se puede confirmar una compra con el carrito vacio.");
-		}
-
-		carrito.Estado = EstadoCarrito.Confirmado;
-		carrito.ConfirmadoUtc = DateTime.UtcNow;
-
-		context.SaveChanges();
-
-		return ObtenerCarrito(carritoId);
+		return EjecutarEnTransaccion(() => {
+			foreach (var item in carrito.Items) {
+				item.Producto.StockDisponible += item.Cantidad;
+			}
+			carrito.Estado = EstadoCarrito.Cancelado;
+			return carrito;
+		});
 	}
 
 	Producto ObtenerProductoPorCodigo(string codigo) {
+		Verificar.NoVacio(codigo, "El código del producto es obligatorio.");
+
 		var codigoNormalizado = NormalizarCodigo(codigo);
 		var producto = context.Productos.SingleOrDefault(producto => producto.Codigo == codigoNormalizado);
+		Verificar.NoNulo(producto, $"No existe el producto {codigoNormalizado}.");
 
-		return producto ?? throw new InvalidOperationException($"No existe el producto {codigoNormalizado}.");
+		return producto!;
+	}
+	
+	void EjecutarEnTransaccion(Action accion) {
+		using var transaction = context.Database.BeginTransaction();
+
+		try {
+			accion();
+			context.SaveChanges();
+			transaction.Commit();
+		} catch {
+			transaction.Rollback();
+			throw;
+		}
 	}
 
-	static void ValidarCarritoAbierto(Carrito carrito) {
-		if (carrito.Estado != EstadoCarrito.Abierto) {
-			throw new InvalidOperationException("El carrito ya fue confirmado y no admite cambios.");
+	T EjecutarEnTransaccion<T>(Func<T> accion) {
+		using var transaction = context.Database.BeginTransaction();
+
+		try {
+			var resultado = accion();
+			context.SaveChanges();
+			transaction.Commit();
+			return resultado;
+		} catch {
+			transaction.Rollback();
+			throw;
 		}
 	}
 
 	static string NormalizarCodigo(string codigo) {
-		return Requerido(codigo, nameof(codigo), "El codigo del producto es obligatorio.").ToUpperInvariant();
+		return codigo.Trim().ToUpperInvariant();
 	}
 
-	static string Requerido(string valor, string parametro, string mensaje) {
-		if (string.IsNullOrWhiteSpace(valor)) {
-			throw new ArgumentException(mensaje, parametro);
-		}
+	static string Requerido(string valor, string mensaje) {
+		Verificar.NoVacio(valor, mensaje);
 
 		return valor.Trim();
 	}
@@ -282,6 +342,7 @@ class TiendaContext(string dbPath) : DbContext {
 			entity.Property(producto => producto.Codigo).IsRequired().HasMaxLength(20);
 			entity.Property(producto => producto.Nombre).IsRequired().HasMaxLength(120);
 			entity.Property(producto => producto.Precio).HasPrecision(10, 2);
+			entity.Property(producto => producto.StockDisponible).IsRequired();
 		});
 
 		modelBuilder.Entity<Carrito>(entity => {
@@ -306,4 +367,35 @@ class TiendaContext(string dbPath) : DbContext {
 				.OnDelete(DeleteBehavior.Restrict);
 		});
 	}
+}
+
+static class Verificar {
+	public static void NoNulo<T>(T? valor, string mensaje="") where T : class {
+		if (valor is null) {
+			throw new ArgumentNullException(mensaje);
+		}
+	}
+	public static void NoVacio(string valor, string mensaje="") {
+		if (string.IsNullOrWhiteSpace(valor)) {
+			throw new ArgumentException("El valor no puede ser vacío.", mensaje);
+		}
+	}
+
+	public static void NoVacio<T>(IEnumerable<T> coleccion, string mensaje="") {
+		if (coleccion is null || !coleccion.Any()) {
+			throw new ArgumentException("La colección no puede ser vacía.", mensaje);
+		}
+	}
+
+	public static void Verdadero(bool condicion, string mensaje="") {
+		if (!condicion) {
+			throw new ArgumentException(mensaje);
+		}
+	}
+
+    internal static void Positivo(decimal valor, string mensaje = "") {
+        if(valor <= 0) {
+			throw new ArgumentOutOfRangeException(mensaje);
+		}
+    }
 }

@@ -1,7 +1,7 @@
-# Aprobar Programación III
+# Aprobar Programación 3
 
 
-## Asistencia
+## Asistencias
 - La materia es presencial; la asistencia es obligatoria.
 - Los trabajos prácticos aprobados se pueden considerar como asistencia a clase a los fines de la promoción.
 - A la fecha, quedan 15 clases para finalizar el cursado.
@@ -42,7 +42,8 @@ Dada la enorme cantidad de irregularidades detectadas en el TP3, se procedió a 
 
 ## Rehacer TP3 para poder Promocionar
 > [!IMPORTANT]
-> Plazo para entregar el TP3: **sábado 29 de mayo**
+> Plazo para entregar el TP3: 
+> **sábado 29 de mayo**
 
 ```text
 Legajo  Alumno                     TP     As.  1P  Grupos
@@ -59,7 +60,8 @@ Legajo  Alumno                     TP     As.  1P  Grupos
 
 ## Rehacer TP1 para poder Promocionar
 > [!IMPORTANT]
-> Plazo para entregar el TP1: **sábado 29 de mayo**
+> Plazo para entregar el TP1: 
+> **sábado 29 de mayo**
 
 ```text
 Legajo  Alumno                     TP     As.  1P  Grupos
@@ -74,7 +76,8 @@ Legajo  Alumno                     TP     As.  1P  Grupos
 
 ## Rehacer TP1 y TP2 para poder Promocionar
 > [!IMPORTANT]
-> Plazo para entregar el TP1 y TP2: **miércoles 2 de junio**
+> Plazo para entregar el TP1 y TP2:
+> **miércoles 2 de junio**
 
 ```text
 Legajo  Alumno                     TP     As.  1P  Grupos

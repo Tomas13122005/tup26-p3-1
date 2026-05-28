@@ -2,7 +2,7 @@
 
 >[!IMPORTANT]
 > Está publicado el TP4: Catálogo REST.
-> Deben presentarlo hasta el sábado 2 de junio.
+> Deben presentarlo hasta el martes 2 de junio.
 
 (Ver enunciado completo: [enunciados/tp4/enunciado.md](enunciados/tp4/enunciado.md))
 (Ver instrucción de entrega: [como-entregar-practico.md](como-entregar-practico.md))

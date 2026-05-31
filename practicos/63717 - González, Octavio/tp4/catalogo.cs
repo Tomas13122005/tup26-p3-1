@@ -2,26 +2,20 @@
 #:property PublishAot=false
 
 using System.Net.Http.Json;
+using Terminal.Gui;
 using Terminal.Gui.App;
+using Terminal.Gui.ViewBase;
 using Terminal.Gui.Views;
+using Terminal.Gui.Input;
+using Terminal.Gui.Drawing;     
 
 // ── Consulta inicial al servidor ──────────────────────────────────────────
 
-// ProductoDto producto; //no terminada 
-// try {
-//     using var http = new HttpClient();
-//     int id = 0; 
-//     producto = await CargarProductoAsync(http, id);
-// } catch (HttpRequestException ex) {
-//     Console.Error.WriteLine($"No se pudo conectar con el servidor: {ex.Message}");
-//     Console.Error.WriteLine("Verificá que servidor.cs esté corriendo");
-//     return;
-// }
 
 ProductoDto[] productos;
 try {
     using var http = new HttpClient();
-    productos = await CargarProductosAsync(http);
+    productos = await ObtenerProductos(http);
 } catch (Exception ex) {
     Console.Error.WriteLine($"{ex.Message}");
     return;
@@ -29,31 +23,58 @@ try {
 
 // ── Interfaz TUI ──────────────────────────────────────────────────────────
 
-using IApplication app = Application.Create().Init();
-using Window ventana = new () { Title = " Catalogo de Productos (ESC para salir) " };
+using (IApplication app = Application.Create().Init()){
 
-var detalleProducto = new Label {
+Window gui = new () { Title = " Catalogo de Productos (ESC para salir) " };
+
+
+var maestro = new FrameView {
+    Title = " Productos ",
+    X = 0,
+    Y = 4,
+    Width = Dim.Percent(30),
+    Height = Dim.Fill(1)
+};
+    
+var panelmaestro = new TextView {
     Text = string.Join("\n\n", productos.Select(p => $"""
-            # PRODUCTOS
             - Id     : {p.Id, 1}
             - Código : {p.Codigo, 1}
             - Nombre : {p.Nombre, 1}
             - Precio : {p.Precio, 1}
             - Stock  : {p.Stock, 1}
+            -----------------
             """)),
-    X = 4, Y = 2,
-};  
-ventana.Add(detalleProducto);
+    X = 0,
+    Y = 0,
+    Width = Dim.Fill(),
+    Height= Dim.Fill(1),
+    ReadOnly = true, 
+    WordWrap = true
+    };
+maestro.Add(panelmaestro);
+var buscar = new Label { 
+    Text = " Buscar:" , 
+    X = Pos.Center(), 
+    Y= Pos.Top(maestro)-2 };
+
+var input = new TextField() {
+    X = Pos.Right(buscar) + 1,
+    Y = Pos.Top(buscar),
+
+};
+
+gui.Add(buscar, maestro);
 
 
-app.Run(ventana);
-
-static async Task<ProductoDto[]> CargarProductosAsync (HttpClient http) {
+app.Run(gui);
+}
+static async Task<ProductoDto[]> ObtenerProductos (HttpClient http) {
     const string url = "http://localhost:3000/productos";
     return await http.GetFromJsonAsync<ProductoDto[]>(url) ?? throw new HttpRequestException("No hay productos");
 }
 
-static async Task<ProductoDto> CargarProductoAsync (HttpClient http, int id) {
+static async Task<ProductoDto> CargarProducto (HttpClient http, int id) {
     string url = $"http://localhost:3000/productos/{id}";
     return await http.GetFromJsonAsync<ProductoDto>(url) ?? throw new HttpRequestException("No existe un producto con este ID");
 }

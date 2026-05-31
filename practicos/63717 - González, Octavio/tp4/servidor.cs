@@ -1,14 +1,17 @@
 #:sdk Microsoft.NET.Sdk.Web
-#:package Microsoft.EntityFrameworkCore.Sqlite@*
+#:package Microsoft.EntityFrameworkCore.Sqlite@10
+#:package Terminal.Gui@2.0.1
 #:property PublishAot=false
 
+
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 // ── Configuración ──────────────────────────────────────────────────────────
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<CatalogoDb>(opt => opt.UseSqlite("Data Source=catalogo.db"));
+builder.Services.AddDbContext<CatalogoDb>(options => options.UseSqlite("Data Source=catalogo.db"));
 builder.Services.AddScoped<CatalogoRepositorio>();
 
 var app = builder.Build();
@@ -24,23 +27,39 @@ using (var scope = app.Services.CreateScope()) {
 
 app.MapGet("/producto", (CatalogoRepositorio repositorio) => {
     var producto = repositorio.TraerProducto();
-    if(producto is null) return Results.NotFound();
-
+    if(producto is null) return Results.NotFound();  
     return Results.Ok(producto);
 });
 
-app.Run("http://localhost:5050");
+app.Run("http://localhost:3000");
 
 
 
 // ── Modelo ────────────────────────────────────────────────────────────────
 
-record class Producto(int Id, string Codigo, string Nombre, decimal Precio, int Stock);
+record Producto(
+    int Id, 
+    string Codigo, 
+    string Nombre, 
+    decimal Precio, 
+    int Stock);
+record MovimientoDeProducto(
+    int Id, 
+    int Codigo, 
+    TipoMovimiento Tipo, 
+    int Cantidad,
+    DateTime Fecha);
+
+enum TipoMovimiento {
+    compra=1,
+    venta=2,
+    ajuste=3
+}
+
 
 // ── DbContext ─────────────────────────────────────────────────────────────
-
 class CatalogoDb : DbContext {
-    public CatalogoDb(DbContextOptions<CatalogoDb> options) : base(options) { }
+    public CatalogoDb(DbContextOptions<CatalogoDb> options) : base(options) {}
     public DbSet<Producto> Productos => Set<Producto>();
 }
 

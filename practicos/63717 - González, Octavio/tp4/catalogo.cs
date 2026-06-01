@@ -29,7 +29,7 @@ Window gui = new () { Title = " Catalogo de Productos (ESC para salir) " };
 
 
 var maestro = new FrameView {
-    Title = " Productos ",
+    Title = " Maestro ",
     X = 0,
     Y = 4,
     Width = Dim.Percent(30),
@@ -37,7 +37,8 @@ var maestro = new FrameView {
 };
     
 var panelmaestro = new TextView {
-    Text = string.Join("\n\n", productos.Select(p => $"""
+    Text = string.Join("\n\n", productos
+    .Select(p => $"""
             - Id     : {p.Id, 1}
             - Código : {p.Codigo, 1}
             - Nombre : {p.Nombre, 1}
@@ -45,26 +46,31 @@ var panelmaestro = new TextView {
             - Stock  : {p.Stock, 1}
             -----------------
             """)),
-    X = 0,
-    Y = 0,
-    Width = Dim.Fill(),
-    Height= Dim.Fill(1),
+    X = 0, Y = 0, Width = Dim.Fill(), Height= Dim.Fill(1),
     ReadOnly = true, 
     WordWrap = true
     };
 maestro.Add(panelmaestro);
+
+var detalle = new FrameView {
+    Title = "Detalle",
+    X= Pos.Right(maestro), Y = Pos.Top(maestro),
+    Width = Dim.Fill(), Height = Dim.Fill()
+};
 var buscar = new Label { 
     Text = " Buscar:" , 
-    X = Pos.Center(), 
-    Y= Pos.Top(maestro)-2 };
+    X = Pos.Center(),
+    Y= Pos.Top(detalle) - 2,  
+    };
 
+detalle.Add(buscar);
 var input = new TextField() {
     X = Pos.Right(buscar) + 1,
     Y = Pos.Top(buscar),
-
+    Width= 20
 };
 
-gui.Add(buscar, maestro);
+gui.Add(maestro, detalle, buscar, input);
 
 
 app.Run(gui);
@@ -74,10 +80,10 @@ static async Task<ProductoDto[]> ObtenerProductos (HttpClient http) {
     return await http.GetFromJsonAsync<ProductoDto[]>(url) ?? throw new HttpRequestException("No hay productos");
 }
 
-static async Task<ProductoDto> CargarProducto (HttpClient http, int id) {
-    string url = $"http://localhost:3000/productos/{id}";
-    return await http.GetFromJsonAsync<ProductoDto>(url) ?? throw new HttpRequestException("No existe un producto con este ID");
-}
+// static async Task<ProductoDto> CargarProducto (HttpClient http, int id) {
+//     string url = $"http://localhost:3000/productos/{id}";
+//     return await http.GetFromJsonAsync<ProductoDto>(url) ?? throw new HttpRequestException("No existe un producto con este ID");
+// }
 // ── DTO ───────────────────────────────────────────────────────────────────
 
 record ProductoDto(int Id, string Codigo, string Nombre, decimal Precio, int Stock);

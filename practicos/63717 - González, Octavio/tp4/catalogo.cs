@@ -8,6 +8,12 @@ using Terminal.Gui.ViewBase;
 using Terminal.Gui.Views;
 using Terminal.Gui.Input;
 using Terminal.Gui.Drawing;     
+using Terminal.Gui.Configuration;     
+using System.Collections.ObjectModel;
+using System.Xml.Serialization;
+
+#pragma warning disable CS0618
+
 
 // ── Consulta inicial al servidor ──────────────────────────────────────────
 
@@ -23,58 +29,122 @@ try {
 
 // ── Interfaz TUI ──────────────────────────────────────────────────────────
 
+ConfigurationManager.Enable(ConfigLocations.All);
+ConfigurationManager.Apply();
+
 using (IApplication app = Application.Create().Init()){
 
-Window gui = new () { Title = " Catalogo de Productos (ESC para salir) " };
+Window gui = new () {  SchemeName = "Esquemaestro"};
 
+//Menu 
+
+var menu = new MenuBar {
+    Menus = [
+        new MenuBarItem("_Archivo", [
+            new MenuItem("_Agregar", "", () => {}),
+            new MenuItem("Salir", "", () => app.RequestStop())
+        ]),
+        new MenuBarItem("_Movimientos", [
+            new MenuItem("_Compra", "", () => {}),
+        ])
+    ]
+};
+//SCHEMES 
+
+Color fondo = new Color (30, 30, 46);
+
+var esquemaestro = new Scheme
+{
+    Normal = new Terminal.Gui.Drawing.Attribute(Color.Green, fondo),
+    Focus = new Terminal.Gui.Drawing.Attribute(Color.White, Color.Green)
+};
+
+var esquedetalle = new Scheme
+{
+    Normal = new Terminal.Gui.Drawing.Attribute(Color.Green, Color.Black),
+    Focus = new Terminal.Gui.Drawing.Attribute(Color.White, Color.Green)
+};
+
+SchemeManager.AddScheme("Esquemaestro", esquemaestro);
+SchemeManager.AddScheme("esquedetalle", esquedetalle);
+
+
+
+//maestro
 
 var maestro = new FrameView {
     Title = " Maestro ",
     X = 0,
     Y = 4,
-    Width = Dim.Percent(30),
-    Height = Dim.Fill(1)
+    Width = 25,
+    Height = Dim.Fill(1),
+    SchemeName = "Esquemaestro"
 };
+
+var panelmaestro = new ListView {
+    X = 0, 
+    Y = 0, 
+    Width = Dim.Fill(), 
+    Height = Dim.Fill(1),
     
-var panelmaestro = new TextView {
-    Text = string.Join("\n\n", productos
-    .Select(p => $"""
-            - Id     : {p.Id, 1}
-            - Código : {p.Codigo, 1}
-            - Nombre : {p.Nombre, 1}
-            - Precio : {p.Precio, 1}
-            - Stock  : {p.Stock, 1}
-            -----------------
-            """)),
-    X = 0, Y = 0, Width = Dim.Fill(), Height= Dim.Fill(1),
-    ReadOnly = true, 
-    WordWrap = true
-    };
+};
+
+panelmaestro.SetSource(new ObservableCollection<string>(productos
+.Select(p => "ID " + p.Id + " - "+ p.Nombre)
+.ToList()
+));
+
 maestro.Add(panelmaestro);
+
+//detalle
 
 var detalle = new FrameView {
     Title = "Detalle",
     X= Pos.Right(maestro), Y = Pos.Top(maestro),
-    Width = Dim.Fill(), Height = Dim.Fill()
+    Width = Dim.Fill(), Height = Dim.Fill(),
+    SchemeName = "esquedetalle"
 };
+
 var buscar = new Label { 
     Text = " Buscar:" , 
     X = Pos.Center(),
     Y= Pos.Top(detalle) - 2,  
     };
 
-detalle.Add(buscar);
+var detalles = new TextView {
+    Text = string.Join("\n\n", productos.Select(p => $"""
+    ID:    {p.Id}
+    Cod:   {p.Codigo}
+    Nombre: {p.Nombre}
+    Precio: ${p.Precio}
+    Stock: {p.Stock} u
+    """)),
+    X = 0,
+    Y = 0,
+    Width = Dim.Fill(),
+    Height = Dim.Fill(),
+    ReadOnly=true,
+    SchemeName = "esquedetalle"
+   
+};
+detalle.Add(detalles, buscar);
+
 var input = new TextField() {
     X = Pos.Right(buscar) + 1,
     Y = Pos.Top(buscar),
     Width= 20
 };
-
-gui.Add(maestro, detalle, buscar, input);
-
+//Añadir las views
+gui.Add(menu, maestro, detalle, buscar, input);
+gui.SchemeName = "Dialog";
 
 app.Run(gui);
 }
+
+//----------------------------------------------------
+
+
+
 static async Task<ProductoDto[]> ObtenerProductos (HttpClient http) {
     const string url = "http://localhost:3000/productos";
     return await http.GetFromJsonAsync<ProductoDto[]>(url) ?? throw new HttpRequestException("No hay productos");
@@ -87,8 +157,4 @@ static async Task<ProductoDto[]> ObtenerProductos (HttpClient http) {
 // ── DTO ───────────────────────────────────────────────────────────────────
 
 record ProductoDto(int Id, string Codigo, string Nombre, decimal Precio, int Stock);
-// record MovimientoDTO(int Id, int Codigo, TipoMovimiento Tipo, int Cantidad,DateTime Fecha,
-// int ProductoId) 
-// {
-//     public Producto? Producto { get; set; }
-// }
+record MovimientoDto(int Id, int ProductoId, string Tipo, int Cantidad, DateTime Fecha);

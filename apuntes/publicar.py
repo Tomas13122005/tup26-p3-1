@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import datetime as dt
 import fnmatch
+import hashlib
 import html
 import subprocess
 import re
+import shutil
 import sys
+import tempfile
 import unicodedata
 import zipfile
 from pathlib import Path
@@ -17,12 +20,13 @@ from xml.sax.saxutils import escape
 WORKDIR = Path.cwd().resolve()
 OUTPUT = WORKDIR / "Apuntes-Tup26-P3.epub"
 BOOK_ID         = "Apuntes-TUP26-P3"
-BOOK_TITLE      = "Apuntes de Programacion III"
+BOOK_TITLE      = "Apuntes de Programación III"
 BOOK_LANGUAGE   = "es"
 BOOK_SUBTITLE   = "C#, .NET y herramientas de desarrollo"
-BOOK_AUTHOR     = "Alejandro Di Battista"
+BOOK_AUTHOR     = "Ing. Alejandro Di Battista"
 BOOK_COVER      = WORKDIR / "portada.jpg"
-EXCLUDED        = ["00.*.md", "05.*.md", "README.md", "CONTRIBUTING.md", "LICENSE.md"]
+EXCLUDED        = ["00.*.md", "09.*.md", "README.md", "CONTRIBUTING.md", "LICENSE.md", "examen.md"]
+MERMAID_TIMEOUT_SECONDS = 120
 
 
 def is_excluded(path: Path) -> bool:
@@ -40,16 +44,36 @@ def first_heading(markdown_text: str, fallback: str) -> str:
     for line in markdown_text.splitlines():
         stripped = line.strip()
         if stripped.startswith("# "):
-            return stripped[2:].strip()
+            return normalize_heading_text(stripped[2:])
     return fallback
 
 
+def normalize_heading_text(text: str) -> str:
+    return re.sub(r"\s+#+\s*$", "", text.strip()).strip()
+
+
 def inline_markdown(text: str) -> str:
+    code_spans: list[str] = []
+    escaped_chars: list[str] = []
+
+    def stash_code(match: re.Match[str]) -> str:
+        code_spans.append(f"<code>{html.escape(match.group(1), quote=False)}</code>")
+        return f"@@CODE{len(code_spans) - 1}@@"
+
+    def stash_escaped_char(match: re.Match[str]) -> str:
+        escaped_chars.append(html.escape(match.group(1), quote=False))
+        return f"@@ESC{len(escaped_chars) - 1}@@"
+
+    text = re.sub(r"`([^`]+)`", stash_code, text)
+    text = re.sub(r"\\([\\`*_{}\[\]()#+\-.!<>|])", stash_escaped_char, text)
     text = html.escape(text, quote=False)
-    text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
     text = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"\*([^*]+)\*", r"<em>\1</em>", text)
     text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', text)
+    for index, escaped_html in enumerate(escaped_chars):
+        text = text.replace(f"@@ESC{index}@@", escaped_html)
+    for index, code_html in enumerate(code_spans):
+        text = text.replace(f"@@CODE{index}@@", code_html)
     return text
 
 
@@ -92,12 +116,17 @@ def wrap_code_block(content: str, language: str) -> str:
         label = html.escape(code_language_label(language), quote=False)
         return f"""
 <div class="code-block">
-    <div class="code-block-header">
-        <span class="code-block-language">{label}</span>
-    </div>
     {content}
 </div>
 """.strip()
+#         return f"""
+# <div class="code-block">
+#     <div class="code-block-header">
+#         <span class="code-block-language">{label}</span>
+#     </div>
+#     {content}
+# </div>
+# """.strip()
 
 
 def split_table_row(line: str) -> list[str]:
@@ -249,6 +278,73 @@ def render_code_block(code: str, language: str) -> str:
     return wrap_code_block(_render_plain_code(code, language_class), lang)
 
 
+def mermaid_command() -> list[str]:
+    if mmdc := shutil.which("mmdc"):
+        return [mmdc]
+
+    if npx := shutil.which("npx"):
+        return [npx, "-y", "@mermaid-js/mermaid-cli"]
+
+    raise RuntimeError(
+        "Hay diagramas Mermaid, pero no se encontró Mermaid CLI. "
+        "Instale @mermaid-js/mermaid-cli o deje disponible el comando mmdc."
+    )
+
+
+def render_mermaid_svg(code: str, asset_name: str) -> bytes:
+    command = mermaid_command()
+
+    with tempfile.TemporaryDirectory(prefix="publicar-mermaid-") as tmpdir:
+        input_path = Path(tmpdir) / f"{asset_name}.mmd"
+        output_path = Path(tmpdir) / f"{asset_name}.svg"
+        input_path.write_text(code, encoding="utf-8")
+
+        try:
+            result = subprocess.run(
+                [
+                    *command,
+                    "-i",
+                    str(input_path),
+                    "-o",
+                    str(output_path),
+                    "--backgroundColor",
+                    "transparent",
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+                timeout=MERMAID_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                f"Mermaid CLI no terminó en {MERMAID_TIMEOUT_SECONDS} segundos "
+                f"al renderizar {asset_name}."
+            ) from exc
+
+        if result.returncode != 0 or not output_path.exists():
+            details = (result.stderr or result.stdout).strip()
+            raise RuntimeError(f"No se pudo renderizar el diagrama Mermaid {asset_name}: {details}")
+
+        return output_path.read_bytes()
+
+
+def render_mermaid_block(
+    code: str,
+    chapter_number: int,
+    assets: list[tuple[str, bytes]],
+) -> str:
+    digest = hashlib.sha1(code.encode("utf-8")).hexdigest()[:12]
+    asset_href = f"images/mermaid-{chapter_number:02d}-{digest}.svg"
+    asset_name = Path(asset_href).stem
+    assets.append((asset_href, render_mermaid_svg(code, asset_name)))
+    return (
+        f'<figure class="mermaid-diagram">'
+        f'<img src="{asset_href}" alt="Diagrama Mermaid" />'
+        f"</figure>"
+    )
+
+
 def wrap_xhtml_page(title: str, body: str, *, nav: bool = False) -> str:
     nav_attr = ' xmlns:epub="http://www.idpf.org/2007/ops"'
     return f"""<?xml version="1.0" encoding="utf-8"?>
@@ -269,17 +365,22 @@ def build_cover_page() -> str:
     body = """
 <section epub:type="cover" class="cover-page">
   <div class="cover-frame">
-    <img src="portada.jpg" alt="Portada de Apuntes de Programacion III" />
+    <img src="portada.jpg" alt="Portada de Apuntes de Programación III" />
   </div>
 </section>
 """
     return wrap_xhtml_page("Portada", body)
 
 
-def markdown_to_xhtml(markdown_text: str, chapter_title: str, chapter_number: int) -> str:
+def markdown_to_xhtml(
+    markdown_text: str,
+    chapter_title: str,
+    chapter_number: int,
+) -> tuple[str, list[tuple[str, bytes]]]:
     markdown_text = strip_leading_title(markdown_text, chapter_title)
     lines = markdown_text.splitlines()
     parts: list[str] = []
+    assets: list[tuple[str, bytes]] = []
     paragraph: list[str] = []
     in_code = False
     code_lines: list[str] = []
@@ -321,7 +422,10 @@ def markdown_to_xhtml(markdown_text: str, chapter_title: str, chapter_number: in
                 close_blockquote()
             if in_code:
                 code = "\n".join(code_lines)
-                parts.append(render_code_block(code, code_language))
+                if code_language == "mermaid":
+                    parts.append(render_mermaid_block(code, chapter_number, assets))
+                else:
+                    parts.append(render_code_block(code, code_language))
                 code_lines = []
                 code_language = ""
                 in_code = False
@@ -387,7 +491,7 @@ def markdown_to_xhtml(markdown_text: str, chapter_title: str, chapter_number: in
             flush_paragraph()
             close_lists()
             level = len(heading_match.group(1))
-            title = heading_match.group(2).strip()
+            title = normalize_heading_text(heading_match.group(2))
             if level == 1 and not skipped_first_h1:
                 skipped_first_h1 = True
                 i += 1
@@ -419,73 +523,333 @@ def markdown_to_xhtml(markdown_text: str, chapter_title: str, chapter_number: in
     close_blockquote()
     if in_code:
         code = "\n".join(code_lines)
-        parts.append(render_code_block(code, code_language))
+        if code_language == "mermaid":
+            parts.append(render_mermaid_block(code, chapter_number, assets))
+        else:
+            parts.append(render_code_block(code, code_language))
 
     body = "\n".join(parts)
     chapter_body = f"""
 <section epub:type="chapter">
   <header class="chapter-header">
-    <p class="chapter-kicker">Capitulo {chapter_number}</p>
+    <p class="chapter-kicker">Capítulo {chapter_number}</p>
     <h1>{inline_markdown(chapter_title)}</h1>
   </header>
   {body}
 </section>
 """
-    return wrap_xhtml_page(chapter_title, chapter_body)
+    return wrap_xhtml_page(chapter_title, chapter_body), assets
 
 
 def build_epub(markdown_files: list[Path]) -> None:
     now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
     css = """
-body { font-family: serif; line-height: 1.45; margin: 5%; }
-h1, h2, h3, h4, h5, h6 { line-height: 1.2; margin-top: 1.2em; }
-code { font-family: monospace; }
+:root {
+  color-scheme: light;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Aptos, Helvetica, Arial, sans-serif;
+      --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Aptos, Helvetica, Arial, sans-serif;
+}
+@page {
+  margin: 7% 8%;
+}
+body {
+  background: white;
+  background: oklch(100% 0 0);
+      color: #2a2d33;
+      color: oklch(27% 0.01 260);
+      font-family: var(--font-sans);
+      font-size: 1em;
+  font-kerning: normal;
+      line-height: 1.68;
+  margin: 7% 8%;
+  orphans: 3;
+      text-rendering: optimizeLegibility;
+  widows: 3;
+}
+p, ul, ol, blockquote {
+  margin-top: 0;
+      margin-bottom: 1em;
+  max-width: 72ch;
+}
+ul, ol { padding-left: 1.55em; }
+li { margin: 0.2em 0; padding-left: 0.12em; }
+h1, h2, h3, h4, h5, h6 {
+      color: #20242a;
+      color: oklch(24% 0.01 260);
+      font-family: var(--font-display);
+      font-weight: 740;
+      line-height: 1.16;
+      margin: 1.7em 0 0.46em;
+  page-break-after: avoid;
+  text-wrap: balance;
+}
+    h1 {
+      font-size: 1.92rem;
+      letter-spacing: -0.02em;
+    }
+h2 {
+      border-bottom: 1px solid #d9dee6;
+      border-bottom-color: oklch(89% 0.008 255);
+      font-size: 1.46rem;
+      padding-bottom: 0.24em;
+}
+    h3 { font-size: 1.18rem; }
+h4, h5, h6 {
+      color: #3a414b;
+      color: oklch(34% 0.012 260);
+      font-size: 1rem;
+  font-weight: 800;
+}
+a {
+  color: #225f72;
+  color: oklch(43% 0.065 215);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+}
+strong {
+  color: #17211a;
+  color: oklch(22% 0.018 145);
+  font-weight: 700;
+}
+code {
+  background: #f3f4f7;
+  background: oklch(96.5% 0.004 260);
+  border: 1px solid #e7e9ee;
+  border-color: oklch(91.5% 0.004 260);
+  border-radius: 0.38em;
+  color: #2e3642;
+  color: oklch(31% 0.015 255);
+  font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.86em;
+  font-variant-ligatures: none;
+  padding: 0.08em 0.3em;
+}
 pre { margin: 0; white-space: pre-wrap; }
-pre code { display: block; line-height: 1.7; }
-.code-block { margin: 1.6em 0; border: 1px solid #d9dee7; border-radius: 8px; overflow: hidden; background: #fafbfc; }
-.code-block-header { padding: 1.05em 1.25em 0.35em; background: #fafbfc; }
-.code-block-language { font-family: Helvetica, Arial, sans-serif; font-size: 0.80em; font-weight: 200; color: #cccccc; letter-spacing: 0.01em; }
-.code-block pre { padding: 0.15em 1.25em 1.25em; background: transparent; }
-.code-block code { font-size: 1.02em; }
-table { width: 100%; border-collapse: collapse; margin: 1.25em 0; }
-th, td { border: 1px solid #d9dee7; padding: 0.55em 0.75em; vertical-align: top; }
-th { background: #f4f6f8; text-align: left; }
-.tok-comment { color: #0a7b34; }
-.tok-string, .tok-char { color: #0a7b34; }
-.tok-number { color: #8a3ffc; }
-.tok-keyword { color: #9a3412; font-weight: 600; }
-.tok-type { color: #0f5ea8; }
-.tok-var { color: #8b5e00; }
-.tok-command { color: #0f5ea8; font-weight: 600; }
-blockquote { border-left: 0.25em solid #999; margin-left: 0; padding-left: 1em; color: #444; }
-hr { border: none; border-top: 1px solid #bbb; margin: 1.5em 0; }
-.chapter-header { margin-bottom: 2.5em; padding-bottom: 0.8em; border-bottom: 1px solid #bbb; }
-.chapter-kicker { margin: 0; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8em; color: #666; }
-.book-title { text-align: center; margin-top: 20%; }
-.toc-list li { margin: 0.4em 0; }
+pre code {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  display: block;
+  line-height: 1.48;
+  padding: 0;
+}
+.code-block {
+  background: #f5f6fa;
+  background: oklch(97.2% 0.005 260);
+  border: 1px solid #e7e9ef;
+  border-color: oklch(91.3% 0.004 260);
+  border-radius: 0.9em;
+  margin: 1.2em 0 1.35em;
+  max-width: 100%;
+  page-break-inside: avoid;
+}
+.code-block-header {
+  border-bottom: 1px solid #e5e5e1;
+  border-bottom-color: oklch(91% 0.003 110);
+  padding: 0.46em 0.85em 0.38em;
+}
+.code-block-language {
+  color: #52604f;
+  color: oklch(46% 0.026 132);
+  font-family: var(--font-sans);
+  font-size: 0.66em;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.code-block pre {
+  padding: 0.88em 1em 0.94em;
+}
+.code-block code {
+  font-size: 0.85em;
+  line-height: 1.56;
+}
+.mermaid-diagram {
+  margin: 1.25em 0 1.45em;
+  max-width: 100%;
+  page-break-inside: avoid;
+  text-align: center;
+}
+.mermaid-diagram img {
+  display: inline-block;
+  height: auto;
+  max-width: 100%;
+}
+table {
+  background: transparent;
+  border: 0;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.92em;
+  line-height: 1.42;
+  margin: 1.15em 0 1.35em;
+  width: 100%;
+}
+th, td {
+  border-bottom: 1px solid #d9dee6;
+  border-bottom-color: oklch(89% 0.008 255);
+  padding: 0.56em 0.64em;
+  vertical-align: top;
+}
+th {
+  background: transparent;
+  color: #2a2f36;
+  color: oklch(28% 0.01 260);
+  font-size: 0.98em;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+}
+tr:last-child td { border-bottom: 0; }
+.tok-comment {
+  color: #60705d;
+  color: oklch(50% 0.031 132);
+  font-style: italic;
+}
+.tok-string, .tok-char {
+  color: #28623f;
+  color: oklch(45% 0.08 150);
+}
+.tok-number {
+  color: #6d5596;
+  color: oklch(48% 0.071 305);
+}
+.tok-keyword {
+  color: #8a3d20;
+  color: oklch(45% 0.094 47);
+  font-weight: 700;
+}
+.tok-type {
+  color: #225f72;
+  color: oklch(43% 0.065 215);
+}
+.tok-var {
+  color: #745b21;
+  color: oklch(47% 0.064 82);
+}
+.tok-command {
+  color: #225f72;
+  color: oklch(43% 0.065 215);
+  font-weight: 700;
+}
+blockquote {
+  background: #f7f8fb;
+  background: oklch(97.7% 0.004 260);
+  border: 1px solid #e7e9ef;
+  border-color: oklch(91.3% 0.004 260);
+  border-radius: 0.8em;
+  color: #3f4652;
+  color: oklch(37% 0.012 260);
+  font-style: normal;
+  margin-left: 0;
+  padding: 0.88em 1em;
+}
+blockquote p:last-child { margin-bottom: 0; }
+hr {
+  border: none;
+  border-top: 1px solid #d9dee6;
+  border-top-color: oklch(89% 0.008 255);
+  margin: 1.45em 0;
+}
+.chapter-header {
+  border-bottom: 1px solid #d9dee6;
+  border-bottom-color: oklch(89% 0.008 255);
+  margin-bottom: 1.85em;
+  padding-bottom: 1em;
+}
+.chapter-header h1 {
+  margin: 0.18em 0 0;
+}
+.chapter-kicker {
+  color: #526f5b;
+  color: oklch(50% 0.054 145);
+  font-family: var(--font-sans);
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  margin: 0;
+  text-transform: uppercase;
+}
+.book-title {
+  border-bottom: 2px solid #17211a;
+  border-bottom-color: oklch(22% 0.018 145);
+  border-top: 1px solid #d8ddd6;
+  border-top-color: oklch(87.5% 0.012 125);
+  margin: 14% 0 1.7em;
+  padding: 0.9em 0 1em;
+}
+.book-title h1 {
+  margin: 0.16em 0 0.28em;
+}
+.book-kicker,
+.book-subtitle,
+.book-author {
+  font-family: var(--font-sans);
+  margin: 0;
+}
+.book-kicker {
+  color: #526f5b;
+  color: oklch(50% 0.054 145);
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.book-subtitle {
+  color: #39443a;
+  color: oklch(36% 0.027 140);
+  font-size: 0.92em;
+  line-height: 1.36;
+  max-width: 42ch;
+}
+.book-author {
+  color: #5b6359;
+  color: oklch(48% 0.014 130);
+  font-size: 0.8em;
+  margin-top: 0.82em;
+}
+.toc-list {
+  font-family: var(--font-sans);
+  font-size: 0.9em;
+  line-height: 1.38;
+    padding-left: 2.4em;
+}
+.toc-list li {
+  border-bottom: 1px solid #e1e4dd;
+  border-bottom-color: oklch(90.5% 0.011 120);
+  margin: 0;
+  padding: 0.42em 0 0.42em 0.18em;
+}
 .cover-page { margin: 0; padding: 0; }
 .cover-frame { margin: 0 auto; text-align: center; }
-.cover-frame img { display: block; width: 100%; height: auto; }
+.cover-frame img { display: block; height: auto; width: 100%; }
 """
 
     chapters: list[tuple[str, str, str]] = []
+    assets: dict[str, bytes] = {}
     for index, path in enumerate(markdown_files, start=1):
         source = path.read_text(encoding="utf-8")
         title = first_heading(source, path.stem)
         chapter_file = f"chapter-{index:02d}.xhtml"
-        xhtml = markdown_to_xhtml(source, title, index)
+        xhtml, chapter_assets = markdown_to_xhtml(source, title, index)
         chapters.append((chapter_file, title, xhtml))
+        for href, content in chapter_assets:
+            assets[href] = content
 
     toc_items = "\n".join(
-        f'        <li><a href="{filename}">Capitulo {index}: {escape(title)}</a></li>'
+        f'        <li><a href="{filename}">Capítulo {index}: {inline_markdown(title)}</a></li>'
         for index, (filename, title, _) in enumerate(chapters, start=1)
     )
 
     index_body = f"""
 <section epub:type="frontmatter toc">
   <div class="book-title">
+    <p class="book-kicker">Programación III</p>
     <h1>{escape(BOOK_TITLE)}</h1>
-    <p>Indice general</p>
+    <p class="book-subtitle">{escape(BOOK_SUBTITLE)}</p>
+    <p class="book-author">{escape(BOOK_AUTHOR)}</p>
   </div>
   <nav epub:type="toc" id="toc">
     <ol class="toc-list">
@@ -494,7 +858,7 @@ hr { border: none; border-top: 1px solid #bbb; margin: 1.5em 0; }
   </nav>
 </section>
 """
-    nav_xhtml = wrap_xhtml_page("Indice", index_body, nav=True)
+    nav_xhtml = wrap_xhtml_page("Índice", index_body, nav=True)
     cover_xhtml = build_cover_page()
 
     manifest_items = [
@@ -506,6 +870,10 @@ hr { border: none; border-top: 1px solid #bbb; margin: 1.5em 0; }
     for index, (filename, _, _) in enumerate(chapters, start=1):
         manifest_items.append(
             f'    <item id="chap{index}" href="{filename}" media-type="application/xhtml+xml"/>'
+        )
+    for index, href in enumerate(sorted(assets), start=1):
+        manifest_items.append(
+            f'    <item id="diagram{index}" href="{href}" media-type="image/svg+xml"/>'
         )
 
     spine_items = ['    <itemref idref="cover"/>', '    <itemref idref="nav"/>']
@@ -552,6 +920,8 @@ hr { border: none; border-top: 1px solid #bbb; margin: 1.5em 0; }
         epub.writestr("OEBPS/content.opf", opf)
         for filename, _, xhtml in chapters:
             epub.writestr(f"OEBPS/{filename}", xhtml)
+        for href, content in assets.items():
+            epub.writestr(f"OEBPS/{href}", content)
 
 def markdown_raiz(root: Path) -> list[Path]:
     return sorted( path for path in root.iterdir() if path.is_file() and path.suffix.lower() == ".md" )

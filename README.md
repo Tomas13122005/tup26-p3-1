@@ -1,226 +1,120 @@
-# TP2 — Compilador de Expresiones Aritméticas con Variable: `calculadora`
+﻿# Programación 3
 
-**Entrega:** 22 de ABRIL de 2026 a las 23:59hs
+>[!IMPORTANT]
+> Está publicado el TP4: Catálogo REST.
+> Deben presentarlo hasta el martes 2 de junio.
 
----
+(Ver enunciado completo: [enunciados/tp4/enunciado.md](enunciados/tp4/enunciado.md))
+(Ver instrucción de entrega: [como-entregar-practico.md](como-entregar-practico.md))
 
-## Descripción
 
-Desarrollar una aplicación de consola llamada **`calculadora`** que permita **parsear y evaluar expresiones aritméticas enteras** con soporte para la variable **`x`**.
+# ¿Cómo aprobar la materia?
 
-La herramienta debe poder trabajar de dos maneras:
+Para aprobar la materia se debe asistir, presentar los prácticos y aprobar los parciales.
+Dependiendo del desempeño en cada uno de estos aspectos, el alumno podrá quedar libre, regular o promocionar la materia.
 
-- **Modo directo**, recibiendo una expresión y un valor para `x` por línea de comandos.
-- **Modo interactivo**, permitiendo ingresar una expresión una vez y luego evaluarla varias veces con distintos valores de `x`.
+## ¿Cómo regularizo la materia?
+- Debe tener al menos 15 asistencias a clase verificadas.
+- Debe aprobar al menos 3 trabajos prácticos.
+- Debe aprobar ambos parciales con 4 o más.
 
-El objetivo del trabajo es modelar un **árbol de sintaxis abstracta (AST)** y construir un **parser de descenso recursivo** que respete precedencia de operadores, paréntesis y operadores unarios.
+## ¿Cómo promociono la materia?
+- Debe tener al menos 30 asistencias a clase verificadas.
+- Debe aprobar todos los trabajos prácticos.
+- Debe aprobar ambos parciales con 8 o más.
+- Los trabajos prácticos se contabilizarán como 2 asistencias a clase, a los fines de la promoción.
 
----
 
-## Sintaxis
+## Sobre la asistencia a clase
+- La materia es presencial; la asistencia es obligatoria.
+- Los trabajos prácticos aprobados se pueden considerar como asistencia a clase a los fines de la promoción.
+- A la fecha, quedan 15 clases para finalizar el cursado.
 
-```bash
-calculadora [expresion valor] [--help] [--test]
-```
 
----
+## Sobre la evaluación de los trabajos prácticos
+- Los trabajos prácticos serán aprobados o rechazados en función de que se ejecuten sin error. 
+- No se les dará una nota numérica.
+- El trabajo es *estrictamente individual* y debe ser realizado en persona por el alumno.
+- La práctica se realizará en la computadora del alumno.
+- El alumno tiene libertad para usar cualquier recurso de aprendizaje, pero *no podrá usar la IA para hacer* los trabajos prácticos.
 
-## Opciones
 
-| Opción larga | Corta | Descripción                  |
-| ------------ | ----- | ---------------------------- |
-| `--help`     | `-h`  | Muestra la ayuda y termina.  |
-| `--test`     | `-t`  | Ejecuta pruebas automáticas. |
+## ¿Cómo se evaluarán los parciales?
+- Los alumnos que tengan todos los prácticos aprobados y no alcancen la nota para la promoción podrán rendir un recuperatorio del primer parcial para mejorar su nota.
+- El último trabajo práctico actuará como examen final, que deberá defenderse en forma presencial ante el docente.
+- Si el sistema ejecuta sin error el trabajo práctico, la nota será un 5.
+- La defensa consistirá en la resolución de 5 consignas; cada una le dará un punto, por lo que podrá obtener hasta un 10.
+- La consigna consistirá en explicar el código y/o realizar cambios en él para resolver un problema o agregar una funcionalidad.
+- La defensa se realizará en la fecha acordada para cada grupo, en forma pública y presencial.
 
-### Argumentos posicionales
 
-| Argumento   | Descripción                                                                           |
-| ----------- | ------------------------------------------------------------------------------------- |
-| `expresion` | Fórmula a evaluar. Incluir números enteros, operadores, paréntesis y la variable `x`. |
-| `valor`     | Valor entero con el que se reemplaza la variable `x` al evaluar la expresión.         |
+## Recuperación Trabajos prácticos
 
----
+Dada la enorme cantidad de irregularidades detectadas en el TP3, se procedió a analizar detalladamente los trabajos prácticos anteriores.
 
-## Expresiones soportadas
-
-La calculadora debe aceptar expresiones formadas por:
-
-- **Números enteros**: `0`, `15`, `123`
-- **Variable**: `x` o `X`
-- **Operadores binarios**:
-  - `+` suma
-  - `-` resta
-  - `*` multiplicación
-  - `/` división entera
-- **Operadores unarios**:
-  - `+` positivo
-  - `-` negación
-- **Paréntesis**: `(` y `)`
-
-### Precedencia
-
-El parser debe respetar el siguiente orden de precedencia:
-
-1. Paréntesis `(` y `)`
-2. Operadores unarios `+` y `-`
-3. Multiplicación y división `*` y `/`
-4. Suma y resta `+` y `-`
-
----
-
-## Comportamiento esperado
-
-### Modo directo
-
-Si se invoca con dos argumentos posicionales:
-
-```bash
-calculadora "(x - 1) * 2" 10
-```
-
-el programa debe:
-
-1. Parsear la expresión.
-2. Reemplazar `x` por el valor indicado.
-3. Evaluar el AST resultante.
-4. Mostrar el resultado por `stdout`.
-
-### Modo interactivo
-
-Si se ejecuta sin argumentos, el programa debe:
-
-1. Pedir una expresión matemática con la variable `x`.
-2. Compilar esa expresión una sola vez.
-3. Pedir sucesivamente valores para `x`.
-4. Mostrar el resultado de cada evaluación.
-5. Finalizar cuando el usuario ingrese `fin` o una entrada vacía.
-
-### Ayuda
-
-Si se invoca con `--help`, `-h` debe mostrar una ayuda breve y terminar con código de salida `0`.
-
-### Pruebas
-
-Si se invoca con `--test`, `-p` o `-t`, debe ejecutar un conjunto de pruebas automáticas y reportar si pasaron correctamente.
-
-### Errores
-
-Ante expresiones inválidas, el programa debe informar el error con un mensaje claro. Algunos casos esperables:
-
-- Token inesperado
-- Paréntesis sin cerrar
-- Entrada vacía
-- División por cero
-- Valor de `x` inválido
-
----
-
-## Ejemplos de uso
-
-```bash
-# Evaluación directa
-calculadora "1 + 2 * 3" 0
-# Salida: 7
-
-# Uso de la variable x
-calculadora "1 + 2 * x" 10
-# Salida: 21
-
-# Paréntesis y precedencia
-calculadora "(x - 1) * (x - 8 / 4) + 3" 5
-# Salida: 15
-
-# Modo interactivo
-calculadora
-
-# Ayuda
-calculadora --help
-
-# Ejecutar pruebas
-calculadora --test
-```
-
----
-
-## Diseño requerido
-
-El programa debe separar claramente las siguientes responsabilidades:
+## Rehacer TP3 _(para Promocionar)_
+> [!IMPORTANT]
+> Plazo para entregar el TP3: 
+> **sábado 29 de mayo**
 
 ```text
-1. Procesar comandos      → interpretar args y decidir el modo de ejecución
-2. Parsear expresión      → convertir texto en un AST
-3. Representar nodos      → modelar números, variable, unarios y binarios
-4. Evaluar AST            → calcular el resultado para un valor de x
-5. Ejecutar pruebas       → verificar precedencia y evaluación
+Legajo  Alumno                     TP     As.  1P  Grupos
+------  -------------------------- -----  ---  --  ------
+61161   González, Thomas Ezequiel  🟢🟢🟠   10   5  - - C
+63207   Saravia, César Nahum       🟢🟢🟠    9  10  - - B
+63213   Marina Noguera, Morena     🟢🟢🟠   11   9  - - C
+63216   Sánchez, Sofía Micaela     🟢🟢🟠   11  10  - - B
+63300   Álvarez, Hernán Fabricio   🟢🟢🟠    9  10  - - B
+63354   Perondi, Luciano           🟢🟢🟠    8  10  - - A
+63456   Ávila Lahr, Joaquín        🟢🟢🟠   12  10  - - A
 ```
 
-### Modelo de nodos
 
-Se espera un árbol abstracto de tipos (AST) similar al siguiente:
+## Rehacer TP1 _(para Promocionar)_
+> [!IMPORTANT]
+> Plazo para entregar el TP1: 
+> **sábado 29 de mayo**
 
-```csharp
-abstract class Nodo {
-    public abstract int Evaluar(int x);
-}
-
-class NumeroNodo : Nodo;
-class VariableNodo : Nodo;
-class NegativoNodo : Nodo;
-
-abstract class NodoBinario : Nodo;
-class SumaNodo : NodoBinario;
-class RestaNodo : NodoBinario;
-class MultiplicacionNodo : NodoBinario;
-class DivisionNodo : NodoBinario;
-```
-
-### Parser
-
-El parser debe implementarse mediante **descenso recursivo (DRP)**, con una estructura equivalente a:
 
 ```text
-Expresion := Termino { ('+' | '-') Termino }
-Termino   := Factor  { ('*' | '/') Factor }
-Factor    := '+' Factor
-          | '-' Factor
-          | '(' Expresion ')'
-          | numero
-          | x
+Legajo  Alumno                     TP     As.  1P  Grupos
+------  -------------------------- -----  ---  --  ------
+62844   Guzmán, Luciano Leonel     🟠🟢🟢   11  10  D - -
+63182   González Rojas, Emmanuel   🟠🟢🟢   13  10  D - -
+63397   Vercellone, Tomás          🟠🟢🔴   10   9  B - -
+63493   Busnelli, Bruno            🟠🟢🔴    6  10  E - -
+63647   Paz, Valentina             🟠🟢🟢    9  10  B - -
 ```
 
-### Organización sugerida
 
-La solución puede dividirse en archivos similares a:
+## Rehacer TP1 y TP2 _(para Promocionar)_
+> [!IMPORTANT]
+> Plazo para entregar el TP1 y TP2:
+> **miércoles 2 de junio**
 
-- `Programa.cs` para el punto de entrada y el modo interactivo
-- `Compilador.cs` para el parser
-- `Nodos.cs` para la jerarquía del AST
-- `Comandos.cs` para el procesamiento de argumentos
-- `Pruebas.cs` para las pruebas automáticas
 
----
+```text
+Legajo  Alumno                     TP     As.  1P  Grupos
+------  -------------------------- -----  ---  --  ------
+61026   Thompson, María José       🟠🟠🟢   12   9  F C -
+61490   Valdez Bustamante, Tomás   🟠🟠🔴   13  13  A A -
+63150   Carlino, Joaquín           🟠🟠🔴   13  13  A A -
+```
 
-## Casos de prueba mínimos
 
-| Comando                                        | Resultado esperado                    |
-| ---------------------------------------------- | ------------------------------------- |
-| `calculadora "1 + 2 * 3" 0`                    | `7`                                   |
-| `calculadora "1 + 2 * x" 10`                   | `21`                                  |
-| `calculadora "(x - 1) * (x - 8 / 4) + 3" 10`   | `75`                                  |
-| `calculadora "-(3 + 2)" 0`                     | `-5`                                  |
-| `calculadora "10 / 2" 0`                       | `5`                                   |
-| `calculadora --help`                           | Muestra ayuda y termina con código 0  |
-| `calculadora --test`                           | Ejecuta pruebas automáticas           |
-| `calculadora "(1 + 2" 0`                       | Error de parsing                      |
+## Rehacer TP1, TP2 y TP3 _(para No Recursar)_
+> [!IMPORTANT]
+> Plazo para entregar el TP1, TP2 y TP3: **sábado 5 de junio**
 
----
-
-## Entrega
-
-- Proyecto completo en la carpeta `/tp2`.
-
-> [!NOTE]
-> A pesar de que en el enunciado se muestra `calculadora --help`
-> durante el desarroll se recomienda ejecutar el proyecto directamente con `dotnet run`
-> desde la carpeta del proyecto, pasando los argumentos después de `tp2`:
-> `dotnet run -- --help` o `dotnet run -- "(x - 1) * 2" 10`. Esto facilita la depuración y el desarrollo iterativo.
+```text
+Legajo  Alumno                     TP     As.  1P  Grupos
+------  -------------------------  -----  ---  --  ------
+61489   Gómez, Tomás               🟠🟠🟠   12   9  F C C
+61641   Figueroa, Nahuel Ramón     🟠🟠🟠   11   4  F C C
+61801   Benega, Maximiliano        🟠🟠🟠    7   6  F C C
+63218   Cortés, Guillermo Augusto  🟠🟠🟠   11  10  G B B
+63341   Carrer, Juan Cruz          🟠🟠🟠    8  10  G B B
+63345   García, Franco Tomás       🟠🟠🟠    6  10  E B B
+63494   Medina, Lourdes Natalia    🟠🟠🟠    9  10  C D B
+63737   Galván, Rocío Julieta      🟠🟠🟠   10  10  G D B
+```

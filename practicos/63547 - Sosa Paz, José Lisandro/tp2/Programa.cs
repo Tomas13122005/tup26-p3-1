@@ -1,29 +1,51 @@
-static class Program {
+// Programa.cs
+using System;
+
+class Programa {
     static void Main(string[] args) {
-        if (Comandos.Procesar(args)) {
-            return;
+        if (args.Length == 0) {
+            ModoInteractivo();
+        } else if (Comandos.EsOpcion(args[0], "-h", "--help")) {
+            Comandos.MostrarAyuda();
+        } else if (Comandos.EsOpcion(args[0], "-t", "--test") || args[0] == "-p") {
+            Pruebas.Ejecutar();
+        } else if (args.Length == 2) {
+            ModoDirecto(args[0], args[1]);
+        } else {
+            Console.WriteLine("Uso incorrecto. Use --help para más información.");
         }
+    }
 
-        Console.WriteLine("\n== Evaluación de Expresiones Matemáticas ==\n");
-        Console.Write("Ingrese una expresión matemática con la variable 'x' (ej: (x - 1) * (x - 8/4) + 3): \n>  ");
-
-        
-        var expresion = Console.ReadLine() ?? "";
-        if(expresion.IsWhiteSpace()) {
-            Console.WriteLine("No se ingresó ninguna expresión. Saliendo...");
-            return;
+    static void ModoDirecto(string exp, string valX) {
+        try {
+            var compilador = new Compilador();
+            var ast = compilador.Parsear(exp);
+            if (!int.TryParse(valX, out int x)) throw new Exception("Error: Valor de x inválido.");
+            Console.WriteLine(ast.Evaluar(x));
+        } catch (Exception e) {
+            Console.WriteLine(e.Message);
         }
-        var funcion = Compilador.Parse(expresion);
+    }
 
-        while (true) {
-            Console.Write("x = ");
-            var x = Console.ReadLine() ?? "";
+    static void ModoInteractivo() {
+        Console.Write("Ingrese expresión: ");
+        string exp = Console.ReadLine();
+        if (string.IsNullOrEmpty(exp) || exp.ToLower() == "fin") return;
 
-            if (x.IsWhiteSpace() || x == "fin") {
-                break;
+        try {
+            var compilador = new Compilador();
+            var ast = compilador.Parsear(exp);
+
+            while (true) {
+                Console.Write("Ingrese valor de x: ");
+                string input = Console.ReadLine();
+                if (string.IsNullOrEmpty(input) || input.ToLower() == "fin") break;
+
+                if (int.TryParse(input, out int x)) Console.WriteLine($"Resultado: {ast.Evaluar(x)}");
+                else Console.WriteLine("Error: Valor de x inválido.");
             }
-
-            Console.WriteLine(funcion.Evaluar(int.Parse(x)));
+        } catch (Exception e) {
+            Console.WriteLine(e.Message);
         }
     }
 }

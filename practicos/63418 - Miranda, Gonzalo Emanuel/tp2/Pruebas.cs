@@ -1,3 +1,5 @@
+namespace TP2_GONZALO_CALCULADORA;
+
 class Pruebas {
     public static void Ejecutar() {
         Console.WriteLine("Ejecutando pruebas automáticas...");
@@ -21,15 +23,15 @@ class Pruebas {
 
         Probar(ref numero, "Errores de parsing del enunciado", () => {
             AfirmarExcepcion<FormatException>(() => Compilador.Parse("(1 + 2"), "Se esperaba ')'", "paréntesis sin cerrar");
-            AfirmarExcepcion<FormatException>(() => Compilador.Parse(""), "Token inesperado", "entrada vacía");
-            AfirmarExcepcion<FormatException>(() => Compilador.Parse("1 + ?"), "Token inesperado", "token inesperado");
+            AfirmarExcepcion<FormatException>(() => Compilador.Parse(""), "inesperado", "entrada vacía");
+            AfirmarExcepcion<FormatException>(() => Compilador.Parse("1 + ?"), "inesperado", "token inesperado");
         });
 
         Probar(ref numero, "Errores de evaluación", () => {
             AfirmarExcepcion<DivideByZeroException>(() => Compilador.Parse("10 / (x - 2)").Evaluar(2), null, "división por cero");
         });
 
-        Console.WriteLine($"Todas las pruebas pasaron correctamente. Total: {numero - 1} grupos.");
+        Console.WriteLine($"\nTodas las pruebas pasaron correctamente. Total: {numero - 1} grupos.");
     }
 
     private static void Probar(ref int numero, string descripcion, Action accion) {
@@ -40,34 +42,21 @@ class Pruebas {
 
     private static void AfirmarEvaluacion(string expresion, int x, int esperado) {
         var resultado = Compilador.Parse(expresion).Evaluar(x);
-        Afirmar(
-            resultado == esperado,
-            $"La expresión '{expresion}' con x = {x} debería dar {esperado}, pero dio {resultado}."
-        );
+        Afirmar(resultado == esperado, $"La expresión '{expresion}' con x = {x} debería dar {esperado}, pero dio {resultado}.");
     }
 
-    private static void AfirmarExcepcion<TException>(Action accion, string? mensajeEsperado, string descripcion)
-        where TException : Exception {
-        try {
-            accion();
-        } catch (TException ex) {
+    private static void AfirmarExcepcion<TException>(Action accion, string? mensajeEsperado, string descripcion) where TException : Exception {
+        try { accion(); } catch (TException ex) {
             if (mensajeEsperado is not null) {
-                Afirmar(
-                    ex.Message.Contains(mensajeEsperado, StringComparison.Ordinal),
-                    $"La prueba '{descripcion}' esperaba un mensaje que contuviera '{mensajeEsperado}', pero recibió '{ex.Message}'."
-                );
+                Afirmar(ex.Message.Contains(mensajeEsperado, StringComparison.OrdinalIgnoreCase),
+                $"Esperaba error con '{mensajeEsperado}', pero recibió '{ex.Message}'.");
             }
-
             return;
         }
-
         throw new InvalidOperationException($"La prueba '{descripcion}' esperaba una excepción de tipo {typeof(TException).Name}.");
     }
 
     private static void Afirmar(bool condicion, string mensaje) {
-        if (!condicion) {
-            throw new InvalidOperationException(mensaje);
-        }
+        if (!condicion) throw new InvalidOperationException(mensaje);
     }
 }
-

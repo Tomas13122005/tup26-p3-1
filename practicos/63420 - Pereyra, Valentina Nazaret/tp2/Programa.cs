@@ -1,29 +1,56 @@
-static class Program {
+using System;
+
+class Programa {
     static void Main(string[] args) {
-        if (Comandos.Procesar(args)) {
-            return;
-        }
+        try {
+            if (Comandos.EsAyuda(args)) {
+                Comandos.MostrarAyuda();
+                return;
+            }
 
-        Console.WriteLine("\n== Evaluación de Expresiones Matemáticas ==\n");
-        Console.Write("Ingrese una expresión matemática con la variable 'x' (ej: (x - 1) * (x - 8/4) + 3): \n>  ");
+            if (Comandos.EsTest(args)) {
+                Pruebas.Ejecutar();
+                return;
+            }
 
-        
-        var expresion = Console.ReadLine() ?? "";
-        if(expresion.IsWhiteSpace()) {
-            Console.WriteLine("No se ingresó ninguna expresión. Saliendo...");
-            return;
+            if (args.Length == 2) {
+                string expr = args[0];
+                int x = int.Parse(args[1]);
+
+                var nodo = Compilador.Compilar(expr);
+                int resultado = nodo.Evaluar(x);
+
+                Console.WriteLine(resultado);
+            } else {
+                ModoInteractivo();
+            }
+        } catch (Exception ex) {
+            Console.Error.WriteLine("Error: " + ex.Message);
         }
-        var funcion = Compilador.Parse(expresion);
+    }
+
+    static void ModoInteractivo() {
+        Console.Write("Expresión: ");
+        string expr = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(expr))
+            return;
+
+        var nodo = Compilador.Compilar(expr);
 
         while (true) {
             Console.Write("x = ");
-            var x = Console.ReadLine() ?? "";
+            string input = Console.ReadLine();
 
-            if (x.IsWhiteSpace() || x == "fin") {
+            if (string.IsNullOrWhiteSpace(input) || input.ToLower() == "fin")
                 break;
+
+            if (!int.TryParse(input, out int x)) {
+                Console.WriteLine("Valor inválido");
+                continue;
             }
 
-            Console.WriteLine(funcion.Evaluar(int.Parse(x)));
+            Console.WriteLine(nodo.Evaluar(x));
         }
     }
 }

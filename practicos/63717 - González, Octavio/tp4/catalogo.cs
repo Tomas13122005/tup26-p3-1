@@ -298,12 +298,6 @@ static async Task<List<ProductoDto>> ObtenerProductos(HttpClient http)
     const string url = "http://localhost:3000/productos";
     return await http.GetFromJsonAsync<List<ProductoDto>>(url) ?? throw new HttpRequestException("No hay productos");
 }
-static async Task<List<MovimientoDto>> ObtenerMovimientos(HttpClient http, int id)
-{
-    string url = $"http://localhost:3000/productos/{id}/movimientos";
-    return await http.GetFromJsonAsync<List<MovimientoDto>>(url) ?? throw new HttpRequestException("No hay movimientos");
-}
-
 static async Task<ProductoDto> TraerProducto(HttpClient http, int id)
 {
     string url = $"http://localhost:3000/productos/{id}";

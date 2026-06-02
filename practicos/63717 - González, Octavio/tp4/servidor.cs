@@ -84,16 +84,14 @@ class Producto
 class Movimiento
 {
     public int Id { get; set; }
-    public int Codigo { get; set; }
+    public int ProductoId { get; set; }
     public TipoMovimiento Tipo { get; set; }
     public int Cantidad { get; set; }
     public DateTime Fecha { get; set; }
-    public int ProductoId { get; set; }
     public Producto Producto { get; set; } = null!;
-    public Movimiento(int id, int codigo, TipoMovimiento tipo, int cantidad, DateTime fecha, int productoId)
+    public Movimiento(int id, int productoId, TipoMovimiento tipo, int cantidad, DateTime fecha)
     {
         Id = id;
-        Codigo = codigo;
         Tipo = tipo;
         Cantidad = cantidad;
         Fecha = fecha;
@@ -130,6 +128,13 @@ class Repositorio
             db.Productos.Add(new Producto(0, "P001", "Yerba Mate 500g", 1500m, 100));
             db.Productos.Add(new Producto(0, "P002", "Coca Cola 2L", 2000m, 150));
             db.Productos.Add(new Producto(0, "P003", "Papas Fritas 150g", 800m, 200));
+            db.SaveChanges();
+        }
+        if (!db.Movimientos.Any())
+        {
+            db.Movimientos.Add(new Movimiento(0, 1, TipoMovimiento.compra, 10, DateTime.Now));
+            db.Movimientos.Add(new Movimiento(0, 2, TipoMovimiento.compra, 10, DateTime.Now));
+            db.Movimientos.Add(new Movimiento(0, 3, TipoMovimiento.compra, 10, DateTime.Now));
             db.SaveChanges();
         }
     }

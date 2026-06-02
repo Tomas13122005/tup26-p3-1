@@ -697,12 +697,12 @@ static class AlumnosCliActions {
     static void CargarAsistenciasHastaHoy(Alumnos alumnos, Action<string>? actualizarEstado = null) {
         actualizarEstado?.Invoke("Sincronizando WhatsApp...");
         WAppService wapp = new();
-        DateTime hoy = DateTime.Today;
+        DateOnly hoy = DateOnly.FromDateTime(DateTime.Today);
 
         DateTime desde = new(hoy.Year, 4, 1);
-        DateTime hasta = hoy.AddHours(12).AddMinutes(30);
-        Dictionary<int, HashSet<DateTime>> asistenciasPorAlumno = alumnos
-            .ToDictionary(alumno => alumno.Legajo, _ => new HashSet<DateTime>());
+        DateTime hasta = hoy.ToDateTime(new TimeOnly(13, 0));
+        Dictionary<int, HashSet<DateOnly>> asistenciasPorAlumno = alumnos
+            .ToDictionary(alumno => alumno.Legajo, _ => new HashSet<DateOnly>());
 
         foreach (var grupo in new[] { "C7", "C9" }) {
             actualizarEstado?.Invoke($"Leyendo mensajes de {grupo}...");
@@ -714,15 +714,15 @@ static class AlumnosCliActions {
 
                 if (alumno is null) { continue; }
 
-                asistenciasPorAlumno[alumno.Legajo].Add(mensaje.Fecha.Date);
+                asistenciasPorAlumno[alumno.Legajo].Add(DateOnly.FromDateTime(mensaje.Fecha));
             }
         }
 
         actualizarEstado?.Invoke("Consolidando asistencias...");
         foreach (Alumno alumno in alumnos) {
-            HashSet<DateTime> fechas = asistenciasPorAlumno[alumno.Legajo];
-            alumno.Presente = fechas.Contains(hoy.Date);
-            alumno.Asistencias = fechas.Count(fecha => fecha < hoy.Date);
+            HashSet<DateOnly> fechas = asistenciasPorAlumno[alumno.Legajo];
+            alumno.Presente = fechas.Contains(hoy);
+            alumno.Asistencias = fechas.Count(fecha => fecha < hoy);
         }
     }
 
@@ -814,7 +814,7 @@ static class AlumnosCliActions {
         TimeSpan hora = mensaje.Fecha.TimeOfDay;
         return
             dia >= DayOfWeek.Monday && dia <= DayOfWeek.Thursday &&
-            hora >= new TimeSpan(8, 0, 0) && hora <= new TimeSpan(12, 30, 0);
+                hora >= new TimeSpan(8, 0, 0) && hora <= new TimeSpan(13, 0, 0);
     }
 
     static int ContarLineasPracticoLocal(string rutaPractico) =>

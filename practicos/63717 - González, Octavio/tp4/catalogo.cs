@@ -17,10 +17,7 @@ using System.Runtime.CompilerServices;
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 #pragma warning disable CS0618
 
-
 // ── Consulta inicial al servidor ──────────────────────────────────────────
-
-
 List<ProductoDto> productos;
 try
 {
@@ -72,36 +69,91 @@ var esquemagui = new Scheme
 
     Normal = new Terminal.Gui.Drawing.Attribute(Color.Green, fondo)
 };
+
+var dialogo = new Scheme
+{
+    Normal = new Terminal.Gui.Drawing.Attribute(Color.White, Color.Green)
+};
+var esquemabotones = new Scheme
+{
+    Normal = new Terminal.Gui.Drawing.Attribute(Color.White, Color.Black),
+    Focus = new Terminal.Gui.Drawing.Attribute(Color.Black, Color.White),
+    HotNormal = new Terminal.Gui.Drawing.Attribute(Color.Red, Color.Black),
+    HotFocus = new Terminal.Gui.Drawing.Attribute(Color.Red, Color.White)
+};
+
+SchemeManager.AddScheme("esquemabotones", esquemabotones);
 SchemeManager.AddScheme("Esquemaestro", esquemaestro);
 SchemeManager.AddScheme("esquedetalle", esquedetalle);
 SchemeManager.AddScheme("gui", esquemagui);
+SchemeManager.AddScheme("dialogo", dialogo);
 
 using IApplication app = Application.Create().Init();
 using Window gui = new() { SchemeName = "gui" };
 
-int salir = 0;
 
-//Para salir 
+//Para poder ver bien el dialog cambie en la las settings del editor, la fuente de la terminal por {"terminal.integrated.fontFamily": "'Cascadia Code', Consolas, monospace"}
+
+
+//Para salir
+
+bool cerrarapp = false;
+var dialogosalir = new Dialog
+{
+    X = Pos.Center(),
+    Y = Pos.Center(),
+    Width = 50,
+    Height = 10,
+    SchemeName = "dialogo",
+
+};
+var seguro = new Label
+{
+    Text = " ¿Seguro desea salir? ",
+    X = Pos.Center(),
+    Y = Pos.Center()
+};
+
+dialogosalir.Border.LineStyle = LineStyle.Rounded;
+dialogosalir.Border.Thickness = new Thickness(1);
+
+var salir = new Button
+{
+    Title = "Salir",
+    IsDefault = true,
+    SchemeName = "esquemabotones"
+};
+var cancelar = new Button
+{
+    Title = "Cancelar",
+    SchemeName = "esquemabotones"
+};
+dialogosalir.Add(seguro);
+dialogosalir.AddButton(salir);
+dialogosalir.AddButton(cancelar);
+
 gui.KeyDown += (sender, e) =>
 {
+
     if (e.KeyCode == Key.Esc)
     {
         e.Handled = true;
-        salir = salir + 1;
-        if (salir == 2)
-        {
-            e.Handled = false;
-            app.RequestStop();
-        }
+        app.Run(dialogosalir);
+    }
+    if (cerrarapp)
+    {
+        app.RequestStop();
     }
 };
-
-var dialogosalir = new Dialog
+cancelar.Accepting += (_, e) =>
 {
-    Title = "Seguro desea salir?",
-    X = Pos.Center(),
-    Y = Pos.Center(),
-    SchemeName = "dialog"
+    app!.RequestStop();
+    e.Handled = true;
+};
+salir.Accepting += (_, e) =>
+{
+    app.RequestStop();
+    cerrarapp = true;
 };
 
 //Menu
@@ -207,10 +259,10 @@ var teclasdisponibles = new Label
 //Navegacion 
 panelmaestro.KeyDown += (sender, e) =>
 {
-    if (e.KeyCode == Key.CursorDown && panelmaestro.SelectedItem == panelmaestro.Source?.Count - 1) 
-    e.Handled = true;
+    if (e.KeyCode == Key.CursorDown && panelmaestro.SelectedItem == panelmaestro.Source?.Count - 1)
+        e.Handled = true;
     if (e.KeyCode == Key.CursorUp && panelmaestro.SelectedItem == 0)
-    e.Handled = true;
+        e.Handled = true;
 };
 
 input.KeyDown += (sender, e) =>

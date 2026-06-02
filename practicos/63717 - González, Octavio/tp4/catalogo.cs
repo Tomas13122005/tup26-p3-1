@@ -94,7 +94,6 @@ using Window gui = new() { SchemeName = "gui" };
 
 //Para poder ver bien el dialog cambie en la las settings del editor, la fuente de la terminal por {"terminal.integrated.fontFamily": "'Cascadia Code', Consolas, monospace"}
 
-
 //Para salir
 
 bool cerrarapp = false;
@@ -131,30 +130,6 @@ var cancelar = new Button
 dialogosalir.Add(seguro);
 dialogosalir.AddButton(salir);
 dialogosalir.AddButton(cancelar);
-
-gui.KeyDown += (sender, e) =>
-{
-
-    if (e.KeyCode == Key.Esc)
-    {
-        e.Handled = true;
-        app.Run(dialogosalir);
-    }
-    if (cerrarapp)
-    {
-        app.RequestStop();
-    }
-};
-cancelar.Accepting += (_, e) =>
-{
-    app!.RequestStop();
-    e.Handled = true;
-};
-salir.Accepting += (_, e) =>
-{
-    app.RequestStop();
-    cerrarapp = true;
-};
 
 //Menu
 
@@ -213,11 +188,7 @@ var panelmaestro = new ListView
 };
 
 
-panelmaestro.SetSource(new ObservableCollection<string>(productos
-.Select(p => "ID " + p.Id + " - " + p.Nombre)
-.ToList()
-));
-
+sourceabstraccion(productos);
 maestro.Add(panelmaestro);
 
 //detalle
@@ -279,11 +250,71 @@ input.KeyDown += (sender, e) =>
 gui.Add(menu, maestro, detalle, buscar, input, teclasdisponibles);
 panelmaestro.ValueChanged += async (sender, e) => await Refrescardetalle(e.NewValue);
 
+
+
+// Funciones de Terminal Gui 
+
+//para salir
+gui.KeyDown += (sender, e) =>
+{
+    if (e.KeyCode == Key.Esc)
+    {
+        e.Handled = true;
+        app.Run(dialogosalir);
+    }
+    if (cerrarapp) app.RequestStop();
+};
+cancelar.Accepting += (_, e) =>
+{
+    app!.RequestStop();
+    e.Handled = true;
+};
+salir.Accepting += (_, e) =>
+{
+    app.RequestStop();
+    cerrarapp = true;
+};
+
+//Buscador
+input.TextChanged += (sender, e) => FiltrarProductos();
+
+
 app.Run(gui);
 
+//funciones locales -----------------------------
 
-// Funciones ----------------------------------------------------
 
+void FiltrarProductos()
+{
+    string busqueda = input.Text?.Trim() ?? "";
+
+    if (string.IsNullOrWhiteSpace(busqueda))
+    {
+        sourceabstraccion(productos);
+        return;
+    }
+    var productosfiltrados = productos
+    .Where(p => p.Nombre.Contains(busqueda)
+    || 
+    p.Id.ToString().Contains(busqueda))
+    .ToList();
+    
+    sourceabstraccion(productosfiltrados);
+}
+
+void sourceabstraccion (List<ProductoDto> uso)
+{
+    panelmaestro.SetSource(new ObservableCollection<string>(uso
+    .Select(p => "ID " + p.Id + " - " + p.Nombre + " " + p.cant + p.unidadmedida)
+    .ToList()
+    ));
+}
+
+
+
+
+
+//Mostrar detalle
 async Task Refrescardetalle(int? indice)
 {
 
@@ -357,7 +388,10 @@ static async Task<ProductoDto> TraerProducto(HttpClient http, int id)
 }
 
 
+
+
+
 // ── DTO ───────────────────────────────────────────────────────────────────
 
-record ProductoDto(int Id, string Codigo, string Nombre, decimal Precio, int Stock);
+record ProductoDto(int Id, string Codigo, string Nombre, decimal Precio, int Stock, int cant, string unidadmedida);
 record MovimientoDto(int Id, int ProductoId, int Tipo, int Cantidad, DateTime Fecha);

@@ -70,14 +70,18 @@ class Producto
     public string Codigo { get; set; } = null!;
     public string Nombre { get; set; } = null!;
     public decimal Precio { get; set; }
+    public int Cant {get; set;}
+    public string Unidadmedida {get; set;}
     public int Stock { get; set; }
-    public Producto(int id, string codigo, string nombre, decimal precio, int stock)
+    public Producto(int id, string codigo, string nombre, decimal precio, int stock, int cant, string unidadmedida)
     {
         Id = id;
         Codigo = codigo;
         Nombre = nombre;
         Precio = precio;
         Stock = stock;
+        Cant = cant;
+        Unidadmedida = unidadmedida;
     }
 }
 
@@ -124,10 +128,9 @@ class Repositorio
 
         if (!db.Productos.Any())
         {
-            db.Productos.Add(new Producto(0, "P000", "", 0m, 0));
-            db.Productos.Add(new Producto(0, "P001", "Yerba Mate 500g", 1500m, 100));
-            db.Productos.Add(new Producto(0, "P002", "Coca Cola 2L", 2000m, 150));
-            db.Productos.Add(new Producto(0, "P003", "Papas Fritas 150g", 800m, 200));
+            db.Productos.Add(new Producto(0, "P001", "Yerba Mate", 1500m, 100, 500, "gr"));
+            db.Productos.Add(new Producto(0, "P002", "Coca Cola", 2000m, 150, 2000, "ml"));
+            db.Productos.Add(new Producto(0, "P003", "Papas Fritas", 800m, 200, 100, "gr"));
             db.SaveChanges();
         }
         if (!db.Movimientos.Any())

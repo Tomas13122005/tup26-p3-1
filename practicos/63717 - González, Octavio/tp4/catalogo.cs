@@ -265,7 +265,7 @@ panelmaestro.ValueChanged += async (sender, e) => await Refrescardetalle(e.NewVa
 // Funciones de Terminal Gui 
 
 //para salir
-gui.KeyDown += (sender, e) =>
+gui.KeyDown += async (sender, e) =>
 {
     if (e.KeyCode == Key.Esc)
     {
@@ -275,6 +275,76 @@ gui.KeyDown += (sender, e) =>
         e.Handled = true;
         app.Run(dialogosalir);
     }
+    else if (e.KeyCode == Key.F2)
+    {
+        e.Handled = true;
+        DialogoProducto(null);
+    }
+    else if (e.KeyCode == Key.F3)
+    {
+        e.Handled = true;
+        int indice = panelmaestro.SelectedItem ?? -1;
+        if (indice >= 0 && indice < productos.Count)
+        {
+            DialogoProducto(productos[indice]);
+        }
+        else
+        {
+            MessageBox.ErrorQuery(app, "Error", "Debe seleccionar un producto para editar.", "OK");
+        }
+    }
+    else if (e.KeyCode == Key.Delete)
+    {
+        e.Handled = true;
+        int indice = panelmaestro.SelectedItem ?? -1;
+        if (indice >= 0 && indice < productos.Count)
+        {
+            var prod = productos[indice];
+            int confirmacion = MessageBox.Query(app, "Confirmar eliminación", $"¿Seguro que desea eliminar el producto \"{prod.Nombre}\"?", "Sí", "No") ?? 1;
+            if (confirmacion == 0)
+            {
+                try
+                {
+                    using var http = new HttpClient();
+                    bool eliminado = await EliminarProducto(http, prod.Id);
+                    if (eliminado)
+                    {
+                        productos = await ObtenerProductos(http);
+                        sourceabstraccion(productos);
+                        await Refrescardetalle(null);
+                    }
+                    else
+                    {
+                        MessageBox.ErrorQuery(app, "Error", "No se pudo eliminar el producto en el servidor.", "OK");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.ErrorQuery(app, "Error", $"Error de conexión: {ex.Message}", "OK");
+                }
+            }
+        }
+        else
+        {
+            MessageBox.ErrorQuery(app, "Error", "Debe seleccionar un producto para eliminar.", "OK");
+        }
+    }
+    else if (e.KeyCode == Key.F6)
+    {
+        e.Handled = true;
+        DialogoMovimiento(1);
+    }
+    else if (e.KeyCode == Key.F7)
+    {
+        e.Handled = true;
+        DialogoMovimiento(2);
+    }
+    else if (e.KeyCode == Key.F8)
+    {
+        e.Handled = true;
+        DialogoMovimiento(3);
+    }
+
     if (cerrarapp) app.RequestStop();
 };
 cancelar.Accepting += (_, e) =>

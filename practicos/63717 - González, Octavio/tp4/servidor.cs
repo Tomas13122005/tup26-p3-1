@@ -193,7 +193,7 @@ class Repositorio
 
     async public Task<Movimiento> RegistrarMov (int productoid,Movimiento mov)
     {
-        var producto = db.Productos.FirstOrDefault(p => p.Id == productoid);
+        var producto = await db.Productos.FindAsync(productoid);
 
         if (producto is null) return null!;
         if (mov.Tipo == TipoMovimiento.compra) producto.Stock += mov.Cantidad;

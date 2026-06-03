@@ -755,9 +755,9 @@ async Task Refrescardetalle(int? indice)
 
         Descripcion:   {m.ProductoId}
 
-        Cantidad:      {m.Cantidad}
+        Cantidad:      {(m.Tipo == 2 ? $"-{m.Cantidad}" : $"+{m.Cantidad}")}
 
-        Stock :         unidades
+        Stock : {prodseleccionado.Stock} unidades
 
         Fecha:         {m.Fecha}
         

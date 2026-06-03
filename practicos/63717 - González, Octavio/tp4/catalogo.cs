@@ -182,7 +182,7 @@ var maestro = new FrameView
     X = 0,
     Y = 4,
     Width = 25,
-    Height = Dim.Percent(90),
+    Height = Dim.Fill(2),
     SchemeName = "Esquemaestro",
     CanFocus = true
 
@@ -216,7 +216,7 @@ detalle = new FrameView
     X = Pos.Right(maestro),
     Y = Pos.Top(maestro),
     Width = Dim.Fill(),
-    Height = Dim.Percent(90),
+    Height = Dim.Fill(2),
     SchemeName = "esquedetalle",
     CanFocus = false
 };
@@ -236,12 +236,12 @@ detalle.Add(listadetalles, buscar);
 
 var teclasdisponibles = new Label
 {
-    Text = "teclas disponibles",
-    X = Pos.Right(detalle),
+    Text = " F2: Agregar | F3: Editar | Del: Eliminar | F6: Compra | F7: Venta | F8: Ajuste | Esc: Salir",
+    X = 0,
     Y = Pos.Bottom(maestro),
     Width = Dim.Fill(),
-    Height = Dim.Fill(),
-    SchemeName = "esquedetalle",
+    Height = 1,
+    SchemeName = "Esquemaestro",
 };
 
 //Navegacion 

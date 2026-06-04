@@ -350,6 +350,7 @@ static class AlumnosCliActions {
         string carpetaTp = CarpetaTrabajoPractico(numeroTp);
         string rutaEnunciado = AppPaths.EnunciadoPracticoDirectory(carpetaTp);
         int lineasEnunciado = ObtenerLineasBaseEnunciado(numeroTp, carpetaTp, rutaEnunciado, alumnos);
+        HashSet<string> lineasCodigoEnunciado = ObtenerLineasCodigoNormalizadas(rutaEnunciado);
 
         Log.Info($"{carpetaTp.ToUpperInvariant()} | líneas base del enunciado: {lineasEnunciado}");
         List<TrabajoPresentadoLocal> trabajosPresentados = new();
@@ -372,7 +373,9 @@ static class AlumnosCliActions {
                     Estado estado = Estado.Desaprobado;
                     if (PracticoParecePresentado(numeroTp, lineasTotales, lineasAgregadas)) {
                         estado = Estado.Aprobado;
-                        trabajosPresentados.Add(new(alumno, rutaPractico, ObtenerLineasCodigoNormalizadas(rutaPractico)));
+                        HashSet<string> lineasCodigo = ObtenerLineasCodigoNormalizadas(rutaPractico);
+                        lineasCodigo.ExceptWith(lineasCodigoEnunciado);
+                        trabajosPresentados.Add(new(alumno, rutaPractico, lineasCodigo));
                     }
 
                     alumno.Practico(numeroTp, estado);

@@ -182,8 +182,8 @@ static class AlumnosManager {
     }
 
     public static void Listar(IEnumerable<Alumno> alumnos, string titulo = "Listado de Alumnos") {
-        string[] campos = ["Legajo", "Nombre y Apellido", "Teléfono", "Foto", "GitHub", "Prácticos", "Ex", "Pr", "Nr", "Nota"];
-        string[] guiones = campos.Select(c => new string('-', 40)).ToArray();
+        string[] campos = ["Legajo", "Nombre y Apellido", "Teléfono", "GitHub", "Prácticos", "Exm", "Prs", "Ast", "Nta"];
+        string[] guiones = ["------", "------------------------------", "-------------", "-------------------------", "----------", "---", "---", "---", "---"];
 
         string comision = "";
         if (!alumnos.Any()) {
@@ -193,15 +193,13 @@ static class AlumnosManager {
 
         List<Alumno> alumnosOrdenados = alumnos.OrderBy(a => a.Comision).ThenBy(a => a.NombreCompleto).ThenBy(a => a.Legajo).ToList();
 
-        string encabezado = FormatearFilaTabla(campos);
-
         Log.WriteLine($"[blue]=== {titulo.ToUpper()} ===");
 
         foreach (var a in alumnosOrdenados) {
             if (a.Comision != comision) {
                 comision = a.Comision;
                 Log.WriteLine($"\n[yellow]== {comision} ({alumnosOrdenados.Count(x => x.Comision == comision)}) ==");
-                Log.WriteLine($"{FormatearFilaTabla(campos)}\n[blue]{FormatearFilaTabla(guiones)}");
+                Log.WriteLine($"{FormatearFilaTablaListado(campos)}\n[blue]{FormatearFilaTablaListado(guiones)}");
             }
             Log.WriteLine(FormatearFilaListado(a));
         }
@@ -559,6 +557,12 @@ static class AlumnosManager {
         return FormatearFilaConAnchos(anchos, separadores, columnas).TrimEnd();
     }
 
+    static string FormatearFilaTablaListado(params string?[] columnas) {
+        int[] anchos = [6, 30, 13, 25, 10, 3, 3, -2, -3];
+        string[] separadores = ["  ", "  ", "   ", "  ", "   ", "   ", "   ", "  "];
+        return FormatearFilaConAnchos(anchos, separadores, columnas).TrimEnd();
+    }
+
     static string FormatearFilaConAnchos(int[] anchos, params string?[] columnas) {
         string[] separadores = Enumerable.Repeat("  ", Math.Max(0, columnas.Length - 1)).ToArray();
         return FormatearFilaConAnchos(anchos, separadores, columnas);
@@ -658,7 +662,7 @@ static class AlumnosManager {
     }
 
     static string FormatearFilaListado(Alumno a) {
-        return FormatearFilaTabla(a.Legajo.ToString(), a.NombreCompleto, a.Telefono, a.GitHub, a.practicos.ToString(12), a.examenes.ToString(4), a.Presente.ToSiNo(), a.Asistencias.ToString(), a.Nota.ToString());
+        return FormatearFilaTablaListado(a.Legajo.ToString(), a.NombreCompleto, a.Telefono, a.GitHub, a.practicos.ToString(10), a.examenes.ToString(4), a.Presente.ToSiNo(), a.Asistencias.ToString(), a.Nota.ToString());
     }
 
     static string FormatearFilaEstadoInformer(Alumno alumno) {

@@ -36,8 +36,7 @@ static class AlumnosCliActions {
         int actualizados = AlumnosManager.SincronizarEstadoFotosDesdeCarpetas(alumnos);
 
         if (actualizados > 0) {
-            AlumnosManager.Escribir(alumnos, AppPaths.ArchivoAlumnos);
-            Log.Info($"Estado de foto actualizado en alumnos.md: {actualizados} alumno(s).");
+            Log.Info($"Estado de foto actualizado desde carpetas: {actualizados} alumno(s).");
         } else {
             Log.Info("No hubo cambios en el estado de fotos al revisar carpetas.");
         }

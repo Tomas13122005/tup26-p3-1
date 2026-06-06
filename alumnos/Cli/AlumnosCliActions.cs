@@ -36,6 +36,7 @@ static class AlumnosCliActions {
     }
 
     public static int LimpiarProyectosPracticos() {
+        PrepararCarpetasAlumnos();
         LimpiezaCompilacionPracticosResultado resultado = AppPaths.LimpiarDirectoriosCompilacionPracticos();
         IReadOnlyList<string> elementosEliminados = resultado.ElementosEliminados;
         IReadOnlyList<string> elementosRestantes = resultado.ElementosRestantes;
@@ -91,12 +92,6 @@ static class AlumnosCliActions {
         return 0;
     }
 
-    public static int CrearCarpetas() {
-        Alumnos alumnos = CargarAlumnos();
-        AlumnosManager.CrearCarpetas(alumnos);
-        return 0;
-    }
-
     public static int PublicarPractico(string trabajoPractico, bool forzar) {
         int numeroTp = ObtenerNumeroTP(trabajoPractico);
         if (numeroTp <= 0) {
@@ -110,7 +105,7 @@ static class AlumnosCliActions {
             return 1;
         }
 
-        Alumnos alumnos = CargarAlumnos();
+        Alumnos alumnos = CargarAlumnosConCarpetasPreparadas();
         Log.Info($"Publicando {carpetaTp.ToUpperInvariant()} desde {AppPaths.EnunciadoPracticoDirectory(carpetaTp)}");
         AlumnosManager.PublicarPractico(alumnos, carpetaTp, forzar);
         return 0;
@@ -177,6 +172,7 @@ static class AlumnosCliActions {
             return 1;
         }
 
+        PrepararCarpetasAlumnos();
         GitHub gh = new();
         List<(int Numero, string Titulo)> prs = EjecutarConIndicador(
             "Bajar PRs",
@@ -272,7 +268,6 @@ static class AlumnosCliActions {
     }
 
     public static int RevisarPresentados(string trabajoPractico) {
-        Alumnos alumnos = CargarAlumnos();
         int numeroTp = ObtenerNumeroTP(trabajoPractico);
 
         if (numeroTp <= 0) {
@@ -280,6 +275,7 @@ static class AlumnosCliActions {
             return 1;
         }
 
+        Alumnos alumnos = CargarAlumnosConCarpetasPreparadas();
         string carpetaTp = CarpetaTrabajoPractico(numeroTp);
         string rutaEnunciado = AppPaths.EnunciadoPracticoDirectory(carpetaTp);
         int lineasEnunciado = ObtenerLineasBaseEnunciado(numeroTp, carpetaTp, rutaEnunciado, alumnos);
@@ -457,6 +453,15 @@ static class AlumnosCliActions {
 
     static string ResolverRuta(string? ruta, string rutaPorDefecto) =>
         string.IsNullOrWhiteSpace(ruta) ? rutaPorDefecto : ruta;
+
+    static void PrepararCarpetasAlumnos() =>
+        CargarAlumnosConCarpetasPreparadas();
+
+    static Alumnos CargarAlumnosConCarpetasPreparadas() {
+        Alumnos alumnos = CargarAlumnos();
+        AlumnosManager.CrearCarpetas(alumnos);
+        return alumnos;
+    }
 
     static string CarpetaTrabajoPractico(int numeroTp) => $"tp{numeroTp}";
 

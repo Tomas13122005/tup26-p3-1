@@ -23,8 +23,6 @@ static class AlumnosCliApp {
                 .WithDescription("Exporta la lista a vCard.");
             config.AddCommand<InformerEstadoCommand>("informar-estado")
                 .WithDescription("Publica el estado resumido en el README.md del repositorio.");
-            config.AddCommand<CrearCarpetasCommand>("crear-carpetas")
-                .WithDescription("Crea o normaliza las carpetas de prácticos.");
             config.AddCommand<PublicarCommand>("publicar")
                 .WithDescription("Publica el enunciado de un trabajo práctico en la carpeta de cada alumno.");
             config.AddCommand<PrsCommand>("prs")
@@ -102,7 +100,6 @@ static class AlumnosCliApp {
             "json" => "Exportar alumnos a JSON",
             "vcf" => "Exportar alumnos a vCard",
             "informar-estado" => "Informar estado",
-            "crear-carpetas" => "Crear carpetas",
             "publicar" => $"Publicar práctico{detalle}",
             "prs" => "Revisar pull requests",
             "normalizar-prs" => "Normalizar PRs",
@@ -133,7 +130,6 @@ static class AlumnosCliApp {
             "listar" => ["listar"],
             "auditoria" => SolicitarMenuAuditoria(),
             "exportar" => SolicitarMenuExportar(),
-            "crear-carpetas" => ["crear-carpetas"],
             "publicar" => ConstruirArgumentosPublicarPractico(),
             "prs" => SolicitarMenuPrs(),
             "asistencias" => SolicitarMenuAsistencias(),
@@ -227,7 +223,6 @@ static class AlumnosCliApp {
             new("listar",         "Listar",                 "Mostrar todos los alumnos"),
             new("auditoria",      "Auditoría",              "Revisar datos faltantes o incompletos"),
             new("exportar",       "Exportar",               "Guardar o exportar en distintos formatos"),
-            new("crear-carpetas", "Crear carpetas",         "Crear o normalizar carpetas de alumnos"),
             new("publicar",       "Publicar práctico",      "Copiar el enunciado de un TP a cada alumno"),
             new("prs",            "Presentaciones",         "Operaciones sobre pull requests y prácticos"),
             new("salir",          "Salir",                  "Cerrar la aplicación")

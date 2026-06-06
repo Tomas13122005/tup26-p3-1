@@ -72,11 +72,6 @@ sealed class InformerEstadoCommand : Command<VacioSettings> {
         AlumnosCliActions.PublicarEstadoInformer();
 }
 
-sealed class CrearCarpetasCommand : Command<VacioSettings> {
-    protected override int Execute(CommandContext context, VacioSettings settings, CancellationToken cancellationToken) =>
-        AlumnosCliActions.CrearCarpetas();
-}
-
 sealed class PublicarCommand : Command<PublicarPracticoSettings> {
     protected override int Execute(CommandContext context, PublicarPracticoSettings settings, CancellationToken cancellationToken) =>
         AlumnosCliActions.PublicarPractico(settings.TrabajoPractico, settings.Forzar);

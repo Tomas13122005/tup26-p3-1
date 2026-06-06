@@ -50,7 +50,8 @@ dotnet run -- revisar-presentados 3
 
 ### Carpetas y enunciados
 
-- `crear-carpetas`: crea o normaliza las carpetas de prácticos de cada alumno.
+Las carpetas de alumnos se crean o normalizan automáticamente antes de los comandos que las recorren o modifican.
+
 - `publicar <tp> [--forzar]`: copia el enunciado del práctico indicado a la carpeta de cada alumno.
 
 ### Pull requests y presentaciones

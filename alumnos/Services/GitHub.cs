@@ -139,7 +139,7 @@ class GitHub {
             if (partes.Length != 2) { continue; }
             string practico = partes[0];
             string titulo = partes[1];
-            if (tp != 0 && GitHub.ExtraerTP(titulo) != tp) { continue; }
+            if (tp != 0 && !GitHub.ExtraerTPs(titulo).Contains(tp)) { continue; }
             if (!int.TryParse(practico, out int numero)) { continue; }
 
             prs.Add((numero, titulo));
@@ -328,7 +328,10 @@ class GitHub {
 
         return ListarArchivos(numeroPR)
             .Select(NormalizarRutaRemota)
-            .Where(nombreRemoto => TryObtenerRutaRelativaDirectorio(nombreRemoto, carpetaAlumno, carpetaRemota, out _))
+            .Select(nombreRemoto => TryObtenerRutaRelativaDirectorio(nombreRemoto, carpetaAlumno, carpetaRemota, out string rutaRelativa)
+                ? $"{carpetaRemota}/{rutaRelativa}"
+                : string.Empty)
+            .Where(rutaRelativa => !string.IsNullOrWhiteSpace(rutaRelativa))
             .ToList();
     }
 
@@ -566,7 +569,7 @@ class GitHub {
         }
 
         List<(int Numero, string Titulo)> prs = PullRequests(soloAbiertos: true)
-            .Where(pr => ExtraerTP(pr.Titulo) == numeroTP)
+            .Where(pr => ExtraerTPs(pr.Titulo).Contains(numeroTP))
             .ToList();
 
         if (prs.Count == 0) {
@@ -795,7 +798,26 @@ class GitHub {
 
     public static int ExtraerTP(string titulo) {
         Match match = Regex.Match(titulo, @"\bTP\s*-?\s*\d+\b", RegexOptions.IgnoreCase);
-        return match.Success ? int.Parse(match.Value[2..].Replace("-", "").Trim()) : 0;
+        return match.Success ? int.Parse(Regex.Match(match.Value, @"\d+").Value) : 0;
+    }
+
+    public static List<int> ExtraerTPs(string titulo) {
+        Match match = Regex.Match(titulo, @"\bTP\s*-?\s*(\d+)\b", RegexOptions.IgnoreCase);
+        if (!match.Success) {
+            return new();
+        }
+
+        string digitos = match.Groups[1].Value;
+        if (digitos.Length <= 1) {
+            return [int.Parse(digitos)];
+        }
+
+        return digitos
+            .Select(caracter => caracter - '0')
+            .Where(numero => numero > 0)
+            .Distinct()
+            .Order()
+            .ToList();
     }
 
 

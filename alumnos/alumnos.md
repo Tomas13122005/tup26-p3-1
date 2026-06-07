@@ -43,7 +43,7 @@ Legajo  Nombre y Apellido               Teléfono        GitHub                 
 63300   Álvarez, Hernán Fabricio        (381)581-4086   hernancarpalvarez28        🟢🟢🟢🟢⚪️⚪️   🟢⚪️   No    17   10
 63313   Ávila Puntano, Benjamín         (381)329-6643   santiagobnj-avila-pun      🟢🟢🟢🟢⚪️⚪️   🟢⚪️   No    19   10
 63222   Bajre Martínez, Julián          (381)351-9652   julianbajre-png            🟢🟢🟢🟢⚪️⚪️   🟢⚪️   No    18    7
-61801   Benega, Maximiliano Abraham     (381)505-9048   abrahambenega              🔴🔴🟢🟢⚪️⚪️   🟢⚪️   No    15    6
+61801   Benega, Maximiliano Abraham     (381)505-9048   abrahambenega              🟢🔴🟢🟢⚪️⚪️   🟢⚪️   No    15    6
 63493   Busnelli, Bruno                 (381)366-0607   brunobusnelli              🟢🟢🔴🔴⚪️⚪️   🟢⚪️   No     8   10
 63150   Carlino, Joaquín                (381)605-7383   vincent-coffe              🟢🟢🟢🔴⚪️⚪️   🟡⚪️   No     7   10
 63341   Carrer, Juan Cruz               (381)632-5727   juancarrer11               🟢🟢🟢🟢⚪️⚪️   🟢⚪️   No    15   10
@@ -77,5 +77,5 @@ Legajo  Nombre y Apellido               Teléfono        GitHub                 
 63232   Roldan, Enzo Joaquín            (381)565-4292   roldanebzo                 🟢🟢🟢🔴⚪️⚪️   🟢⚪️   No    18    5
 63216   Sánchez, Sofía Micaela          (381)342-9672   sofisanchez126             🟢🟢🟢🟢⚪️⚪️   🟢⚪️   No    20   10
 63207   Saravia, César Nahum            (381)612-1173   nahum-saravia              🟢🟢🟢🟢⚪️⚪️   🟢⚪️   No    18   10
-61026   Thompson, María José            (381)448-3445   mariajosethompson0-eng     🟢🟢🟢🔴⚪️⚪️   🟢⚪️   No    19    9
+61026   Thompson, María José            (381)448-3445   mariajosethompson0-eng     🟢🟢🟢🟢⚪️⚪️   🟢⚪️   No    19    9
 ```

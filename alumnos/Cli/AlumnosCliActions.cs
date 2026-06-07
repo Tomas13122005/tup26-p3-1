@@ -168,15 +168,18 @@ static class AlumnosCliActions {
             int cantidadCommits = gh.Commits(pr.Numero).Count;
             string estado = detallePr.Estado == "open" ? "abierto" : detallePr.Estado == "closed" ? "cerrado" : "sin dato";
             string mergeable = detallePr.EsMergeable ? "mergeable" : "con conflictos";
-            int tp = GitHub.ExtraerTP(pr.Titulo);
-            string carpetaTp = tp > 0 ? $"tp{tp}" : string.Empty;
-            List<string> archivosTp = string.IsNullOrWhiteSpace(carpetaTp)
-                ? new()
-                : gh.ListarArchivosDirectorio(pr.Numero, alumno.CarpetaNombre, carpetaTp);
+            List<int> tps = GitHub.ExtraerTPs(pr.Titulo);
+            List<string> archivosTp = tps
+                .SelectMany(tp => gh.ListarArchivosDirectorio(pr.Numero, alumno.CarpetaNombre, $"tp{tp}"))
+                .OrderBy(ruta => ruta, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            string etiquetaTp = tps.Count == 0
+                ? "TP?"
+                : string.Join("", tps.Select(tp => $"TP{tp}"));
 
             Console.ForegroundColor = detallePr.EsMergeable ? ConsoleColor.Green : ConsoleColor.Red;
-            Console.BackgroundColor = cantidadArchivos < 10 ? ConsoleColor.Black : ConsoleColor.DarkRed;
-            Log.WriteLine($"PR #{pr.Numero:000} | {legajo} | {alumno.NombreCompleto,-40} | A:{cantidadArchivos,4} | L:{cantidadLineas,4} | C:{cantidadCommits,2} | {estado} | {mergeable,-15} | TP{tp}");
+            Console.BackgroundColor = cantidadArchivos < 20 ? ConsoleColor.Black : ConsoleColor.DarkRed;
+            Log.WriteLine($"PR #{pr.Numero:000} | {legajo} | {alumno.NombreCompleto,-40} | A:{cantidadArchivos,4} | L:{cantidadLineas,4} | C:{cantidadCommits,2} | {estado} | {mergeable,-15} | {etiquetaTp}");
             foreach (string archivo in archivosTp) {
                 Log.WriteLine($"  - {archivo}");
             }

@@ -3,7 +3,7 @@
 ## Agenda de Contactos con Blazor, EF Core y SQLite
 
 > [!IMPORTANT]
-> Plazo para entregar el TP4: **Sabado 12 de Junio hasta las 23:59hs**
+> Plazo para entregar el TP4: **Sabado 13 de Junio hasta las 23:59hs**
 >*El trabajo es estrictamente individual y debe ser realizado en persona por el alumno*
 
 
@@ -71,19 +71,6 @@ El panel maestro deberá presentar la colección de contactos disponibles.
 
 El panel de detalle deberá mostrar la información correspondiente al contacto seleccionado.
 
-Una organización posible es:
-
-```text
-┌──────────────────────────────────────────────┐
-│ Agenda de contactos                          │
-├───────────────────┬──────────────────────────┤
-│ Lista de contactos│ Detalle del contacto     │
-│                   │                          │
-│ Contacto A        │ Información completa     │
-│ Contacto B        │ Acciones disponibles     │
-│ Contacto C        │                          │
-└───────────────────┴──────────────────────────┘
-```
 
 El diseño no necesita ser visualmente complejo, pero debe ser claro, ordenado y funcional.
 
@@ -92,8 +79,6 @@ A modo de referencia, las siguientes imágenes muestran un ejemplo de cómo podr
 | Vista de detalle                              | Edición de un contacto                |
 |:---------------------------------------------:|:-------------------------------------:|
 | ![Vista de detalle del contacto](detalle.png) | ![Edición de un contacto](editar.png) |
-
-Las imágenes son solo ilustrativas; el diseño final queda a criterio del estudiante.
 
 ---
 

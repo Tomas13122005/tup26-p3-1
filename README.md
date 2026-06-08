@@ -1,120 +1,180 @@
-﻿# Programación 3
+﻿# TP5: AgendaWeb
+  
+## Agenda de Contactos con Blazor, EF Core y SQLite
 
->[!IMPORTANT]
-> Está publicado el TP4: Catálogo REST.
-> Deben presentarlo hasta el martes 2 de junio.
-
-(Ver enunciado completo: [enunciados/tp4/enunciado.md](enunciados/tp4/enunciado.md))
-(Ver instrucción de entrega: [como-entregar-practico.md](como-entregar-practico.md))
-
-
-# ¿Cómo aprobar la materia?
-
-Para aprobar la materia se debe asistir, presentar los prácticos y aprobar los parciales.
-Dependiendo del desempeño en cada uno de estos aspectos, el alumno podrá quedar libre, regular o promocionar la materia.
-
-## ¿Cómo regularizo la materia?
-- Debe tener al menos 15 asistencias a clase verificadas.
-- Debe aprobar al menos 3 trabajos prácticos.
-- Debe aprobar ambos parciales con 4 o más.
-
-## ¿Cómo promociono la materia?
-- Debe tener al menos 30 asistencias a clase verificadas.
-- Debe aprobar todos los trabajos prácticos.
-- Debe aprobar ambos parciales con 8 o más.
-- Los trabajos prácticos se contabilizarán como 2 asistencias a clase, a los fines de la promoción.
-
-
-## Sobre la asistencia a clase
-- La materia es presencial; la asistencia es obligatoria.
-- Los trabajos prácticos aprobados se pueden considerar como asistencia a clase a los fines de la promoción.
-- A la fecha, quedan 15 clases para finalizar el cursado.
-
-
-## Sobre la evaluación de los trabajos prácticos
-- Los trabajos prácticos serán aprobados o rechazados en función de que se ejecuten sin error. 
-- No se les dará una nota numérica.
-- El trabajo es *estrictamente individual* y debe ser realizado en persona por el alumno.
-- La práctica se realizará en la computadora del alumno.
-- El alumno tiene libertad para usar cualquier recurso de aprendizaje, pero *no podrá usar la IA para hacer* los trabajos prácticos.
-
-
-## ¿Cómo se evaluarán los parciales?
-- Los alumnos que tengan todos los prácticos aprobados y no alcancen la nota para la promoción podrán rendir un recuperatorio del primer parcial para mejorar su nota.
-- El último trabajo práctico actuará como examen final, que deberá defenderse en forma presencial ante el docente.
-- Si el sistema ejecuta sin error el trabajo práctico, la nota será un 5.
-- La defensa consistirá en la resolución de 5 consignas; cada una le dará un punto, por lo que podrá obtener hasta un 10.
-- La consigna consistirá en explicar el código y/o realizar cambios en él para resolver un problema o agregar una funcionalidad.
-- La defensa se realizará en la fecha acordada para cada grupo, en forma pública y presencial.
-
-
-## Recuperación Trabajos prácticos
-
-Dada la enorme cantidad de irregularidades detectadas en el TP3, se procedió a analizar detalladamente los trabajos prácticos anteriores.
-
-## Rehacer TP3 _(para Promocionar)_
 > [!IMPORTANT]
-> Plazo para entregar el TP3: 
-> **sábado 29 de mayo**
-
-```text
-Legajo  Alumno                     TP     As.  1P  Grupos
-------  -------------------------- -----  ---  --  ------
-61161   González, Thomas Ezequiel  🟢🟢🟠   10   5  - - C
-63207   Saravia, César Nahum       🟢🟢🟠    9  10  - - B
-63213   Marina Noguera, Morena     🟢🟢🟠   11   9  - - C
-63216   Sánchez, Sofía Micaela     🟢🟢🟠   11  10  - - B
-63300   Álvarez, Hernán Fabricio   🟢🟢🟠    9  10  - - B
-63354   Perondi, Luciano           🟢🟢🟠    8  10  - - A
-63456   Ávila Lahr, Joaquín        🟢🟢🟠   12  10  - - A
-```
+> Plazo para entregar el TP5: **Sabado 13 de Junio hasta las 23:59hs**
+> 
+> *El trabajo es estrictamente individual y debe ser realizado en persona por el alumno*
 
 
-## Rehacer TP1 _(para Promocionar)_
-> [!IMPORTANT]
-> Plazo para entregar el TP1: 
-> **sábado 29 de mayo**
+## Descripción general
+
+El trabajo práctico consiste en desarrollar una aplicación web para gestionar una agenda de contactos.
+
+La aplicación deberá construirse utilizando **Blazor** para la interfaz de usuario, **Entity Framework Core** para el acceso a datos y **SQLite** como motor de base de datos.
+
+El sistema deberá permitir administrar contactos mediante operaciones básicas de alta, consulta, modificación y eliminación.
+
+---
+
+## Objetivo
+
+El objetivo del trabajo es integrar los conceptos fundamentales del desarrollo de una aplicación web con persistencia de datos.
+
+La solución deberá permitir:
+
+- Construir una interfaz web con Blazor.
+- Representar contactos mediante un modelo de datos.
+- Persistir la información en una base de datos SQLite.
+- Acceder a los datos mediante Entity Framework Core.
+- Implementar operaciones CRUD sobre los contactos.
+- Organizar la interfaz con un diseño maestro/detalle.
+
+---
+
+## Alcance funcional
+
+La aplicación deberá permitir gestionar una agenda de contactos.
+
+Cada contacto deberá representar una persona o entidad registrada en el sistema, con la información necesaria para su identificación y comunicación.
+
+Cada contacto deberá registrar los siguientes datos:
+
+- **Nombre**: nombre de la persona o entidad.
+- **Apellido**: apellido de la persona.
+- **Teléfono**: número de contacto telefónico.
+- **Correo electrónico**: dirección de correo para su comunicación.
+- **Empresa**: empresa u organización a la que pertenece el contacto.
+- **Cargo**: puesto o función que desempeña el contacto.
+- **Dirección**: domicilio o dirección postal del contacto.
+- **Fecha de nacimiento**: fecha de nacimiento del contacto (dato opcional).
+- **Notas**: comentarios o información adicional sobre el contacto (dato opcional).
+
+Cada contacto contará además con un identificador interno, gestionado automáticamente por el sistema, que permitirá distinguirlo de manera unívoca.
+
+La aplicación deberá permitir:
+
+- Crear nuevos contactos.
+- Visualizar la lista de contactos existentes.
+- Seleccionar un contacto para ver su información detallada.
+- Modificar la información de un contacto.
+- Eliminar contactos.
+- Buscar o filtrar contactos dentro de la agenda.
+
+---
+
+## Diseño de interfaz
+
+La interfaz deberá organizarse siguiendo un esquema **maestro/detalle**.
+
+El panel maestro deberá presentar la colección de contactos disponibles.
+
+El panel de detalle deberá mostrar la información correspondiente al contacto seleccionado.
 
 
-```text
-Legajo  Alumno                     TP     As.  1P  Grupos
-------  -------------------------- -----  ---  --  ------
-62844   Guzmán, Luciano Leonel     🟠🟢🟢   11  10  D - -
-63182   González Rojas, Emmanuel   🟠🟢🟢   13  10  D - -
-63397   Vercellone, Tomás          🟠🟢🔴   10   9  B - -
-63493   Busnelli, Bruno            🟠🟢🔴    6  10  E - -
-63647   Paz, Valentina             🟠🟢🟢    9  10  B - -
-```
+El diseño no necesita ser visualmente complejo, pero debe ser claro, ordenado y funcional.
 
+A modo de referencia, las siguientes imágenes muestran un ejemplo de cómo podría verse la aplicación: la vista de detalle de un contacto y el formulario de edición.
 
-## Rehacer TP1 y TP2 _(para Promocionar)_
-> [!IMPORTANT]
-> Plazo para entregar el TP1 y TP2:
-> **miércoles 2 de junio**
+| Vista de detalle                              | Edición de un contacto                |
+|:---------------------------------------------:|:-------------------------------------:|
+| ![Vista de detalle del contacto](detalle.png) | ![Edición de un contacto](editar.png) |
 
+---
 
-```text
-Legajo  Alumno                     TP     As.  1P  Grupos
-------  -------------------------- -----  ---  --  ------
-61026   Thompson, María José       🟠🟠🟢   12   9  F C -
-61490   Valdez Bustamante, Tomás   🟠🟠🔴   13  13  A A -
-63150   Carlino, Joaquín           🟠🟠🔴   13  13  A A -
-```
+## Persistencia de datos
 
+La información de los contactos deberá almacenarse en una base de datos SQLite.
 
-## Rehacer TP1, TP2 y TP3 _(para No Recursar)_
-> [!IMPORTANT]
-> Plazo para entregar el TP1, TP2 y TP3: **sábado 5 de junio**
+El acceso a la base de datos deberá realizarse mediante Entity Framework Core.
 
-```text
-Legajo  Alumno                     TP     As.  1P  Grupos
-------  -------------------------  -----  ---  --  ------
-61489   Gómez, Tomás               🟠🟠🟠   12   9  F C C
-61641   Figueroa, Nahuel Ramón     🟠🟠🟠   11   4  F C C
-61801   Benega, Maximiliano        🟠🟠🟠    7   6  F C C
-63218   Cortés, Guillermo Augusto  🟠🟠🟠   11  10  G B B
-63341   Carrer, Juan Cruz          🟠🟠🟠    8  10  G B B
-63345   García, Franco Tomás       🟠🟠🟠    6  10  E B B
-63494   Medina, Lourdes Natalia    🟠🟠🟠    9  10  C D B
-63737   Galván, Rocío Julieta      🟠🟠🟠   10  10  G D B
-```
+La aplicación deberá definir las entidades necesarias, el contexto de base de datos y la lógica requerida para consultar y modificar los datos.
+
+---
+
+## Operaciones principales
+
+La aplicación deberá implementar las operaciones básicas de administración de contactos:
+
+### Crear
+
+Debe ser posible registrar un nuevo contacto en la agenda.
+
+### Consultar
+
+Debe ser posible visualizar los contactos existentes y acceder al detalle de cada uno.
+
+### Modificar
+
+Debe ser posible editar la información de un contacto previamente registrado.
+
+### Eliminar
+
+Debe ser posible eliminar contactos existentes de la agenda.
+
+### Buscar
+
+Debe ser posible buscar o filtrar contactos para facilitar la navegación dentro de la agenda.
+
+---
+
+## Organización del proyecto
+
+La solución deberá estar organizada de manera clara, separando responsabilidades entre las distintas partes de la aplicación.
+
+Se espera una separación razonable entre:
+
+- Modelo de datos.
+- Acceso a datos.
+- Lógica de aplicación.
+- Componentes de interfaz.
+- Páginas o vistas principales.
+
+La estructura concreta queda a criterio del estudiante, siempre que resulte comprensible y mantenible.
+
+---
+
+## Criterios generales de evaluación
+
+Se evaluará que la aplicación:
+
+- Implemente correctamente las operaciones CRUD.
+- Utilice Blazor para construir la interfaz.
+- Utilice Entity Framework Core para el acceso a datos.
+- Persista la información en SQLite.
+- Organice la interfaz mediante un esquema maestro/detalle.
+- Permita buscar o filtrar contactos.
+- Mantenga una organización clara del código.
+- Presente una experiencia de uso simple y coherente.
+
+---
+
+## Consideraciones finales
+
+El propósito del trabajo es construir una aplicación simple pero completa, que permita integrar interfaz, lógica de aplicación y persistencia de datos.
+
+La prioridad será la correcta implementación funcional y la claridad de la solución.
+
+---
+
+## Cómo comenzar el desarrollo
+
+El proyecto se entrega como un punto de partida mínimo que ya incluye:
+
+- Una aplicación **Blazor** básica con **Bootstrap** configurado, cuya página principal muestra el título *TP5: AgendaWeb*.
+- El **modelo de datos** `Contacto`, con los campos descriptos en este enunciado.
+- Una base de datos **SQLite** (`contactos.db`) con **20 contactos de ejemplo** ya cargados.
+- La librería de acceso a datos (**EF Core para SQLite**) ya referenciada en el proyecto.
+
+A partir de allí, los pasos sugeridos para comenzar son:
+
+1. **Verificar el entorno**: tener instalado el SDK de .NET 10.
+2. **Restaurar las dependencias** del proyecto (`dotnet restore`).
+3. **Ejecutar la aplicación** (`dotnet run`) y abrir en el navegador la dirección indicada en la consola. Debería verse la página inicial con el título centrado.
+4. **Configurar el acceso a datos**: definir el contexto de base de datos (DbContext) que exponga la colección de contactos apuntando a `contactos.db`, y registrarlo en el arranque de la aplicación.
+5. **Construir la interfaz** siguiendo el esquema maestro/detalle: una lista de contactos y un panel con el detalle del contacto seleccionado.
+6. **Implementar las operaciones CRUD**: crear, consultar, modificar y eliminar contactos.
+7. **Agregar la búsqueda o filtrado** de contactos dentro de la agenda.
+
+Se recomienda avanzar de a poco, verificando el funcionamiento de cada parte antes de continuar con la siguiente.

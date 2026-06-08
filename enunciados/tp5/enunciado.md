@@ -3,7 +3,8 @@
 ## Agenda de Contactos con Blazor, EF Core y SQLite
 
 > [!IMPORTANT]
-> Plazo para entregar el TP4: **Sabado 13 de Junio hasta las 23:59hs**
+> Plazo para entregar el TP5: **Sabado 13 de Junio hasta las 23:59hs**
+> 
 > *El trabajo es estrictamente individual y debe ser realizado en persona por el alumno*
 
 

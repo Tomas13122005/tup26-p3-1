@@ -63,10 +63,11 @@ Las carpetas de alumnos se crean o normalizan automáticamente antes de los coma
 ### Utilidades
 
 - `listar-grupos-whatsapp`: lista grupos y participantes de WhatsApp.
-- `revisar-presentaciones [tp]`: marca presentaciones a partir del código local de cada carpeta. Si no se indica un TP, revisa todos los prácticos con enunciado disponible.
+- `revisar-presentaciones [tp]`: marca presentaciones a partir del código local de cada carpeta. Si no se indica un TP, revisa todos los prácticos que tengan enunciado y criterio configurado.
 	- `TP1`: presentado si tiene al menos 100 líneas totales.
 	- `TP2`: presentado si agrega al menos 20 líneas respecto del enunciado.
 	- `TP3`: presentado si agrega al menos 50 líneas respecto del enunciado.
+	- `TP4`: presentado si agrega al menos 150 líneas respecto del enunciado.
 - `limpiar-archivos-temporales`: elimina `bin`, `obj`, `.vs` y cachés de compilación dentro de `practicos/`, `enunciados/` y `clases/`.
 
 ## Archivos de referencia

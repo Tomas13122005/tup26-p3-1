@@ -217,7 +217,7 @@ static class AlumnosCliActions {
                 procesados++;
                 trabajosProcesados += bajada.TrabajosPracticos.Count;
                 archivosDescargados += bajada.Archivos.Count;
-                trabajosParaRevisar.UnionWith(bajada.TrabajosPracticos);
+                trabajosParaRevisar.UnionWith(bajada.Archivos.Select(archivo => archivo.TrabajoPractico));
             }
         }
 
@@ -282,9 +282,10 @@ static class AlumnosCliActions {
 
     public static int RevisarPresentados(string? trabajoPractico) {
         if (string.IsNullOrWhiteSpace(trabajoPractico)) {
-            IReadOnlyList<EnunciadoPracticoDisponible> practicos = AppPaths.ListarEnunciadosPracticos();
+            IReadOnlyList<EnunciadoPracticoDisponible> practicos =
+                PracticosConfig.FiltrarConfigurados(AppPaths.ListarEnunciadosPracticos());
             if (practicos.Count == 0) {
-                Log.Error($"No se encontraron enunciados de trabajos prácticos en {AppPaths.EnunciadosDirectory}.");
+                Log.Error($"No se encontraron trabajos prácticos con enunciado y criterio de revisión configurado en {AppPaths.EnunciadosDirectory}.");
                 return 1;
             }
 
@@ -305,13 +306,18 @@ static class AlumnosCliActions {
             return 1;
         }
 
+        if (!PracticosConfig.TryObtener(numeroTp, out ConfiguracionPractico configuracion)) {
+            Log.Error($"TP{numeroTp} no tiene un criterio de revisión configurado.");
+            return 1;
+        }
+
         Alumnos alumnos = CargarAlumnosConCarpetasPreparadas();
         string carpetaTp = CarpetaTrabajoPractico(numeroTp);
         string rutaEnunciado = AppPaths.EnunciadoPracticoDirectory(carpetaTp);
         int lineasEnunciado = ObtenerLineasBaseEnunciado(numeroTp, carpetaTp, rutaEnunciado, alumnos);
         HashSet<string> lineasCodigoEnunciado = ObtenerLineasCodigoNormalizadas(rutaEnunciado);
 
-        Log.Info($"{carpetaTp.ToUpperInvariant()} | líneas base del enunciado: {lineasEnunciado}");
+        Log.Info($"{carpetaTp.ToUpperInvariant()} | criterio: {configuracion.DescripcionCriterio} | líneas base del enunciado: {lineasEnunciado}");
         List<TrabajoPresentadoLocal> trabajosPresentados = new();
         List<PresentacionCambiada> presentacionesCambiadas = new();
         bool habiaObservaciones = alumnos.Any(alumno => !string.IsNullOrWhiteSpace(alumno.Observaciones));
@@ -332,7 +338,7 @@ static class AlumnosCliActions {
 
                     Estado estadoAnterior = alumno.EstadoPractico(numeroTp);
                     Estado estado = Estado.Desaprobado;
-                    if (PracticoParecePresentado(numeroTp, lineasTotales, lineasAgregadas)) {
+                    if (configuracion.ParecePresentado(lineasTotales, lineasAgregadas)) {
                         estado = Estado.Aprobado;
                         HashSet<string> lineasCodigo = ObtenerLineasCodigoNormalizadas(rutaPractico);
                         lineasCodigo.ExceptWith(lineasCodigoEnunciado);
@@ -513,7 +519,7 @@ static class AlumnosCliActions {
         DateOnly hoy = DateOnly.FromDateTime(DateTime.Today);
 
         DateTime desde = new(hoy.Year, 4, 1);
-        DateTime hasta = hoy.ToDateTime(new TimeOnly(13, 0));
+        DateTime hasta = hoy.ToDateTime(new TimeOnly(14, 0));
         Dictionary<int, HashSet<DateOnly>> asistenciasPorAlumno = alumnos
             .ToDictionary(alumno => alumno.Legajo, _ => new HashSet<DateOnly>());
 
@@ -805,15 +811,6 @@ static class AlumnosCliActions {
 
         return sb.ToString();
     }
-
-    static bool PracticoParecePresentado(int numeroTp, int lineasTotales, int lineasAgregadas) =>
-        numeroTp switch {
-            1 => lineasTotales   >= 100,
-            2 => lineasAgregadas >= 20,
-            3 => lineasAgregadas >= 50,
-            4 => lineasAgregadas >= 150,
-            _ => lineasTotales   >= 100
-        };
 
     static bool TieneAlgunPracticoPresentado(Alumno alumno) =>
         alumno.practicos.Any(estado => estado == Estado.Aprobado);

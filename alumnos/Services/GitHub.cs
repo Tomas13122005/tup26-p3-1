@@ -91,6 +91,7 @@ Servicio para interactuar con la API de GitHub mediante `gh api`.
 */
 
 class GitHub {
+    static readonly HttpClient httpClient = new();
     readonly string owner;
     readonly string repo;
 
@@ -438,13 +439,12 @@ class GitHub {
 
                 if (!FileSystemName.MatchesSimpleExpression(patron, nombreRemoto, ignoreCase: true)) { continue; }
 
-                using HttpClient client = new();
                 if (!forzar && AppPaths.ExisteArchivoDescargado(rutaDestino, nombreRemoto)) {
                     // Log.Info($"Archivo '{nombreRemoto}' ya existe. Se omite descarga: {rutaArchivo}");
                     continue;
                 }
 
-                byte[] contenido = client.GetByteArrayAsync(url).Result;
+                byte[] contenido = httpClient.GetByteArrayAsync(url).Result;
                 string rutaArchivo = AppPaths.GuardarArchivoDescargado(rutaDestino, nombreRemoto, contenido, forzar);
                 Log.Warning($"Archivo '{nombreRemoto}'\n      {rutaArchivo} ");
             } catch (Exception ex) {
@@ -493,8 +493,7 @@ class GitHub {
                     continue;
                 }
 
-                using HttpClient client = new();
-                byte[] contenido = client.GetByteArrayAsync(url).Result;
+                byte[] contenido = httpClient.GetByteArrayAsync(url).Result;
                 int cantidadLineas = ContarLineas(contenido);
                 string rutaArchivo = AppPaths.GuardarArchivoDescargadoRelativo(rutaDestino, rutaRelativa, contenido, forzar);
                 Log.Print($"  - {rutaLocalRelativa,-30} | L:{cantidadLineas,4}");

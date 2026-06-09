@@ -73,5 +73,5 @@ static class Log {
     public static void Info(string mensaje)    => WriteLine($"[info]{mensaje}");
     public static void Warning(string mensaje) => WriteLine($"[warning]{mensaje}");
     public static void Success(string mensaje) => WriteLine($"[green]{mensaje}");
-    public static void Print(string mensaje)    => WriteLine($"[white]{mensaje}");
+    public static void Print(string mensaje)   => WriteLine($"[white]{mensaje}");
 }

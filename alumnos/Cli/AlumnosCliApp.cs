@@ -183,7 +183,7 @@ static class AlumnosCliApp {
     }
 
     static string[] ConstruirArgumentosRevisarPresentaciones() {
-        string? trabajoPractico = PedirTrabajoPractico("Revisar presentaciones", permitirTodos: true);
+        string? trabajoPractico = PedirTrabajoPractico("Revisar presentaciones", permitirTodos: true, soloConfigurados: true);
 
         return trabajoPractico is null
             ? Array.Empty<string>()
@@ -216,8 +216,10 @@ static class AlumnosCliApp {
         return opcion.Command;
     }
 
-    static string? PedirTrabajoPractico(string accion, bool permitirTodos = false) {
-        IReadOnlyList<EnunciadoPracticoDisponible> practicos = AppPaths.ListarEnunciadosPracticos();
+    static string? PedirTrabajoPractico(string accion, bool permitirTodos = false, bool soloConfigurados = false) {
+        IReadOnlyList<EnunciadoPracticoDisponible> practicos = soloConfigurados
+            ? PracticosConfig.FiltrarConfigurados(AppPaths.ListarEnunciadosPracticos())
+            : AppPaths.ListarEnunciadosPracticos();
         if (practicos.Count == 0) {
             string textoVacio = permitirTodos ? "todos" : "cancelar";
             string valor = AnsiConsole.Prompt(
